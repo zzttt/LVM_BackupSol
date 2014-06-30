@@ -1,5 +1,11 @@
 package Main;
 
+/*
+ * 
+ * 작성자 : 조영민
+ * 최종수정 : 14.07.01
+ * 
+ */
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -7,6 +13,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,20 +38,7 @@ public class ConnToSrv {
 	public static void main(String args[]) {
 		String authCode;
 		Socket sc;
-		GzipGenerator gg = new GzipGenerator(); // 끝에 / 까지 써줘야함.
-		CodeGenerator cg = new CodeGenerator("devCode", "additionalCode");
-
-		// 분할압축 및 해제
-
-		/*
-		 * try { //gg.partCompress("/home/armin/ssHome/duff.mp3",
-		 * "/home/armin/ssHome/comp/"); try {
-		 * gg.decompress("/home/armin/ssHome/comp/",
-		 * "/home/armin/ssHome/decomp/"); } catch (InterruptedException e) { //
-		 * TODO Auto-generated catch block e.printStackTrace(); } } catch
-		 * (IOException e1) { // TODO Auto-generated catch block
-		 * e1.printStackTrace(); }
-		 */
+		
 		try {
 			sc = new Socket("211.189.19.45", 8000);
 
@@ -65,7 +59,6 @@ public class ConnToSrv {
 
 				opSwitch op = new opSwitch(Integer.parseInt(opCode), oos, sc);
 				op.start();
-				
 
 				if (Integer.parseInt(opCode) == -1) {
 					break;
@@ -107,10 +100,8 @@ class opSwitch extends Thread {
 		switch (opCode) {
 		case -1:
 			break;
-		case 0: // compress files
-			System.out.println("file compressing");
-			
-			
+		case 0:
+
 			break;
 		case 1: // send files
 			System.out.println("file upload");
@@ -242,7 +233,7 @@ class opSwitch extends Thread {
 
 						fos.flush();
 						fos.close();
-					}else{ // if wFile is a directory
+					} else { // if wFile is a directory
 						fileCnt++;
 						wFile.delete();
 						fos.flush();
@@ -261,8 +252,42 @@ class opSwitch extends Thread {
 			
 			
 			break;
-		case 4:
+		case 4:// compress files
+			System.out.println("file compressing");
+			// 분할압축 및 해제
+			GzipGenerator ggForComp = new GzipGenerator();
+			try {
+				ggForComp.partCompress("/home/armin/ssHome/capstone.tar",
+						"/home/armin/ssHome/comp/");
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			break;
+		case 5: // decompress a file
+			System.out.println("decompress a file");
+			GzipGenerator ggForDeComp = new GzipGenerator();
+			try {
+				ggForDeComp.decompress("/home/armin/ssHome/comp/",
+						"/home/armin/ssHome/decomp/");
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
+			break;
+		case 6:
+			System.out.println("code Generate");
+			String code1,code2;
+			
+			CodeGenerator cg = new CodeGenerator("devCode", "additionalCode");
 			
 			break;
 		}
