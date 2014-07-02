@@ -40,7 +40,6 @@ public class Payload implements Serializable {
 		this.opCode = opCode;
 		this.authCode = authCode;
 	}
-		
 	
 	public int getOpCode(){
 		return this.opCode;

@@ -11,6 +11,13 @@ import java.net.Socket;
 
 import Main.SrvMain;
 
+/*
+ * 
+ * 작성자 : 조영민
+ * 최종수정 : 14.07.01
+ * 
+ */
+
 public class SocketConnector extends Thread {
 
 	private Socket socket;
@@ -79,6 +86,7 @@ public class SocketConnector extends Thread {
 						System.out.println(fileList[fileCnt].getName());
 						fileCnt++;
 					}
+					
 					fileCnt = 0;
 
 					oos = new ObjectOutputStream(socket.getOutputStream());
@@ -111,6 +119,11 @@ public class SocketConnector extends Thread {
 					}
 					break;
 				case 3:
+					ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+					
+					// read generated code from client
+					
+					// send Payload with snapshot Information as per the code
 					
 					break;
 					
