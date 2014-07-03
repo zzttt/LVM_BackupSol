@@ -1,0 +1,82 @@
+package com.Functions;
+
+import java.io.File;
+import java.io.Serializable;
+
+/*
+ * �옉�꽦�씪 : 14.06.24 
+ * �옉�꽦�옄 : 議곗쁺誘�
+ * 
+ */
+
+public class Snapshot implements Serializable{
+	private int id;
+	private int ssNumber; // Snapshot �쓽 踰덊샇
+	private int ssTotal;  // Snapshot �씠 遺꾪븷 �븬異뺤떆 遺꾪븷�맂 媛쒖닔
+	private int state; // Snapshot state
+	private int date;
+	private int type;
+	private String path; // Snapshot�씠 議댁옱�븯�뒗 寃쎈줈
+
+	public Snapshot(){
+		
+	}
+	
+	public Snapshot(int id, int ssNumber){
+		this.id = id;
+		this.ssNumber = ssNumber;
+	}
+	
+	/**
+	 * 
+	 * @param id
+	 * @param ssNumber
+	 * @param state
+	 * @param date
+	 * @param type
+	 * @param path �뒪�깄�꺑�씠 議댁옱�븯�뒗 �뵒�젆�넗由� 寃쎈줈
+	 */
+	public Snapshot(int id, int ssNumber, int state, int date, int type, String path){
+		this.id = id;
+		this.ssNumber = ssNumber;
+		this.state = state;
+		this.date = date;
+		this.type = type;
+		this.path = path;
+		
+		File f = new File(path);
+		this.ssTotal =  f.list().length; // �쟾泥� snapshot 遺꾪븷�궗�씠利� 珥덇린�솕
+		
+	}
+	
+	public void setId(int id){
+		this.id = id;
+	}
+	
+	public void setSnapshotNum(int ssNumber){
+		this.ssNumber = ssNumber;
+	}
+	
+	public void setState(int state){
+		this.state = state;
+	}
+	
+	public void setDate(int date){
+		this.date = date;
+	}
+	
+	public void setType(int type){
+		this.type = type;
+	}
+	
+	public void setPath(String path){
+		this.path = path;
+	}
+	
+	public String SnapshotInfo(){
+		String result = null;
+		result = "sId = "+this.id+"\n sNumber = "+this.ssNumber+"\n state = "+this.state;
+		return result;
+	}
+			
+}		

@@ -1,0 +1,5 @@
+package com.example.timetraveler;
+
+public class BaseSpinnerAdapter {
+
+}
