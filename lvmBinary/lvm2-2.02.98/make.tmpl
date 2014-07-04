@@ -17,8 +17,8 @@ SHELL = /bin/sh
 
 
 
-CC ?= arm-none-linux-gnueabi-gcc
-RANLIB = arm-none-linux-gnueabi-ranlib
+CC ?= gcc
+RANLIB = ranlib
 INSTALL = /usr/bin/install -c
 MKDIR_P = /bin/mkdir -p
 MSGFMT = 
@@ -49,13 +49,13 @@ UDEV_LIBS =
 TESTING = no
 
 # Setup directory variables
-prefix = /lvm
-exec_prefix = ${prefix}
+prefix = /usr
+exec_prefix = 
 udev_prefix = ${exec_prefix}
 sysconfdir = ${prefix}/etc
 rootdir = $(DESTDIR)/
 bindir = $(DESTDIR)${exec_prefix}/bin
-confdir = $(DESTDIR)/lvm/etc/lvm
+confdir = $(DESTDIR)/etc/lvm
 includedir = $(DESTDIR)${prefix}/include
 libdir = $(DESTDIR)${exec_prefix}/lib
 usrlibdir = $(DESTDIR)${prefix}/lib
@@ -77,12 +77,12 @@ ocf_scriptdir = $(DESTDIR)${prefix}/lib/ocf/resource.d/lvm2
 USRLIB_RELPATH = $(shell echo $(abspath $(usrlibdir) $(libdir)) | \
   $(AWK) -f $(top_srcdir)/scripts/relpath.awk)
 
-DEFAULT_SYS_DIR = /lvm/etc
+DEFAULT_SYS_DIR = /etc/lvm
 DEFAULT_ARCHIVE_DIR = $(DEFAULT_SYS_DIR)/archive
 DEFAULT_BACKUP_DIR = $(DEFAULT_SYS_DIR)/backup
 DEFAULT_CACHE_DIR = $(DEFAULT_SYS_DIR)/cache
-DEFAULT_LOCK_DIR = /data/lvm/lock
-DEFAULT_RUN_DIR = /data/lvm/run
+DEFAULT_LOCK_DIR = /var/lock/lvm
+DEFAULT_RUN_DIR = /var/run/lvm
 
 # Setup vpath search paths for some suffixes
 vpath %.c $(srcdir)
@@ -127,8 +127,8 @@ WFLAGS += -Wall -Wundef -Wshadow -Wcast-align -Wwrite-strings \
 #WFLAGS += -pedantic -std=gnu99
 #DEFS += -DDEBUG_CRC32
 
-CFLAGS += -fPIC  -Os -march=armv5te -mtune=cortex-a8 -mthumb
-LDFLAGS += -Os -march=armv5te -mtune=cortex-a8 -mthumb
+CFLAGS += -fPIC  -O2
+LDFLAGS += -O2
 
 ifeq ("no", "yes")
   CFLAGS += -g -fno-omit-frame-pointer

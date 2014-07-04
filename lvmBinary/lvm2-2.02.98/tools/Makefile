@@ -16,6 +16,7 @@ srcdir = .
 top_srcdir = ..
 top_builddir = ..
 
+# Add k_fifomaker.c
 SOURCES =\
 	k_fifomaker.c \
 	dumpconfig.c \
@@ -81,7 +82,7 @@ INSTALL_LVM_TARGETS = install_tools_dynamic
 INSTALL_DMSETUP_TARGETS = install_dmsetup_dynamic
 INSTALL_CMDLIB_TARGETS = install_cmdlib_dynamic install_cmdlib_include 
 
-ifeq ("yes", "yes")
+ifeq ("no", "yes")
   TARGETS += lvm.static
   TARGETS_DM += dmsetup.static
   INSTALL_LVM_TARGETS += install_tools_static
@@ -105,7 +106,7 @@ ifeq ("", "yes")
 	LVMLIBS += -ldevmapper-event
 endif
 
-LVMLIBS += -ldevmapper
+LVMLIBS += -ldevmapper -lpthread
 
 EXPORTED_HEADER = $(srcdir)/lvm2cmd.h
 EXPORTED_FN_PREFIX = lvm2

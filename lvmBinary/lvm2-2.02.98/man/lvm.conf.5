@@ -2,7 +2,7 @@
 .SH NAME
 lvm.conf \- Configuration file for LVM2
 .SH SYNOPSIS
-.B /lvm/etc/lvm.conf
+.B /etc/lvm/lvm.conf
 .SH DESCRIPTION
 lvm.conf is loaded during the initialisation phase of
 \fBlvm\fP(8).  This file can in turn lead to other files
@@ -105,7 +105,7 @@ otherwise it is accepted.  As an example, to ignore /dev/cdrom you could use:
 \fBdevices { filter=["r|cdrom|"] }\fP
 .IP
 \fBcache_dir\fP \(em Persistent filter cache file directory.
-Defaults to "/lvm/etc/cache".
+Defaults to "/etc/lvm/cache".
 .IP
 \fBwrite_cache_state\fP \(em Set to 0 to disable the writing out of the
 persistent filter cache file when \fBlvm\fP exits.
@@ -258,12 +258,12 @@ in low memory situations this setting can cause your machine to lock up.
 .IP
 \fBarchive_dir\fP \(em Directory used for automatic metadata archives.
 Backup copies of former metadata for each volume group are archived here.
-Defaults to "/lvm/etc/archive".
+Defaults to "/etc/lvm/archive".
 .IP
 \fBbackup_dir\fP \(em Directory used for automatic metadata backups.
 A single backup copy of the current metadata for each volume group
 is stored here.
-Defaults to "/lvm/etc/backup".
+Defaults to "/etc/lvm/backup".
 .IP
 \fBarchive\fP \(em Whether or not tools automatically archive existing
 metadata into \fBarchive_dir\fP before making changes to it.
@@ -530,15 +530,15 @@ important never to edit these metadata files unless you fully
 understand how things work: to make changes you should always use
 the tools as normal, or else vgcfgbackup, edit backup, vgcfgrestore.
 .SH FILES
-.I /lvm/etc/lvm.conf
+.I /etc/lvm/lvm.conf
 .br
-.I /lvm/etc/archive
+.I /etc/lvm/archive
 .br
-.I /lvm/etc/backup
+.I /etc/lvm/backup
 .br
-.I /lvm/etc/cache/.cache
+.I /etc/lvm/cache/.cache
 .br
-.I /data/lvm/lock
+.I /var/lock/lvm
 .SH SEE ALSO
 .BR lvm (8),
 .BR umask (2),

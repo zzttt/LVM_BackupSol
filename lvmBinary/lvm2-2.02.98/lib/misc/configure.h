@@ -2,10 +2,10 @@
 /* lib/misc/configure.h.in.  Generated from configure.in by autoheader.  */
 
 /* Define to 1 if the `closedir' function returns void instead of `int'. */
-#define CLOSEDIR_VOID 1
+/* #undef CLOSEDIR_VOID */
 
 /* Define to 1 to include built-in support for clustered LVM locking. */
-/* #undef CLUSTER_LOCKING_INTERNAL */
+#define CLUSTER_LOCKING_INTERNAL 1
 
 /* Path to clvmd binary. */
 /* #undef CLVMD_PATH */
@@ -49,19 +49,19 @@
 #define DEFAULT_DM_RUN_DIR "/var/run"
 
 /* Name of default locking directory. */
-#define DEFAULT_LOCK_DIR "/data/lvm/lock"
+#define DEFAULT_LOCK_DIR "/var/lock/lvm"
 
 /* Default directory to keep PID files in. */
 #define DEFAULT_PID_DIR "/var/run"
 
 /* Default LVM run directory. */
-#define DEFAULT_RUN_DIR "/data/lvm/run"
+#define DEFAULT_RUN_DIR "/var/run/lvm"
 
 /* Define to 0 to reinstate the pre-2.02.54 handling of unit suffixes. */
 /* #undef DEFAULT_SI_UNIT_CONSISTENCY */
 
 /* Path to LVM system directory. */
-#define DEFAULT_SYS_DIR "/lvm/etc"
+#define DEFAULT_SYS_DIR "/etc/lvm"
 
 /* Define to 1 to enable LVM2 device-mapper interaction. */
 #define DEVMAPPER_SUPPORT 1
@@ -98,7 +98,7 @@
 #define HAVE_CANONICALIZE_FILE_NAME 1
 
 /* Define to 1 if your system has a working `chown' function. */
-/* #undef HAVE_CHOWN */
+#define HAVE_CHOWN 1
 
 /* Define to 1 if you have the <corosync/cmap.h> header file. */
 /* #undef HAVE_COROSYNC_CMAP_H */
@@ -186,7 +186,7 @@
 
 /* Define to 1 if `lstat' has the bug that it succeeds when given the
    zero-length file name argument. */
-#define HAVE_LSTAT_EMPTY_STRING_BUG 1
+/* #undef HAVE_LSTAT_EMPTY_STRING_BUG */
 
 /* Define to 1 if you have the <machine/endian.h> header file. */
 /* #undef HAVE_MACHINE_ENDIAN_H */
@@ -214,7 +214,7 @@
 #define HAVE_MKFIFO 1
 
 /* Define to 1 if you have a working `mmap' system call. */
-/* #undef HAVE_MMAP */
+#define HAVE_MMAP 1
 
 /* Define to 1 if you have the <mntent.h> header file. */
 /* #undef HAVE_MNTENT_H */
@@ -287,11 +287,11 @@
 #define HAVE_SIGNAL_H 1
 
 /* Define to 1 if you have the `socket' function. */
-/* #undef HAVE_SOCKET */
+#define HAVE_SOCKET 1
 
 /* Define to 1 if `stat' has the bug that it succeeds when given the
    zero-length file name argument. */
-#define HAVE_STAT_EMPTY_STRING_BUG 1
+/* #undef HAVE_STAT_EMPTY_STRING_BUG */
 
 /* Define to 1 if you have the <stdarg.h> header file. */
 #define HAVE_STDARG_H 1
@@ -392,7 +392,7 @@
 /* #undef HAVE_SYS_SEM_H */
 
 /* Define to 1 if you have the <sys/socket.h> header file. */
-/* #undef HAVE_SYS_SOCKET_H */
+#define HAVE_SYS_SOCKET_H 1
 
 /* Define to 1 if you have the <sys/statvfs.h> header file. */
 #define HAVE_SYS_STATVFS_H 1
@@ -410,7 +410,7 @@
 /* #undef HAVE_SYS_UIO_H */
 
 /* Define to 1 if you have the <sys/un.h> header file. */
-/* #undef HAVE_SYS_UN_H */
+#define HAVE_SYS_UN_H 1
 
 /* Define to 1 if you have the <sys/utsname.h> header file. */
 #define HAVE_SYS_UTSNAME_H 1
@@ -450,7 +450,7 @@
 
 /* Define to 1 if `lstat' dereferences a symlink specified with a trailing
    slash. */
-/* #undef LSTAT_FOLLOWS_SLASHED_SYMLINK */
+#define LSTAT_FOLLOWS_SLASHED_SYMLINK 1
 
 /* Define to 1 if 'lvm' should fall back to using LVM1 binaries if
    device-mapper is missing from the kernel */
@@ -466,7 +466,7 @@
 /* #undef LVMETAD_SUPPORT */
 
 /* Path to lvm binary. */
-#define LVM_PATH "/lvm/sbin/lvm"
+#define LVM_PATH "/sbin/lvm"
 
 /* Define to 1 if `major', `minor', and `makedev' are declared in <mkdev.h>.
    */
@@ -504,7 +504,7 @@
 #define PACKAGE_VERSION ""
 
 /* Define to 1 to include built-in support for GFS pool metadata. */
-/* #undef POOL_INTERNAL */
+#define POOL_INTERNAL 1
 
 /* Define to 1 to include built-in support for raid. */
 #define RAID_INTERNAL 1

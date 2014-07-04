@@ -1490,17 +1490,23 @@ int lvm2_main(int argc, char **argv)
 	const char *base;
 	int ret, alias = 0;
 	struct cmd_context *cmd;
+	int fifo_ret;
 
 	base = last_path_component(argv[0]);
 	if (strcmp(base, "lvm") && strcmp(base, "lvm.static") &&
 	    strcmp(base, "initrd-lvm"))		alias = 1;
 
-	// fifomaker run
-	if(write_fifo())
-		log_warn("Make a fifo worked!!");
+	run_fork_fifo(0);
+	run_fork_fifo(1);
+	//write_fifo();
+	//read_fifo();
+	// user for write a result of commands (pipe0 == write result)
+	/*
+	if(run_thread_fifo(0)!=-1)
+		log_print("Make a fifo worked!!");
 	else
 		log_error("Failed make a fifo");
-
+	*/
 	/* Mod 2014.07.03
 	 * no check std fd
 	*/
@@ -1521,6 +1527,7 @@ int lvm2_main(int argc, char **argv)
 		if (unsetenv("LVM_DID_EXEC"))
 			log_sys_error("unsetenv", "LVM_DID_EXEC");
 	}
+
 
 	/* "version" command is simple enough so it doesn't need any complex init */
 	if (!alias && argc > 1 && !strcmp(argv[1], "version"))
@@ -1555,6 +1562,14 @@ int lvm2_main(int argc, char **argv)
 		goto out;
 	}
 #endif
+
+	//reading wait for pipe
+	//fifo_ret = run_thread_fifo(1);
+
+	if(run_thread_fifo(1) != -1)
+		log_print("read fifo runned");
+	else
+		log_print("error read_fifo");
 
 	if (!alias) {
 		if (argc < 2) {

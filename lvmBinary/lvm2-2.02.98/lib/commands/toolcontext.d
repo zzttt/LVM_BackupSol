@@ -16,4 +16,4 @@ commands/toolcontext.o commands/toolcontext.d commands/toolcontext.pot: ../make.
  ../include/str_list.h ../include/segtype.h ../include/lvmcache.h \
  ../include/label.h ../include/lvmetad.h ../include/config-util.h \
  ../include/archiver.h ../include/sharedlib.h ../include/format1.h \
- ../include/lvmcache.h
+ ../include/lvmcache.h ../include/format_pool.h
