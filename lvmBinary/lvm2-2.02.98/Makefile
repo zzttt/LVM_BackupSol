@@ -152,7 +152,7 @@ lcov: $(LCOV_TRACES)
 	for i in $(LCOV_TRACES); do \
 		test -s $$i && lc="$$lc $$i"; \
 	done; \
-	test -z "$$lc" || $(GENHTML) -p /home/kkangs/Development/lvm2/LVM_BackupSol/lvmBinary/lvm2-2.02.98 \
+	test -z "$$lc" || $(GENHTML) -p /home/kkangs/Development/lvmDev \
 		-o $(LCOV_REPORTS_DIR) $$lc
 endif
 

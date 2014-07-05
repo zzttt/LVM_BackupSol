@@ -31,8 +31,7 @@ void thr_errquit(char* msg, int errcode)
 { printf("%s: %s\n", msg, strerror(errcode));
 	pthread_exit(NULL); }
 
-int  write_fifo() {
-
+int write_fifo() {
 	//return result of input command at Java App
 	int nbytes, resultwd;
 	char *cmd_result = "return result of lvm yeah";
@@ -47,18 +46,26 @@ int  write_fifo() {
 
 	//write fifo a result
 //	while(1) {
-		if(write(resultwd, &cmd_result, sizeof(cmd_result)) < 0)
+		if(write(resultwd, &cmd_result, sizeof(cmd_result)) < 0) {
 			errquit("result_fifo write fail");
-		else
+			close(resultwd);
+		}
+		else {
+			close(resultwd);
 		  return 1;
+		}
 //	}
 
 	return 0;
 }
 
-
+/**
+  필요시 parent process kill될 때 같이 reader/writer도 kill하는 거 구현 필요
+*/
 /* fork fifo function runner */
-int run_fork_fifo(int rw)
+//int run_fork_fifo(int rw, pipe_msg **pmsg)
+//lvm2_main()->run_fork_fifo()->read_fifo()로 연결된다.
+int run_fork_fifo(int rw, int pipefd[])
 {
 	pid_t pid;
 	
@@ -70,15 +77,21 @@ int run_fork_fifo(int rw)
 	else if(rw) {
 		pid = fork();
 		if(pid > 0)
-			read_fifo();
+			//read_fifo();
+			//test_func(&pmsg);
+			read_fifo(pipefd);
 	}
 
 
 }
 
+int test_func() {
+		printf("hello world");
+}
 
 //function pointer needs
 //int run_thread_fifo(int (*func
+/*
 int run_thread_fifo(int rw)
 {
 	pthread_t tid[10];
@@ -104,41 +117,43 @@ int run_thread_fifo(int rw)
 
 	return -1;
 }
+*/
 
-//int read_fifo(char* cmd_aaa) {
-int read_fifo() {
-	int nbytes, cmdwd;
-	char *cmd_input;
-	int status;
-
-	//make fifo
-	/* if(mkfifo(CMDFIFO, 0770) == -1 && errno != EEXIST)
-		errquit("cmd mkfifo fail"); */
-
-	//thread run
-	//pthread_t tid[10];
-
-	//create thread
-	/*if((status=pthread_create(&tid[0], NULL, NULL))!=0)
-		thr_errquit("pthread_create", status);
-	*/
-	cmdwd = open(tmpcmdfifo, O_RDONLY);
+//int read_fifo() {
+/* 실질적으로 pipe를 읽는 function run_fork_fifo()로 부터 pmsg addr넘겨 받음 */
+//int read_fifo(pipe_msg *pmsg) {
+int read_fifo(int pipefd[]) {
+	int cmdwd;
+	char cmd_input[MAX_BUFSZ];
+	pipe_msg *pmsg;
+	//*cmd_input = pmsg->cmd;
+	//open a cmdfifo usage cmdwd
+	cmdwd = open(tmpcmdfifo, O_RDWR);
 	if(cmdwd == -1)
 		errquit("cmdwd open fail");
 	else
-		log_print("wait for command! whiling...");
+		log_print("[wait for command! use PIPE! whiling...]");
 
 	while(1) {
 	//read fifo a cmd input
-		if(read(cmdwd, (char *)&cmd_input, sizeof(cmd_input)) < 0)
+		memset(cmd_input,0, sizeof(cmd_input));
+		memset(&pmsg->cmd, 0, sizeof(&pmsg->cmd));
+		//if(read(cmdwd, cmd_input, sizeof(cmd_input)) < 0) {
+		if(read(cmdwd, &pmsg->cmd, sizeof(&pmsg->cmd)) < 0) {
 			errquit("read cmdwd fail");
+		}
+		
 		else {
-			printf("read it : %s\n", cmd_input);
-		 	//return 1;
+			//printf("read it : %s\n", cmd_input);
+			printf("[read_fifo()]read pmsg : %s\n", pmsg->cmd);
+			if(write(pipefd[1], &pmsg->cmd, sizeof(&pmsg->cmd)) < 0)
+				log_error("internal pipe writing error");
+		//printf("lvm> ");
 		}
 	}
+	close(cmdwd);
 
-	return 0;
+	return 1;
 }
 
 

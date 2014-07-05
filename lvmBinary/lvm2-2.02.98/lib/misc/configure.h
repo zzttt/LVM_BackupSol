@@ -251,7 +251,7 @@
 /* #undef HAVE_REALTIME */
 
 /* Define to 1 if you have the `rl_completion_matches' function. */
-/* #undef HAVE_RL_COMPLETION_MATCHES */
+#define HAVE_RL_COMPLETION_MATCHES 1
 
 /* Define to 1 if you have the `rmdir' function. */
 #define HAVE_RMDIR 1
@@ -510,7 +510,7 @@
 #define RAID_INTERNAL 1
 
 /* Define to 1 to include the LVM readline shell. */
-/* #undef READLINE_SUPPORT */
+#define READLINE_SUPPORT 1
 
 /* Define to 1 to include built-in support for replicators. */
 /* #undef REPLICATOR_INTERNAL */

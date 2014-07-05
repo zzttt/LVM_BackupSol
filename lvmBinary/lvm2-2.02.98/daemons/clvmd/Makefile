@@ -36,7 +36,7 @@ SOURCES = \
 	lvm-functions.c  \
 	refresh_clvmd.c
 
-ifeq ("no", "yes")
+ifeq ("yes", "yes")
 	DEFS += -DDEBUG
 endif
 

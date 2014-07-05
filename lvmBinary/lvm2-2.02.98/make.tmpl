@@ -17,7 +17,7 @@ SHELL = /bin/sh
 
 
 
-CC ?= gcc
+CC ?= gcc-4.4
 RANLIB = ranlib
 INSTALL = /usr/bin/install -c
 MKDIR_P = /bin/mkdir -p
@@ -43,7 +43,7 @@ LIB_SUFFIX = so
 LVMINTERNAL_LIBS = -llvm-internal $(DAEMON_LIBS) $(UDEV_LIBS) $(DL_LIBS)
 DL_LIBS = -ldl
 PTHREAD_LIBS = 
-READLINE_LIBS = 
+READLINE_LIBS = -lreadline
 SELINUX_LIBS = 
 UDEV_LIBS = 
 TESTING = no
@@ -127,10 +127,10 @@ WFLAGS += -Wall -Wundef -Wshadow -Wcast-align -Wwrite-strings \
 #WFLAGS += -pedantic -std=gnu99
 #DEFS += -DDEBUG_CRC32
 
-CFLAGS += -fPIC  -O2
-LDFLAGS += -O2
+CFLAGS += -fPIC  
+LDFLAGS += 
 
-ifeq ("no", "yes")
+ifeq ("yes", "yes")
   CFLAGS += -g -fno-omit-frame-pointer
   DEFS += -DDEBUG
   # memory debugging is not thread-safe yet
