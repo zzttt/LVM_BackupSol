@@ -1055,7 +1055,7 @@ int lvm_run_command(struct cmd_context *cmd, int argc, char **argv)
 		return ECMD_FAILED;
 	}
 
-	log_debug("Parsing: %s", cmd->cmd_line);
+	log_print("[in run_command] Parsing: %s", cmd->cmd_line);
 
 	if (!(cmd->command = _find_command(argv[0])))
 		return ENO_SUCH_CMD;
@@ -1486,6 +1486,7 @@ static void _nonroot_warning(void)
 		log_warn("WARNING: Running as a non-root user. Functionality may be unavailable.");
 }
 
+
 /* Add mkfifo work */
 int lvm2_main(int argc, char **argv)
 {
@@ -1493,39 +1494,38 @@ int lvm2_main(int argc, char **argv)
 	int ret, alias = 0;
 	struct cmd_context *cmd;
 	int fifo_ret;
-	
+
 	pipe_msg pmsg;
 	int pipefd[2];
 	int cmdwd;
-	
+
 
 	base = last_path_component(argv[0]);
 	if (strcmp(base, "lvm") && strcmp(base, "lvm.static") &&
-	    strcmp(base, "initrd-lvm"))		alias = 1;
+			strcmp(base, "initrd-lvm"))	alias = 1;
 
 	/*
 	// user for write a result of commands (pipe0 == write result)
 	if(run_thread_fifo(0)!=-1)
-		log_print("Make a fifo worked!!");
+	log_print("Make a fifo worked!!");
 	else
-		log_error("Failed make a fifo");
-	
+	log_error("Failed make a fifo");
 	run_thread_fifo(1);
-	*/
+	 */
 
 	/* Mod 2014.07.03
 	 * no check std fd
-	*/
+	 */
 
 	/*if (!_check_standard_fds())
-		return -1;
-	*/ /*
-	if (!_close_stray_fds(base))
-		return -1;
-	*/
+	  return -1;
+	 */ /*
+		   if (!_close_stray_fds(base))
+		   return -1;
+		 */
 	if (is_static() && strcmp(base, "lvm.static") &&
-	    path_exists(LVM_SHARED_PATH) &&
-	    !getenv("LVM_DID_EXEC")) {
+			path_exists(LVM_SHARED_PATH) &&
+			!getenv("LVM_DID_EXEC")) {
 		if (setenv("LVM_DID_EXEC", base, 1))
 			log_sys_error("setenv", "LVM_DID_EXEC");
 		if (execvp(LVM_SHARED_PATH, argv) == -1)
@@ -1534,41 +1534,40 @@ int lvm2_main(int argc, char **argv)
 			log_sys_error("unsetenv", "LVM_DID_EXEC");
 	}
 
-//	cmd->argv = argv;
-//	lvm_register_commands();
+	// cmd->argv = argv;
+	// lvm_register_commands();
 	//run_fork_fifo(0); //write fifo
 
 
-	/* fork() read cmd_pipe 
-	
-	if(run_fork_fifo(1, &pmsg)) {
+	/* fork() read cmd_pipe
+	   if(run_fork_fifo(1, &pmsg)) {
 	//read fifo pipe cmd_pipe
-		//into pipe command
-		argv = pmsg->cmd;
-		//argc = pmsg->argc;
-		log_print("USE PIPE : %s\n", pmsg->cmd);
+	//into pipe command
+	argv = pmsg->cmd;
+	//argc = pmsg->argc;
+	log_print("USE PIPE : %s\n", pmsg->cmd);
 	}*/
 
 	if(pipe(pipefd) == -1)
 		log_error("internal pipe create error");
 	//run_fork_fifo(1, &pmsg);
 	//run_fork_fifo(1, pipefd);
-/*	pid_t pid;
-	pid = fork();
-	if(pid> 0) {
-		close(pipefd[0]);
-		//read_fifo(pipefd);
+	/* pid_t pid;
+	   pid = fork();
+	   if(pid> 0) {
+	   close(pipefd[0]);
+	//read_fifo(pipefd);
 	}
 	else if(pid == 0){
-		close(pipefd[1]);
-		//while(1) {
-		if(read(pipefd[0], pmsg->cmd, sizeof(pmsg->cmd)) < 0)
-			log_error("internal pipe reading error");
-			log_print("read from cmd_pipe");
-		printf("[lvm2_main()] : %s\n", pmsg->cmd);
-	//}		*/
+	close(pipefd[1]);
+	//while(1) {
+	if(read(pipefd[0], pmsg->cmd, sizeof(pmsg->cmd)) < 0)
+	log_error("internal pipe reading error");
+	log_print("read from cmd_pipe");
+	printf("[lvm2_main()] : %s\n", pmsg->cmd);
+	//} */
 
-	
+
 	/* "version" command is simple enough so it doesn't need any complex init */
 	if (!alias && argc > 1 && !strcmp(argv[1], "version"))
 		return lvm_return_code(version(NULL, argc, argv));
@@ -1587,70 +1586,82 @@ int lvm2_main(int argc, char **argv)
 		log_print("[waiting for command !]");
 
 	while(1) {
-		memset(pmsg.cmd, 0, sizeof(&pmsg.cmd));
-		if(read(cmdwd, pmsg.cmd, sizeof(&pmsg.cmd)) < 0) {
+		memset(pmsg.cmd, 0x00, MAX_BUFSZ);
+		if(read(cmdwd, pmsg.cmd, MAX_BUFSZ) < 0) {
 			log_error("read cmdwd failed");
 		}
 		else {
-			printf("[read pipe] : %s\n", pmsg.cmd);
-			cmd->argv = pmsg.cmd;
-			argv[1] = pmsg.cmd;
-			argc++;
+			alias = 1; //올바르게 작동했는지 alias체크
+			printf("[>]%s\n", pmsg.cmd);
+			cmd->argv = pmsg.cmd; //Commmand into cmd struct
+			//printf("cmd->argv : %s\n", cmd->argv);
+			//argv[1] = pmsg.cmd;
+			//argc++;
+			
+			/* splited command using lvm_split
+			 argv[0] is lv-command */
+			if (lvm_split(pmsg.cmd, &argc, argv, MAX_ARGS) == MAX_ARGS) {
+				log_error("Too many arguments, sorry.");
+				//continue;
+			}
+			else {
+				log_print("[in lvm_main] cmd : %s\n argc : %d\n argv : %s\n", pmsg.cmd, argc, argv[0]);
+			}
 		}
 
-
-	/* lvm1 set */
-	if (_lvm1_fallback(cmd)) {
-		/* Attempt to run equivalent LVM1 tool instead */
-		if (!alias) {
-			argv++;
-			argc--;
-		}
-		if (!argc) {
-			log_error("Falling back to LVM1 tools, but no "
-				  "command specified.");
+		/* lvm1 set */
+		if (_lvm1_fallback(cmd)) {
+			/* Attempt to run equivalent LVM1 tool instead */
+			if (!alias) {
+				argv++;
+				argc--;
+			}
+			if (!argc) {
+				log_error("Falling back to LVM1 tools, but no "
+						"command specified.");
+				ret = ECMD_FAILED;
+				goto out;
+			}
+			_exec_lvm1_command(argv);
 			ret = ECMD_FAILED;
 			goto out;
 		}
-		_exec_lvm1_command(argv);
-		ret = ECMD_FAILED;
-		goto out;
-	}
 #ifdef READLINE_SUPPORT
-	if (!alias && argc == 1) {
-		_nonroot_warning();
-		//ret = lvm_shell(cmd, &_cmdline);
-		//ret = read_fifo(pipefd);
-		//goto out;
-	}
-#endif
-
-	if (!alias) {
-		if (argc < 2) {
-			log_fatal("Please supply an LVM command.");
-			_display_help();
-			ret = EINVALID_CMD_LINE;
+		if (!alias && argc == 1) {
+			_nonroot_warning();
+			ret = lvm_shell(cmd, &_cmdline);
+			//ret = read_fifo(pipefd);
 			goto out;
 		}
+#endif
 
-		argc--;
-		argv++;
-	}
+		if (!alias) {
+			if (argc < 2) {
+				log_fatal("Please supply an LVM command.");
+				_display_help();
+				ret = EINVALID_CMD_LINE;
+				goto out;
+			}
 
-	_nonroot_warning();
-	ret = lvm_run_command(cmd, argc, argv);
-	if ((ret == ENO_SUCH_CMD) && (!alias))
-		ret = _run_script(cmd, argc, argv);
-	if (ret == ENO_SUCH_CMD)
-		log_error("No such command.  Try 'help'.");
+			argc--;
+			argv++;
+		}
 
-	if ((ret != ECMD_PROCESSED) && !error_message_produced()) {
-		log_debug(INTERNAL_ERROR "Failed command did not use log_error");
-		log_error("Command failed with status code %d.", ret);
+		_nonroot_warning();
+		ret = lvm_run_command(cmd, argc, argv);
+		if ((ret == ENO_SUCH_CMD) && (!alias))
+			ret = _run_script(cmd, argc, argv);
+		if (ret == ENO_SUCH_CMD)
+			log_error("No such command. Try 'help'.");
+
+		if ((ret != ECMD_PROCESSED) && !error_message_produced()) {
+			log_debug(INTERNAL_ERROR "Failed command did not use log_error");
+			log_error("Command failed with status code %d.", ret);
+		}
 	}
-	}
+	printf("closed cmdwd !\n");
 	close(cmdwd);
-   	out:
+out:
 	lvm_fin(cmd);
 	return lvm_return_code(ret);
 }
