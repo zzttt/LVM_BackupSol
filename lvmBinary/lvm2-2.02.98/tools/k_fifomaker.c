@@ -16,10 +16,11 @@ read cmd, cmd_pipe
 #include <fcntl.h>
 #include <errno.h>
 #include <pthread.h>
+#include <stdarg.h>
 
 
 //defined header
-#define MAX_BUFSZ 1024
+#define MAX_BUFSZ 2048
 #define CMDFIFO "cmd_pipe"
 #define RESULTFIFO "result_pipe"
 #define APP_PATH "/data/data/net.kkangsworld.lvmexec/"
@@ -31,7 +32,7 @@ void thr_errquit(char* msg, int errcode)
 { printf("%s: %s\n", msg, strerror(errcode));
 	pthread_exit(NULL); }
 
-int write_fifo() {
+int write_fifo(const char* buffer) {
 	//return result of input command at Java App
 	int nbytes, resultwd;
 	char *cmd_result = "return result of lvm yeah";
@@ -40,21 +41,25 @@ int write_fifo() {
 	if(mkfifo(tmpresultfifo, 0770) == -1 && errno != EEXIST)
 		errquit("result_fifo make fail");
 
-	resultwd == open(tmpresultfifo, O_WRONLY);
-	if(resultwd == -1)
+	//resultwd == open(tmpresultfifo, O_WRONLY);
+	if((resultwd = open(tmpresultfifo, O_WRONLY)) == -1)
 		errquit("result_fifo open fail");
 
-	//write fifo a result
-//	while(1) {
-		if(write(resultwd, &cmd_result, sizeof(cmd_result)) < 0) {
+	else {
+		printf("[write_fifo][result] : %s\n", buffer);
+		printf("[wrtie_fifo][buffsize] : %d\n", strlen(buffer));
+		printf("resultwd opened. with FD = %d\n", resultwd);
+		
+		//write fifo a result
+		if(write(resultwd, buffer, strlen(buffer)) < 0) {
 			errquit("result_fifo write fail");
 			close(resultwd);
 		}
 		else {
 			close(resultwd);
-		  return 1;
+			return 1;
 		}
-//	}
+	}
 
 	return 0;
 }
@@ -68,11 +73,11 @@ int write_fifo() {
 int run_fork_fifo(int rw, int pipefd[])
 {
 	pid_t pid;
-	
+	char* buffer[MAX_BUFSZ];
 	if(!rw) {
 		pid = fork();
 		if(pid > 0)
-			write_fifo();
+			write_fifo(buffer);
 	}
 	else if(rw) {
 		pid = fork();
@@ -156,4 +161,27 @@ int read_fifo(int pipefd[]) {
 	return 1;
 }
 
+/* writeresultmsg()
+	command를 실행하고 난 result string, value 등을 가지고 pipe에 쓸 수 있도록 준비해 준다.
+	값을 write_fifo()에 넘겨서 쓰도록 한다.
+ */
 
+int writeresultmsg(const char* format, ...)
+{
+	char buffer[4096];
+	va_list args;
+	int len;
+
+	va_start (args, format);
+	len = vsprintf(buffer, format, args);
+	va_end(args);
+
+	printf("[in writeresultmsg] : %s\n", buffer);
+	if(write_fifo(&buffer))
+		return 1;
+	else
+		return 0;
+}
+
+
+	

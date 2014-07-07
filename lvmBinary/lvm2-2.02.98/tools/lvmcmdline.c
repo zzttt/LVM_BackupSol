@@ -1504,6 +1504,8 @@ int lvm2_main(int argc, char **argv)
 	if (strcmp(base, "lvm") && strcmp(base, "lvm.static") &&
 			strcmp(base, "initrd-lvm"))	alias = 1;
 
+	if(strcmp(argv[0], "lvm"))
+			alias = 1;
 	/*
 	// user for write a result of commands (pipe0 == write result)
 	if(run_thread_fifo(0)!=-1)
@@ -1579,6 +1581,7 @@ int lvm2_main(int argc, char **argv)
 	lvm_register_commands();
 	log_print("lvm_register_command executed");
 
+	/* lvm pipe commuication init */
 	cmdwd = open(tmpcmdfifo, O_RDWR);
 	if(cmdwd == -1)
 		log_error("cmdwd open fail");
@@ -1586,29 +1589,32 @@ int lvm2_main(int argc, char **argv)
 		log_print("[waiting for command !]");
 
 	while(1) {
-		memset(pmsg.cmd, 0x00, MAX_BUFSZ);
-		if(read(cmdwd, pmsg.cmd, MAX_BUFSZ) < 0) {
-			log_error("read cmdwd failed");
-		}
-		else {
-			alias = 1; //올바르게 작동했는지 alias체크
-			printf("[>]%s\n", pmsg.cmd);
-			cmd->argv = pmsg.cmd; //Commmand into cmd struct
-			//printf("cmd->argv : %s\n", cmd->argv);
-			//argv[1] = pmsg.cmd;
-			//argc++;
-			
-			/* splited command using lvm_split
-			 argv[0] is lv-command */
-			if (lvm_split(pmsg.cmd, &argc, argv, MAX_ARGS) == MAX_ARGS) {
-				log_error("Too many arguments, sorry.");
-				//continue;
+		printf("alias %d, argc %d\n", alias, argc);
+		//if(!alias && argc <2) {
+			memset(pmsg.cmd, 0x00, MAX_BUFSZ);
+			if(read(cmdwd, pmsg.cmd, MAX_BUFSZ) < 0) {
+				log_error("read cmdwd failed");
 			}
+		
 			else {
-				log_print("[in lvm_main] cmd : %s\n argc : %d\n argv : %s\n", pmsg.cmd, argc, argv[0]);
-			}
-		}
+				alias = 1; //올바르게 작동했는지 alias체크
+				printf("[>]%s\n", pmsg.cmd);
+				cmd->argv = pmsg.cmd; //Commmand into cmd struct
+				//printf("cmd->argv : %s\n", cmd->argv);
+				//argv[1] = pmsg.cmd;
+				//argc++;
 
+				/* splited command using lvm_split
+				   argv[0] is lv-command */
+				if (lvm_split(pmsg.cmd, &argc, argv, MAX_ARGS) == MAX_ARGS) {
+					log_error("Too many arguments, sorry.");
+					//continue;
+				}
+				else {
+					log_print("[in lvm_main] cmd : %s\n argc : %d\n argv : %s\n", pmsg.cmd, argc, argv[0]);
+				}
+			}
+		//}
 		/* lvm1 set */
 		if (_lvm1_fallback(cmd)) {
 			/* Attempt to run equivalent LVM1 tool instead */
@@ -1631,7 +1637,7 @@ int lvm2_main(int argc, char **argv)
 			_nonroot_warning();
 			ret = lvm_shell(cmd, &_cmdline);
 			//ret = read_fifo(pipefd);
-			goto out;
+			//goto out;
 		}
 #endif
 
@@ -1665,3 +1671,4 @@ out:
 	lvm_fin(cmd);
 	return lvm_return_code(ret);
 }
+

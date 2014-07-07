@@ -466,7 +466,7 @@
 /* #undef LVMETAD_SUPPORT */
 
 /* Path to lvm binary. */
-#define LVM_PATH "/sbin/lvm"
+#define LVM_PATH "/lvm/sbin/lvm"
 
 /* Define to 1 if `major', `minor', and `makedev' are declared in <mkdev.h>.
    */

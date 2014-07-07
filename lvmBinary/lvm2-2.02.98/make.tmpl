@@ -127,10 +127,10 @@ WFLAGS += -Wall -Wundef -Wshadow -Wcast-align -Wwrite-strings \
 #WFLAGS += -pedantic -std=gnu99
 #DEFS += -DDEBUG_CRC32
 
-CFLAGS += -fPIC  
-LDFLAGS += 
+CFLAGS += -fPIC  -O2
+LDFLAGS += -O2
 
-ifeq ("yes", "yes")
+ifeq ("no", "yes")
   CFLAGS += -g -fno-omit-frame-pointer
   DEFS += -DDEBUG
   # memory debugging is not thread-safe yet

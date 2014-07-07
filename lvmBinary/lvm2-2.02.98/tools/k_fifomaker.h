@@ -14,8 +14,6 @@ typedef struct pipe_message {
 } pipe_msg;
 
 
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -26,11 +24,11 @@ void thr_errquit(char *msg, int errcode);
 int run_thread_fifo(int rw);
 //int run_fork_fifo(int rw, pipe_msg **pmsg);
 int run_fork_fifo(int rw, int pipefd[]);
-int write_fifo();
+int write_fifo(const char* buffer);
 //int read_fifo(pipe_msg *pmsg);
 //int run_fork_fifo(int rw);
 int read_fifo(int pipefd[]);
-
+int writeresultmsg(const char* format, ...);
 #ifdef __cplusplus
 }
 #endif
