@@ -19,7 +19,7 @@
 
 DAEMON=clvmd
 
-exec_prefix=
+exec_prefix=${prefix}
 sbindir=${exec_prefix}/sbin
 
 lvm_vgchange=${sbindir}/vgchange

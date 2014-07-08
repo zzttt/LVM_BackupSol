@@ -26,7 +26,7 @@ SOURCES =\
 LIB_NAME = liblvm2app
 LIB_VERSION = $(LIB_VERSION_APP)
 
-ifeq ("no", "yes")
+ifeq ("yes", "yes")
   LIB_STATIC = $(LIB_NAME).a
 endif
 
@@ -51,7 +51,7 @@ endif
 
 INSTALL_TYPE = install_dynamic
 
-ifeq ("no", "yes")
+ifeq ("yes", "yes")
   INSTALL_TYPE += install_static
 endif
 

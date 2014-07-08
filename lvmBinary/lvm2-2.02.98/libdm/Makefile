@@ -38,7 +38,7 @@ ifeq ("no", "yes")
 INCLUDES += 
 endif
 
-ifeq ("no", "yes")
+ifeq ("yes", "yes")
 LIB_STATIC = $(interface)/libdevmapper.a
 endif
 
@@ -70,7 +70,7 @@ libdevmapper.$(LIB_SUFFIX) libdevmapper.$(LIB_SUFFIX).$(LIB_VERSION): $(LIB_SHAR
 
 INSTALL_TYPE = install_dynamic
 
-ifeq ("no", "yes")
+ifeq ("yes", "yes")
   INSTALL_TYPE += install_static
 endif
 

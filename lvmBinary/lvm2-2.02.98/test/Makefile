@@ -19,10 +19,10 @@ subdir = $(shell pwd|sed 's,.*/,,')
 srcdir = .
 top_srcdir = ..
 top_builddir = ..
-abs_srcdir = "/home/kkangs/Development/LVM_BackupSol/lvmBinary/lvm2-2.02.98/test"
-abs_builddir = "/home/kkangs/Development/LVM_BackupSol/lvmBinary/lvm2-2.02.98/test"
-abs_top_builddir = "/home/kkangs/Development/LVM_BackupSol/lvmBinary/lvm2-2.02.98"
-abs_top_srcdir = "/home/kkangs/Development/LVM_BackupSol/lvmBinary/lvm2-2.02.98"
+abs_srcdir = "/home/kkangs/Dev/lvmDev/test"
+abs_builddir = "/home/kkangs/Dev/lvmDev/test"
+abs_top_builddir = "/home/kkangs/Dev/lvmDev"
+abs_top_srcdir = "/home/kkangs/Dev/lvmDev"
 
 SUBDIRS = api unit
 SOURCES = lib/not.c lib/harness.c
