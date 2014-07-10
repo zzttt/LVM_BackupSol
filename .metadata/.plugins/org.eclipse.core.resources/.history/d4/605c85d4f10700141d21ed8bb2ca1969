@@ -1,0 +1,38 @@
+package com.FileManager;
+
+import java.io.File;
+
+public class SnapshotDiskManager {
+	
+	private String ssHome;
+	
+	/**
+	 * 
+	 * @param ssHome HomeDirectory
+	 */
+	public SnapshotDiskManager(String ssHome){
+		this.ssHome = ssHome;
+	}
+	
+	
+	/**
+	 * 스냅샷이 존재하는 디렉토리를 날짜별로 반환한다
+	 * @return
+	 */
+	public File[] getSnapshotList(){
+		File f = new File(ssHome);
+		File[] ssDirList = f.listFiles();
+	
+		return ssDirList;
+		
+	}
+	
+	public File[] getSnapshotFiles(String date){
+		File f = new File(ssHome+"date/");
+		File[] ssList = f.listFiles();
+		
+		return ssList;
+	}
+	
+	
+}

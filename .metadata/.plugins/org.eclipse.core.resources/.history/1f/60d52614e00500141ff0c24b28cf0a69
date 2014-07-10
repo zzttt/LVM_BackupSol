@@ -1,0 +1,45 @@
+package FileManager;
+
+import java.io.File;
+
+import Main.SrvMain;
+
+public class DirDistributor {
+	
+	private String authCode; //
+	
+	public DirDistributor(){
+		
+	}
+	
+	public DirDistributor(String authCode){
+		this.authCode = authCode;
+	}
+	
+	public boolean IsFolderExist(){
+		
+		return false;
+	}
+	
+	public void mkFolder(){ // make folder
+		String filePath = SrvMain.homeDir+authCode;
+		System.out.print(filePath);
+		File newFile = new File(filePath);
+		newFile.mkdir();
+	}
+	
+	public void delFolder(String Path){ // delete file or folder
+		String filePath = SrvMain.homeDir+authCode;
+		File f = new File(filePath);
+		f.delete();
+	}	
+	
+	public String getImgPath(){ // return location where a img be setted
+		String loc = null;
+		loc = SrvMain.homeDir+authCode;
+		
+		return loc;
+	}
+	
+	
+}

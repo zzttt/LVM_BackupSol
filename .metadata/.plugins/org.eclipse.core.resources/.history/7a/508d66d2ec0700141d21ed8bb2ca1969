@@ -1,0 +1,19 @@
+package com.FileManager;
+
+import java.io.File;
+
+public class SnapshotDiskManager {
+	
+	private ssHome;
+	
+	public SnapshotDiskManager(){
+		
+	}
+	
+	
+	public File[] getSnapshotlist(){
+		File
+		return ;
+	}
+	
+}

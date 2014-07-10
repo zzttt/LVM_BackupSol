@@ -1,0 +1,52 @@
+package FileManager;
+
+import java.io.File;
+
+import Main.SrvMain;
+
+public class DirDistributor {
+	
+	private String authCode; //
+	private String getTime;
+	private String ssPath;
+	
+	public DirDistributor(){
+		
+	}
+	
+	public DirDistributor(String authCode,String getTime){
+		this.authCode = authCode;
+		this.getTime = getTime;
+		ssPath =  SrvMain.homeDir+authCode+"/"+getTime;
+	}
+	
+	public boolean IsFolderExist(){
+		
+		return false;
+	}
+	
+	public void mkFolder(){ // make folder
+		System.out.print(ssPath);
+		File newFile = new File(ssPath);
+		
+		if(newFile.mkdirs())
+			System.out.println("폴더생성 성공");
+		else
+			System.out.println("폴더생성 실패");
+	}
+	
+	public void delFolder(String Path){ // delete file or folder
+		String filePath = SrvMain.homeDir+authCode;
+		File f = new File(filePath);
+		f.delete();
+	}	
+	
+	public String getImgPath(){ // return location where a img be setted
+		String loc = null;
+		loc = ssPath;
+		
+		return loc;
+	}
+	
+	
+}
