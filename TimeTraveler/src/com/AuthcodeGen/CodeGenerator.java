@@ -11,17 +11,20 @@ import java.security.NoSuchAlgorithmException;
  * �옣移섏젙蹂대�� �씠�슜�븳 肄붾뱶�깮�꽦 ( 怨좎쑀媛믪쑝濡� �깮�꽦 )
  */
 public class CodeGenerator {
-	private String devCode;
+	private String macAddr;
 	private String addCode;
 	
-	public CodeGenerator(String devCode, String addCode){
-		this.devCode = devCode;
+	public CodeGenerator(String macAddr){
+		this.macAddr = macAddr;
+	}
+	public CodeGenerator(String macAddr, String addCode){
+		this.macAddr = macAddr;
 		this.addCode = addCode;
 	}
 	
 	public String genCode(){ // creates MD5 hash 
 		String md5 = "";
-		String mixedCode = devCode+addCode;
+		String mixedCode = macAddr+addCode;
 		
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");

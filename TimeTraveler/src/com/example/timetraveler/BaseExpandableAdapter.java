@@ -96,17 +96,27 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
 			viewHolder.iv_image = (ImageView) v.findViewById(R.id.iv_image);
 			viewHolder.tv_description = (TextView) v.findViewById(R.id.tv_desc);
 
+			
+			viewHolder.iv_image.setVisibility(View.GONE);
+			
 			// Group name Text Size set
 			viewHolder.tv_groupName.setTextSize(30);
 			viewHolder.tv_groupName.setTypeface(null, Typeface.BOLD);
 
 			if (menuNumber == 0) { // 0 번 메뉴에서만 사용하는 View
+				viewHolder.tv_groupName.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 150));
+				viewHolder.tv_groupName.setGravity(Gravity.CENTER);
+				
 				viewHolder.tv_description.setTextSize(20);
 				viewHolder.tv_description.setText(getDesc(groupPosition));
-				viewHolder.tv_description.setGravity(Gravity.LEFT);
+				viewHolder.tv_description.setGravity(Gravity.CENTER);
+				viewHolder.tv_description.setPadding(0, 0, 0, 50);
 				viewHolder.iv_image
 						.setLayoutParams(new LinearLayout.LayoutParams(300, 300));
+				
+				v.setBackgroundColor(Color.DKGRAY);
 			} else {
+				viewHolder.tv_groupName.setGravity(Gravity.CENTER);
 				viewHolder.tv_description.setVisibility(View.GONE);
 				viewHolder.iv_image.setVisibility(View.GONE);
 			}

@@ -1,6 +1,7 @@
 package com.example.timetraveler;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
@@ -9,18 +10,25 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
+import com.AuthcodeGen.CodeGenerator;
+import com.FileManager.SnapshotDiskManager;
 import com.Functions.ConnServer;
 import com.Functions.opSwitch;
 
+import android.R.color;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -29,6 +37,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AbsSpinner;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -41,6 +50,7 @@ import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ExpandableListView.OnGroupCollapseListener;
 import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -55,16 +65,26 @@ public class MainActivity extends Activity implements OnClickListener {
 	private ArrayList<ArrayList<String>> mChildListContent = null;
 	private ExpandableListView mListView;
 
+	private String userCode;
+
+	private opHandler handler;
+
 	ConnectivityManager manager;
 
 	NetworkInfo mobile;
 	NetworkInfo wifi;
+	WifiManager mng;
+	WifiInfo info;
 
 	public static String homePath = "/sdcard/DCIM/Camera/";
+	public static PagerAdapterClass pac;
 
 	public static boolean setVal0 = false; // auto snapshot On // Off
 	public static int setVal1 = 0; // 백업 용량 세팅 값 1
 	public static int setVal2 = 1; // 백업 용량 세팅 값 2
+
+	public static File[] snapshotListInSrv;
+	public static File[] snapshotListInDev;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -75,12 +95,42 @@ public class MainActivity extends Activity implements OnClickListener {
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
 
 		wifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		mng = (WifiManager) getSystemService(WIFI_SERVICE);
+		info = mng.getConnectionInfo();
 
-		PagerAdapterClass pac = new PagerAdapterClass(getApplicationContext());
+		// Handler 세팅
+		handler = new opHandler();
 
+		// MAC 이용 인증코드 생성
+		CodeGenerator cg = new CodeGenerator(info.getMacAddress());
+		Toast.makeText(getApplication(), cg.genCode(), Toast.LENGTH_SHORT)
+				.show();
+
+		userCode = cg.genCode();
+
+		// 모든 Snapshot List 를 Load (on Device & on Server)
+
+		
+		// 1. Load Snapshot List on Device
+
+		SnapshotDiskManager sdm = new SnapshotDiskManager(homePath);
+		File[] sList = sdm.getSnapshotList();
+		snapshotListInDev = sList;
+		
+		// 2. Load Server List on Server
+
+		ConnServer conn = new ConnServer("211.189.19.45", 12345, 0, userCode,
+				handler);
+		conn.start();
+	
+		
+		
+		// 하단 메뉴를 위한 Pager
+		pac = new PagerAdapterClass(getApplicationContext());
 		setLayout();
 
 		mPager = (ViewPager) findViewById(R.id.pager);
+
 		mPager.setAdapter(pac);
 
 	}
@@ -90,9 +140,24 @@ public class MainActivity extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.btn_one:
 			setCurrentInflateItem(0);
+
 			break;
-		case R.id.btn_two:
+		case R.id.btn_two: // Restore page button
 			setCurrentInflateItem(1);
+/*
+			// 핸들러 시작
+			handler = new opHandler();
+
+			// 소켓서버 접속
+			// opcode == 0 ( Snapshot info request )
+			ConnServer cs = new ConnServer("211.189.19.45", 12345, 0, userCode,
+					handler);
+
+			cs.start();
+
+			// 스레드 작업 완료시 마무리는 handler에서 처리한다.
+*/
+
 			break;
 		case R.id.btn_three:
 			setCurrentInflateItem(2);
@@ -141,7 +206,9 @@ public class MainActivity extends Activity implements OnClickListener {
 	/**
 	 * PagerAdapter
 	 */
-	private class PagerAdapterClass extends PagerAdapter { // Page Adapter에서의 동작
+	public class PagerAdapterClass extends PagerAdapter { // Page Adapter에서의 동작
+
+		private ArrayList<View> views = new ArrayList<View>();
 
 		private LayoutInflater mInflater;
 		private TextView tmp;
@@ -157,11 +224,12 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 
 		@Override
-		public Object instantiateItem(View pager, int position) {
+		public Object instantiateItem(ViewGroup pager, int position) {
 			View v = null;
 			if (position == 0) { // Back up 페이지
 				SimpleCursorAdapter mAdapter;
 				v = mInflater.inflate(R.layout.inflate_one, null);
+
 				mGroupList = new ArrayList<String>();
 				mChildList = new ArrayList<ArrayList<String>>();
 				mChildListContent = new ArrayList<ArrayList<String>>();
@@ -239,6 +307,9 @@ public class MainActivity extends Activity implements OnClickListener {
 						case 0: // 현재 시점을 서버에 백업
 							if (childPosition == 0) // Server Backup
 							{
+								Toast.makeText(getApplicationContext(),
+										"MAC : " + info.getMacAddress(),
+										Toast.LENGTH_SHORT).show();
 								// check the wi-fi connection
 								if (wifi.isConnected()) {
 									// WIFI 에 만 연결 되었을때
@@ -248,11 +319,26 @@ public class MainActivity extends Activity implements OnClickListener {
 
 									try {
 										// 소켓 서버 접속
-										int opCode = 1;
+										// opcode == 1 ( Snapshot Server backup
+										// )
 										ConnServer cs = new ConnServer(
-												"211.189.19.45", 12345, opCode);
+												"211.189.19.45", 12345, 1,
+												userCode);
 
 										cs.start();
+
+										/*
+										 * if(!cs.getSocket().isConnected()) {
+										 * Toast
+										 * .makeText(getApplicationContext(),
+										 * "서버와 연결을 실패하였습니다.",
+										 * Toast.LENGTH_SHORT).show();
+										 * cs.getSocket().close(); }else{
+										 * Toast.makeText
+										 * (getApplicationContext(),
+										 * "연결 성공! 백업을 시작합니다.",
+										 * Toast.LENGTH_SHORT).show(); }
+										 */
 
 									} catch (Exception e) {
 										Toast.makeText(getApplicationContext(),
@@ -289,7 +375,7 @@ public class MainActivity extends Activity implements OnClickListener {
 								String s = null;
 								String resCommand = "";
 								while ((s = br.readLine()) != null) {
-									if(s != null){
+									if (s != null) {
 										resCommand += s;
 										resCommand += "\n";
 									}
@@ -347,87 +433,80 @@ public class MainActivity extends Activity implements OnClickListener {
 
 				v = mInflater.inflate(R.layout.inflate_two, null);
 
-				mGroupList = new ArrayList<String>();
-				mChildList = new ArrayList<ArrayList<String>>();
-				mChildListContent = new ArrayList<ArrayList<String>>();
-				mDestList = new ArrayList<String>();
-				mChildDestList = new ArrayList<String>();
+				views.add(v); // Restore Page 만 컬렉션프레임워크에 넣어준다.
 
-				// Group List 가 입력된다 ( Snapshot list를 그룹단위로 보여줌 )
-				mGroupList.add("2014-07-01 21:38 서버 백업");
-				mGroupList.add("2014-07-02 23:38 서버 백업");
-				mGroupList.add("2014-07-03 04:38 자동 백업");
-
-				for (int i = 0; i < mGroupList.size(); i++) {
-					ArrayList<String> child1 = new ArrayList<String>();
-
-					child1.add("[최근 변경 사항 ]");
-
-					mChildListContent.add(child1);
-				}
-
-				mChildList.add(mChildListContent.get(0));
-				mChildList.add(mChildListContent.get(1));
-				mChildList.add(mChildListContent.get(2));
-
-				mChildDestList.clear();
-				mChildDestList.add("없음");
-				mChildDestList.add("없음");
-				mChildDestList.add("없음");
-
-				mListView = (ExpandableListView) v.findViewById(R.id.elv_list2);
-				mListView.setAdapter(new BaseExpandableAdapter(v.getContext(),
-						mGroupList, mChildList, mDestList, mChildDestList, 1));
-
-				// 그룹 클릭 했을 경우 이벤트
-				mListView.setOnGroupClickListener(new OnGroupClickListener() {
-					@Override
-					public boolean onGroupClick(ExpandableListView parent,
-							View v, int groupPosition, long id) {
-						/*
-						 * Toast.makeText(getApplicationContext(), "g click = "
-						 * + groupPosition, Toast.LENGTH_SHORT).show();
-						 */
-
-						return false;
-					}
-				});
-
-				// 차일드 클릭 했을 경우 이벤트
-				mListView.setOnChildClickListener(new OnChildClickListener() {
-					@Override
-					public boolean onChildClick(ExpandableListView parent,
-							View v, int groupPosition, int childPosition,
-							long id) {
-
-						return false;
-					}
-				});
-
-				// 그룹이 닫힐 경우 이벤트
-				mListView
-						.setOnGroupCollapseListener(new OnGroupCollapseListener() {
-							@Override
-							public void onGroupCollapse(int groupPosition) {
-								/*
-								 * Toast.makeText(getApplicationContext(),
-								 * "g Collapse = " + groupPosition,
-								 * Toast.LENGTH_SHORT).show();
-								 */
-							}
-						});
-
-				// 그룹이 열릴 경우 이벤트
-				mListView.setOnGroupExpandListener(new OnGroupExpandListener() {
-					@Override
-					public void onGroupExpand(int groupPosition) {
-						/*
-						 * Toast.makeText(getApplicationContext(), "g Expand = "
-						 * + groupPosition, Toast.LENGTH_SHORT).show();
-						 */
-					}
-				});
-
+				/*
+				 * mGroupList = new ArrayList<String>(); mChildList = new
+				 * ArrayList<ArrayList<String>>(); mChildListContent = new
+				 * ArrayList<ArrayList<String>>(); mDestList = new
+				 * ArrayList<String>(); mChildDestList = new
+				 * ArrayList<String>();
+				 * 
+				 * // Group List 가 입력된다 ( Snapshot list를 그룹단위로 보여줌 )
+				 * mGroupList.add("2014-07-01 21:38 서버 백업");
+				 * mGroupList.add("2014-07-02 23:38 서버 백업");
+				 * mGroupList.add("2014-07-03 04:38 자동 백업");
+				 * 
+				 * for (int i = 0; i < mGroupList.size(); i++) {
+				 * ArrayList<String> child1 = new ArrayList<String>();
+				 * 
+				 * child1.add("[최근 변경 사항 ]");
+				 * 
+				 * mChildListContent.add(child1); }
+				 * 
+				 * mChildList.add(mChildListContent.get(0));
+				 * mChildList.add(mChildListContent.get(1));
+				 * mChildList.add(mChildListContent.get(2));
+				 * 
+				 * mChildDestList.clear(); mChildDestList.add("없음");
+				 * mChildDestList.add("없음"); mChildDestList.add("없음");
+				 * 
+				 * mListView = (ExpandableListView)
+				 * v.findViewById(R.id.elv_list2); mListView.setAdapter(new
+				 * BaseExpandableAdapter(v.getContext(), mGroupList, mChildList,
+				 * mDestList, mChildDestList, 1));
+				 * 
+				 * // 그룹 클릭 했을 경우 이벤트 mListView.setOnGroupClickListener(new
+				 * OnGroupClickListener() {
+				 * 
+				 * @Override public boolean onGroupClick(ExpandableListView
+				 * parent, View v, int groupPosition, long id) {
+				 * 
+				 * Toast.makeText(getApplicationContext(), "g click = " +
+				 * groupPosition, Toast.LENGTH_SHORT).show();
+				 * 
+				 * 
+				 * return false; } });
+				 * 
+				 * // 차일드 클릭 했을 경우 이벤트 mListView.setOnChildClickListener(new
+				 * OnChildClickListener() {
+				 * 
+				 * @Override public boolean onChildClick(ExpandableListView
+				 * parent, View v, int groupPosition, int childPosition, long
+				 * id) {
+				 * 
+				 * return false; } });
+				 * 
+				 * // 그룹이 닫힐 경우 이벤트 mListView .setOnGroupCollapseListener(new
+				 * OnGroupCollapseListener() {
+				 * 
+				 * @Override public void onGroupCollapse(int groupPosition) {
+				 * 
+				 * Toast.makeText(getApplicationContext(), "g Collapse = " +
+				 * groupPosition, Toast.LENGTH_SHORT).show();
+				 * 
+				 * } });
+				 * 
+				 * // 그룹이 열릴 경우 이벤트 mListView.setOnGroupExpandListener(new
+				 * OnGroupExpandListener() {
+				 * 
+				 * @Override public void onGroupExpand(int groupPosition) {
+				 * 
+				 * Toast.makeText(getApplicationContext(), "g Expand = " +
+				 * groupPosition, Toast.LENGTH_SHORT).show();
+				 * 
+				 * } });
+				 */
 			} else { // // Setting View ( 세팅 페이지 )
 
 				v = mInflater.inflate(R.layout.inflate_three, null);
@@ -517,7 +596,6 @@ public class MainActivity extends Activity implements OnClickListener {
 						});
 
 			}
-
 			((ViewPager) pager).addView(v, 0);
 
 			return v;
@@ -550,6 +628,78 @@ public class MainActivity extends Activity implements OnClickListener {
 		public void finishUpdate(View arg0) {
 		}
 
+		public View getView(int position) {
+			return views.get(position);
+		}
+
+		public void removeView(int postion) {
+			views.remove(postion);
+		}
+
+		public int getViewCount() {
+			return views.size();
+		}
+
 	}
 
 }
+
+class opHandler extends Handler {
+	private ArrayList<String> mGroupList = null;
+	private ArrayList<ArrayList<String>> mChildList = null;
+	private ArrayList<String> mDestList = null;
+	private ArrayList<String> mChildDestList = null;
+	private ArrayList<ArrayList<String>> mChildListContent = null;
+	private ExpandableListView mListView;	
+	private ArrayList<String> childList;
+	private BaseExpandableAdapter bea = null;
+	public opHandler() {
+
+		mGroupList = new ArrayList<String>();
+		mChildList = new ArrayList<ArrayList<String>>();
+		mChildListContent = new ArrayList<ArrayList<String>>();
+		mDestList = new ArrayList<String>();
+		mChildDestList = new ArrayList<String>();
+		childList = new ArrayList<String>();
+	}
+
+	
+	@Override
+	public void handleMessage(Message msg) {
+
+		super.handleMessage(msg);
+
+		View vv = MainActivity.pac.getView(0);
+
+		switch (msg.what) {
+		case 100:
+			// pac 에서 View 를 읽어옴
+			childList.add("[ No data ]");
+			mChildDestList.add("변경된 항목이 없습니다.");			
+			for (int i = 0; i < MainActivity.snapshotListInSrv.length; i++) {
+				mGroupList.add(MainActivity.snapshotListInSrv[i].getName());
+				mChildList.add(childList);
+			}
+			for(int i = 0 ; i < MainActivity.snapshotListInDev.length; i ++){
+				mGroupList.add(MainActivity.snapshotListInDev[i].getName());
+				mChildList.add(childList);
+			}
+					
+			mListView = (ExpandableListView) vv.findViewById(R.id.elv_list2);
+			mListView.setAdapter(new BaseExpandableAdapter(vv.getContext(),
+					mGroupList, mChildList, mDestList, mChildDestList, 1));
+			
+
+			Toast.makeText(vv.getContext(), "Reading complete...",
+					Toast.LENGTH_SHORT).show();
+			break;
+		case 101:
+			
+			break;
+			
+		default:
+			break;
+		}
+
+	}
+};
