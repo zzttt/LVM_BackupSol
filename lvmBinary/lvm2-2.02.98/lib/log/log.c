@@ -220,6 +220,7 @@ void print_log(int level, const char *file, int line, int dm_errno,
 	    log_once) {
 		va_start(ap, format);
 		n = vsnprintf(locn, sizeof(locn) - 1, trformat, ap);
+		n = writeresultmsg(locn, sizeof(locn) - 1, trformat, ap);
 		va_end(ap);
 
 		if (n < 0) {

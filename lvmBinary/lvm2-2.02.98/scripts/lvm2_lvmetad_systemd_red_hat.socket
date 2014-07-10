@@ -4,7 +4,7 @@ Documentation=man:lvmetad(8)
 DefaultDependencies=no
 
 [Socket]
-ListenStream=/var/run/lvm/lvmetad.socket
+ListenStream=/data/lvm/run/lvmetad.socket
 SocketMode=0600
 
 [Install]

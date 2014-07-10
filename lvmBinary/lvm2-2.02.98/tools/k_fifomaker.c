@@ -36,9 +36,11 @@ int write_fifo(const char* buffer) {
 	//return result of input command at Java App
 	int nbytes, resultwd;
 	char *cmd_result = "return result of lvm yeah";
+	errno = 0;
+	 mode_t mode = S_IRWXU | S_IRWXG | S_IRWXO;
 
 	//make fifo generate
-	if(mkfifo(tmpresultfifo, 0770) == -1 && errno != EEXIST)
+	if(mkfifo(tmpresultfifo, 0666) == -1 && errno != EEXIST)
 		errquit("result_fifo make fail");
 
 	//resultwd == open(tmpresultfifo, O_WRONLY);
@@ -51,14 +53,20 @@ int write_fifo(const char* buffer) {
 		printf("resultwd opened. with FD = %d\n", resultwd);
 		
 		//write fifo a result
-		if(write(resultwd, buffer, strlen(buffer)) < 0) {
-			errquit("result_fifo write fail");
-			close(resultwd);
+		//while(1) {
+		if(nbytes = write(resultwd, buffer, strlen(buffer))) {
+			errquit("[result_fifo write fail :]");
+			//close(resultwd);
+			//unlink(tmpresultfifo);
 		}
 		else {
+			printf("nbytes = %d\n", nbytes);
+			//printf("%s\n", strerror(errno));
+			perror("[error]:");
 			close(resultwd);
 			return 1;
 		}
+	//	}
 	}
 
 	return 0;

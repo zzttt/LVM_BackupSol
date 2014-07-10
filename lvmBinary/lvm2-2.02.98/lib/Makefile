@@ -20,7 +20,7 @@ ifeq ("internal", "shared")
   SUBDIRS = format1
 endif
 
-ifeq ("internal", "shared")
+ifeq ("none", "shared")
   SUBDIRS += format_pool
 endif
 
@@ -126,7 +126,7 @@ ifeq ("internal", "internal")
 	format1/vg_number.c
 endif
 
-ifeq ("internal", "internal")
+ifeq ("none", "internal")
   SOURCES +=\
 	format_pool/disk_rep.c \
 	format_pool/format_pool.c \
@@ -134,11 +134,11 @@ ifeq ("internal", "internal")
 	format_pool/pool_label.c
 endif
 
-ifeq ("internal", "internal")
+ifeq ("none", "internal")
   SOURCES += locking/cluster_locking.c
 endif
 
-ifeq ("internal", "shared")
+ifeq ("none", "shared")
   SUBDIRS += locking
 endif
 

@@ -28,7 +28,7 @@ INSTALL_DMEVENTD_TARGETS = install_dmeventd_dynamic
 INSTALL_LIB_TARGETS = install_lib_dynamic
 
 LIB_NAME = libdevmapper-event
-ifeq ("no", "yes")
+ifeq ("yes", "yes")
   LIB_STATIC = $(LIB_NAME).a
   TARGETS += $(LIB_STATIC) dmeventd.static
   INSTALL_DMEVENTD_TARGETS += install_dmeventd_static
