@@ -58,8 +58,15 @@ public class SnapshotDiskManager {
 	public File[] getSnapshotFiles(){
 		File f = new File(ssHome);
 		File[] ssList = f.listFiles();
-		
 		return ssList;
+	}
+	
+	
+	// Snapshot input lists
+	public String[] getSnapshotInfoList(){
+		String[] s = new String[100];
+		
+		return s; 
 	}
 	
 	

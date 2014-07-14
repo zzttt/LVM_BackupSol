@@ -1,6 +1,7 @@
 package com.example.timetraveler;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,6 +10,10 @@ import java.io.Reader;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+
+import net.kkangsworld.lvmexec.ResultReader;
+import net.kkangsworld.lvmexec.pipeWithLVM;
+import net.kkangsworld.lvmexec.readHandler;
 
 import com.AuthcodeGen.CodeGenerator;
 import com.FileManager.SnapshotDiskManager;
@@ -84,8 +89,11 @@ public class MainActivity extends Activity implements OnClickListener {
 	public static int setVal2 = 1; // 백업 용량 세팅 값 2
 
 	public static File[] snapshotListInSrv;
+	public static String[] snapshotInfoListInSrv;
 	public static File[] snapshotListInDev;
-
+	public static String[] snapshotInfoListInDev;
+	//readHandler rh;
+	//pipeWithLVM pl;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -108,23 +116,24 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		userCode = cg.genCode();
 
-		// 모든 Snapshot List 를 Load (on Device & on Server)
-
 		
+		// 모든 Snapshot List 를 Load (on Device & on Server)
+		// Restore 에서 사용할 리스트를 로드함.
+
 		// 1. Load Snapshot List on Device
 
 		SnapshotDiskManager sdm = new SnapshotDiskManager(homePath);
 		File[] sList = sdm.getSnapshotList();
 		snapshotListInDev = sList;
-		
+
 		// 2. Load Server List on Server
 
 		ConnServer conn = new ConnServer("211.189.19.45", 12345, 0, userCode,
 				handler);
 		conn.start();
-	
-		
-		
+
+		//
+
 		// 하단 메뉴를 위한 Pager
 		pac = new PagerAdapterClass(getApplicationContext());
 		setLayout();
@@ -144,20 +153,6 @@ public class MainActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.btn_two: // Restore page button
 			setCurrentInflateItem(1);
-/*
-			// 핸들러 시작
-			handler = new opHandler();
-
-			// 소켓서버 접속
-			// opcode == 0 ( Snapshot info request )
-			ConnServer cs = new ConnServer("211.189.19.45", 12345, 0, userCode,
-					handler);
-
-			cs.start();
-
-			// 스레드 작업 완료시 마무리는 handler에서 처리한다.
-*/
-
 			break;
 		case R.id.btn_three:
 			setCurrentInflateItem(2);
@@ -190,8 +185,21 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		btn_one.setOnClickListener(this);
 		btn_two.setOnClickListener(this);
-		btn_three.setOnClickListener(this);
+		//btn_three.setOnClickListener(this);
 
+		btn_three.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+
+				readHandler rh = new readHandler();
+				pipeWithLVM pl = new pipeWithLVM(rh);
+				pl.ActionWritePipe("lvs");
+				Toast.makeText(getApplicationContext(), rh.readResult(), Toast.LENGTH_SHORT).show();
+
+			}
+		});
 	}
 
 	private View.OnClickListener mPagerListener = new View.OnClickListener() {
@@ -327,19 +335,6 @@ public class MainActivity extends Activity implements OnClickListener {
 
 										cs.start();
 
-										/*
-										 * if(!cs.getSocket().isConnected()) {
-										 * Toast
-										 * .makeText(getApplicationContext(),
-										 * "서버와 연결을 실패하였습니다.",
-										 * Toast.LENGTH_SHORT).show();
-										 * cs.getSocket().close(); }else{
-										 * Toast.makeText
-										 * (getApplicationContext(),
-										 * "연결 성공! 백업을 시작합니다.",
-										 * Toast.LENGTH_SHORT).show(); }
-										 */
-
 									} catch (Exception e) {
 										Toast.makeText(getApplicationContext(),
 												"서버와의 연결을 실패했습니다.",
@@ -365,31 +360,68 @@ public class MainActivity extends Activity implements OnClickListener {
 							Toast.makeText(getApplicationContext(),
 									"백업을 시작합니다.", Toast.LENGTH_SHORT).show();
 
-							// 백업 시작 process
+							String line = "";
+							StringBuffer output = new StringBuffer();
+
 							try {
-								Process pc = new ProcessBuilder("id").start();
-								BufferedReader br = new BufferedReader(
-										new InputStreamReader(pc
+								ArrayList<String> command = new ArrayList<String>();
+								command.add("su");
+								command.add("|");
+								command.add("./lvm");
+								command.add("lvs");
+								
+								ProcessBuilder pb = new ProcessBuilder(command).directory(new File("/lvm"));
+								
+								pb.redirectErrorStream(true);
+								
+								Process p = pb.start();
+								
+								p.waitFor();
+								BufferedReader reader = new BufferedReader(
+										new InputStreamReader(p
 												.getInputStream()));
-
-								String s = null;
-								String resCommand = "";
-								while ((s = br.readLine()) != null) {
-									if (s != null) {
-										resCommand += s;
-										resCommand += "\n";
-									}
+								output.append(command);
+								output.append("\n");
+								output.append("d");
+								
+								while ((line = reader.readLine()) != null) {
+									output.append(line + "\n");
 								}
-
-								Toast.makeText(getApplicationContext(),
-										resCommand, Toast.LENGTH_LONG).show();
-
-								br.close();
-
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+								output.append("e");
+								reader.close();
+							} catch (Exception e) {
+								Toast.makeText(getApplicationContext(),  e.getMessage(),
+										Toast.LENGTH_SHORT).show();
+								Log.e("error", e.getMessage());
+							}finally {
+								Toast.makeText(getApplicationContext(), output,
+										Toast.LENGTH_LONG).show();
 							}
+
+							// 백업 시작 process
+							/*
+							 * try {
+							 * 
+							 * Process pc = new ProcessBuilder("id")
+							 * .directory(new File("/lvm")).start();
+							 * 
+							 * BufferedReader br = new BufferedReader( new
+							 * InputStreamReader(pc .getInputStream()));
+							 * 
+							 * String s = null; String resCommand = ""; while
+							 * ((s = br.readLine()) != null) { if (s != null) {
+							 * resCommand += s; resCommand += "\n"; } }
+							 * Toast.makeText(getApplicationContext(),
+							 * resCommand, Toast.LENGTH_LONG).show();
+							 * 
+							 * br.close();
+							 * 
+							 * } catch (IOException e) { // TODO Auto-generated
+							 * catch block Log.e("eee",
+							 * "EXEPTION!------------- :" + e.toString());
+							 * Toast.makeText(getApplicationContext(),
+							 * e.getMessage(), Toast.LENGTH_LONG) .show(); }
+							 */
 
 							break;
 						case 2: // scheduled snapshot
@@ -650,9 +682,10 @@ class opHandler extends Handler {
 	private ArrayList<String> mDestList = null;
 	private ArrayList<String> mChildDestList = null;
 	private ArrayList<ArrayList<String>> mChildListContent = null;
-	private ExpandableListView mListView;	
+	private ExpandableListView mListView;
 	private ArrayList<String> childList;
 	private BaseExpandableAdapter bea = null;
+
 	public opHandler() {
 
 		mGroupList = new ArrayList<String>();
@@ -663,7 +696,6 @@ class opHandler extends Handler {
 		childList = new ArrayList<String>();
 	}
 
-	
 	@Override
 	public void handleMessage(Message msg) {
 
@@ -673,30 +705,34 @@ class opHandler extends Handler {
 
 		switch (msg.what) {
 		case 100:
+			
 			// pac 에서 View 를 읽어옴
 			childList.add("[ No data ]");
-			mChildDestList.add("변경된 항목이 없습니다.");			
+			mChildDestList.add("변경된 항목이 없습니다.");
+			
 			for (int i = 0; i < MainActivity.snapshotListInSrv.length; i++) {
 				mGroupList.add(MainActivity.snapshotListInSrv[i].getName());
 				mChildList.add(childList);
 			}
-			for(int i = 0 ; i < MainActivity.snapshotListInDev.length; i ++){
+			for (int i = 0; i < MainActivity.snapshotListInDev.length; i++) {
 				mGroupList.add(MainActivity.snapshotListInDev[i].getName());
 				mChildList.add(childList);
 			}
-					
+
+			
+			// 리스트 View 에 적용
+			
 			mListView = (ExpandableListView) vv.findViewById(R.id.elv_list2);
 			mListView.setAdapter(new BaseExpandableAdapter(vv.getContext(),
 					mGroupList, mChildList, mDestList, mChildDestList, 1));
-			
 
 			Toast.makeText(vv.getContext(), "Reading complete...",
 					Toast.LENGTH_SHORT).show();
 			break;
 		case 101:
-			
+
 			break;
-			
+
 		default:
 			break;
 		}

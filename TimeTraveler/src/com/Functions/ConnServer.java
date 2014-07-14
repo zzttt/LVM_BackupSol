@@ -123,7 +123,16 @@ public class ConnServer extends Thread {
 					e.printStackTrace();
 				} finally {
 					// 정보 조회가 끝남을 알림. Snapshot List 업데이트됨
-					andHandler.sendEmptyMessage(100);
+					// looper 필요한가?
+					andHandler.post(new Runnable(){
+
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							andHandler.sendEmptyMessage(100);
+						}
+						
+					});
 				}
 
 				break;
