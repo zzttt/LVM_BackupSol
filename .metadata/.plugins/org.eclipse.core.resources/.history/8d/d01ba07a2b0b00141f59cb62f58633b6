@@ -1,0 +1,77 @@
+package net.kkangsworld.lvmexec;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+
+public class pipeWithLVM {
+	
+	private NativePipe nativepipe;
+	private ResultReader resultReader;
+	private readHandler rHandler;
+	
+	public pipeWithLVM() {
+		//constructor
+		nativepipe = new NativePipe(); //Native comm init
+		resultReader = new ResultReader(); //ResultReader thread init;
+		resultReader.start();
+		readFromPipe(); //read도 동시에 실행
+	}
+	
+	public pipeWithLVM(readHandler mHandler) {
+		nativepipe = new NativePipe();
+		this.rHandler = mHandler;
+		resultReader = new ResultReader(this.rHandler); //ResultReader thread init;
+		resultReader.start();
+		//readFromPipe(); //read도 동시에 실행
+	}
+	
+	public void ActionWritePipe(String command) {
+		
+		nativepipe.writePipe(command);
+		
+	}
+	
+	public void ActionGetPipe() {
+		readFromPipe();
+		//String temp = nativepipe.getPipe();
+		//Toast.makeText(getApplicationContext(), temp, Toast.LENGTH_SHORT).show();
+	}
+
+	
+	private void readFromPipe() {
+		
+		
+        
+    }
+
+}
+
+class readHandler extends Handler {
+	
+	String readResult;
+	public readHandler() {
+	
+	}
+	
+	public void handleMessage(Message msg) {
+		Log.i("LVMJava", "ResultReader Handler result get");
+		switch(msg.what) {
+		case 0: //case 0
+			//Toast.makeText(getApplicationContext(), (String)msg.obj, Toast.LENGTH_LONG).show();
+			readResult = (String)msg.obj;
+			Log.d("inAction", "[resultMsg] :"+(String)msg.obj);
+			break;
+		}	
+			
+	}
+	
+	public String readResult() {
+		return readResult;
+	}
+}
+
+

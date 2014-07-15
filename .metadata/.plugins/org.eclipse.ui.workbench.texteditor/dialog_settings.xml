@@ -6,22 +6,23 @@
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="Toast" key="selection"/>
+		<item value="waitFor" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="Toast"/>
-			<item value="PagerAdapterClass"/>
-			<item value="pac"/>
-			<item value="views"/>
-			<item value="mGroupList"/>
-			<item value="handler"/>
-			<item value="opHandler"/>
-			<item value="static"/>
+			<item value="waitFor"/>
+			<item value="process"/>
+			<item value="output"/>
+			<item value="Setting"/>
+			<item value="childList"/>
+			<item value="setOnGroupClickListener"/>
+			<item value="mListView"/>
+			<item value="101"/>
 		</list>
 		<list key="replacehistory">
+			<item value=""/>
 			<item value="#ECF8E0"/>
 			<item value="String"/>
 		</list>

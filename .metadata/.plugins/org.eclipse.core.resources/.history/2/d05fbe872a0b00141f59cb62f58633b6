@@ -1,0 +1,133 @@
+package net.kkangsworld.lvmexec;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+
+public class pipeWithLVM {
+	
+	private NativePipe nativepipe;
+	private ResultReader resultReader;
+	private readHandler rHandler;
+	
+	public pipeWithLVM() {
+		//constructor
+		nativepipe = new NativePipe(); //Native comm init
+		resultReader = new ResultReader(); //ResultReader thread init;
+		resultReader.start();
+		readFromPipe(); //read도 동시에 실행
+	}
+	
+	public pipeWithLVM(readHandler mHandler) {
+		nativepipe = new NativePipe();
+		this.rHandler = mHandler;
+		resultReader = new ResultReader(this.rHandler); //ResultReader thread init;
+		resultReader.start();
+		//readFromPipe(); //read도 동시에 실행
+	}
+	
+	public void ActionWritePipe(String command) {
+		
+		nativepipe.writePipe(command);
+		
+	}
+	
+	public void ActionGetPipe() {
+		readFromPipe();
+		//String temp = nativepipe.getPipe();
+		//Toast.makeText(getApplicationContext(), temp, Toast.LENGTH_SHORT).show();
+	}
+
+	
+	private void readFromPipe() {
+		
+		
+        
+    }
+
+}
+
+public class readHandler extends Handler {
+	
+	String readResult;
+	public readHandler() {
+	
+	}
+	
+	public void handleMessage(Message msg) {
+		Log.i("LVMJava", "ResultReader Handler result get");
+		switch(msg.what) {
+		case 0: //case 0
+			//Toast.makeText(getApplicationContext(), (String)msg.obj, Toast.LENGTH_LONG).show();
+			readResult = (String)msg.obj;
+			Log.d("inAction", "[resultMsg] :"+(String)msg.obj);
+			break;
+		}	
+			
+	}
+	
+	public String readResult() {
+		return readResult;
+	}
+}
+
+class ResultReader extends Thread {
+	
+	Handler rHandler;
+	public ResultReader() {
+		
+	}
+	
+	public ResultReader(Handler rHandler) {
+		this.rHandler = rHandler;
+		Log.i("LVMJava", "ResultReader thread init");
+	}
+	
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		Log.i("LVMJava", "ResultReader thread start");
+		String path = "/data/data/com.example.timetraveler/result_pipe";
+			try
+			{ 
+				/* 현재 package 경로의 result_pipe */
+				//String path = getApplicationInfo().dataDir+"/result_pipe";
+				
+				/* return 될 txt */
+				String txt = "";
+				//Log.i("LVMJava", "openning input stream");
+				Log.i("LVMJava", path);
+				
+				//계속해서 BufferedReade로 입력된 result pipe data를 gettering
+				while(true) {
+					Log.i("LVMJava", "run whiling..");
+					BufferedReader reader = 
+							 new BufferedReader(new FileReader(path));
+				    while((txt = reader.readLine()) != null) 
+				    {
+				    	Log.d("LVMJava", txt);
+				    	
+				    	if(txt.contains("[in run_command]"))
+				    			Log.d("LVMJava", "in run command get return");
+				    	else {
+					    	Message msg = Message.obtain();
+							msg.what = 0; msg.arg1 = 0; //여기에 해당 COMMAND구분용 넣음될듯
+							msg.obj = txt;
+							rHandler.sendMessage(msg);
+							//값 던져줌 use Handler
+							Log.d("LVMJava", "To handler success");	
+				    	}
+						
+				    } 
+				    reader.close();
+			    }
+				
+			 
+			 }catch(Exception e) {
+				 e.printStackTrace();
+				 }
+		}
+}

@@ -1,0 +1,8 @@
+21:45:39 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+
+21:45:39 Build Finished (took 141ms)
+

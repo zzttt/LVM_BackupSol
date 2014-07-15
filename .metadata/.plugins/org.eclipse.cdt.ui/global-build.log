@@ -1,0 +1,540 @@
+16:25:52 **** Clean-only build of configuration Default for project LVMExec ****
+sh ndk-build clean 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\]
+18:35:41 **** Clean-only build of configuration Default for project LVMExec ****
+sh ndk-build clean 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\]
+20:17:01 **** Rebuild of configuration Debug for project AlgorithmSeminar ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o helloWorld.o "..\\helloWorld.cpp" 
+..\helloWorld.cpp: In constructor 'helloWorld::helloWorld()':
+..\helloWorld.cpp:14:2: error: expected primary-expression before 'public'
+  public int main(){
+  ^
+..\helloWorld.cpp:14:2: error: expected ';' before 'public'
+20:17:01 **** Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+20:17:08 **** Incremental Build of configuration Debug for project AlgorithmSeminar ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o helloWorld.o "..\\helloWorld.cpp" 
+g++ -o AlgorithmSeminar.exe helloWorld.o 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/lib/libmingw32.a(main.o): In function `main':
+e:\p\giaw\src\pkg\mingwrt-4.0.3-1-mingw32-src\bld/../mingwrt-4.0.3-1-mingw32-src/src/libcrt/crt/main.c:91: undefined reference to `WinMain@16'
+collect2.exe: error: ld returned 1 exit status
+20:17:09 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+20:17:13 **** Incremental Build of configuration Debug for project AlgorithmSeminar ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o helloWorld.o "..\\helloWorld.cpp" 
+g++ -o AlgorithmSeminar.exe helloWorld.o 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/lib/libmingw32.a(main.o): In function `main':
+e:\p\giaw\src\pkg\mingwrt-4.0.3-1-mingw32-src\bld/../mingwrt-4.0.3-1-mingw32-src/src/libcrt/crt/main.c:91: undefined reference to `WinMain@16'
+collect2.exe: error: ld returned 1 exit status
+20:17:14 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+20:18:40 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+20:18:40 **** Rebuild of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\helloWorld.o" "..\\src\\helloWorld.cpp" 
+g++ -o helloWorld.exe "src\\helloWorld.o" 
+Info: Nothing to build for helloWorld
+20:18:43 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+Info: Nothing to build for helloWorld
+Info: Nothing to build for helloWorld
+20:19:34 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\helloWorld.o" "..\\src\\helloWorld.cpp" 
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\helloWorld.o" "src\\HelloWorld2.o" 
+src\HelloWorld2.o: In function `main':
+C:\Users\Administrator\workspace\helloWorld\Debug/../src/HelloWorld2.cpp:13: multiple definition of `main'
+src\helloWorld.o:C:\Users\Administrator\workspace\helloWorld\Debug/../src/helloWorld.cpp:12: first defined here
+collect2.exe: error: ld returned 1 exit status
+20:20:11 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+20:20:12 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+Info: Nothing to build for helloWorld
+21:03:52 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:03:52 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+..\src\HelloWorld2.cpp: In function 'int main()':
+..\src\HelloWorld2.cpp:14:19: error: 'scnaf' was not declared in this scope
+  scnaf("%d",&stage);
+                   ^
+21:04:00 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:04:00 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+21:07:48 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+..\src\HelloWorld2.cpp: In function 'int calc(int, int)':
+..\src\HelloWorld2.cpp:28:1: warning: no return statement in function returning non-void [-Wreturn-type]
+ }
+ ^
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+21:08:05 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+21:09:18 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+21:09:24 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+21:09:29 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:09:29 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+21:09:31 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+21:09:48 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+21:10:11 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:10:11 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+21:10:18 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+21:10:36 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:10:36 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+21:10:47 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:10:47 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+21:10:49 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+21:11:09 **** Clean-only build of configuration Debug for project helloWorld ****
+rm -rf src/HelloWorld2.o src/HelloWorld2.d helloWorld.exe 
+Cannot run program "rm": Launching failed
+
+Error: Program "rm" not found in PATH
+PATH=[C:\MinGW\bin;\bin;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+
+21:11:09 **** Clean-only build of configuration Debug for project helloWorld ****
+21:11:22 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:11:22 **** Rebuild of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+21:11:30 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+21:11:43 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+21:11:52 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+21:12:37 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+21:14:49 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+21:15:12 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+21:15:47 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+21:17:43 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:17:43 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+..\src\HelloWorld2.cpp: In function 'void calc(int, int, int)':
+..\src\HelloWorld2.cpp:10:15: error: expected ')' before ';' token
+ #define PLUS 1;
+               ^
+..\src\HelloWorld2.cpp:27:31: note: in expansion of macro 'PLUS'
+  calc(input+(input+1),stage-1,PLUS);
+                               ^
+..\src\HelloWorld2.cpp:27:35: error: expected primary-expression before ')' token
+  calc(input+(input+1),stage-1,PLUS);
+                                   ^
+..\src\HelloWorld2.cpp:27:35: error: expected ';' before ')' token
+..\src\HelloWorld2.cpp:11:16: error: expected ')' before ';' token
+ #define MINUS 2;
+                ^
+..\src\HelloWorld2.cpp:29:31: note: in expansion of macro 'MINUS'
+  calc(input-(input+1),stage-1,MINUS);
+                               ^
+..\src\HelloWorld2.cpp:29:36: error: expected primary-expression before ')' token
+  calc(input-(input+1),stage-1,MINUS);
+                                    ^
+..\src\HelloWorld2.cpp:29:36: error: expected ';' before ')' token
+..\src\HelloWorld2.cpp:12:14: error: expected ')' before ';' token
+ #define NOP 3;
+              ^
+..\src\HelloWorld2.cpp:31:34: note: in expansion of macro 'NOP'
+  calc(input*10+(input+1),stage-1,NOP);
+                                  ^
+..\src\HelloWorld2.cpp:31:37: error: expected primary-expression before ')' token
+  calc(input*10+(input+1),stage-1,NOP);
+                                     ^
+..\src\HelloWorld2.cpp:31:37: error: expected ';' before ')' token
+..\src\HelloWorld2.cpp: In function 'int main()':
+..\src\HelloWorld2.cpp:41:16: error: too few arguments to function 'void calc(int, int, int)'
+  calc(1,stage-1);
+                ^
+..\src\HelloWorld2.cpp:17:6: note: declared here
+ void calc(int input, int stage, int befOp){
+      ^
+21:20:16 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:20:16 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+..\src\HelloWorld2.cpp: In function 'int main()':
+..\src\HelloWorld2.cpp:41:16: error: too few arguments to function 'void calc(int, int, int)'
+  calc(1,stage-1);
+                ^
+..\src\HelloWorld2.cpp:17:6: note: declared here
+ void calc(int input, int stage, int befOp){
+      ^
+21:20:22 **** Clean-only build of configuration Debug for project helloWorld ****
+rm -rf src/HelloWorld2.o src/HelloWorld2.d helloWorld.exe 
+Cannot run program "rm": Launching failed
+
+Error: Program "rm" not found in PATH
+PATH=[C:\MinGW\bin;\bin;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+
+21:20:22 **** Clean-only build of configuration Debug for project helloWorld ****
+21:20:38 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:20:38 **** Rebuild of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+21:39:21 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+21:39:28 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+Info: Nothing to build for helloWorld
+21:41:56 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+21:43:02 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+..\src\HelloWorld2.cpp: In function 'void calc(int)':
+..\src\HelloWorld2.cpp:28:17: error: invalid conversion from 'const char*' to 'char' [-fpermissive]
+  opArr[opIdx++] = "+"; // µ¡¼À
+                 ^
+..\src\HelloWorld2.cpp:34:17: error: invalid conversion from 'const char*' to 'char' [-fpermissive]
+  opArr[opIdx--] = "-"; // »¬¼À
+                 ^
+..\src\HelloWorld2.cpp:40:17: error: invalid conversion from 'const char*' to 'char' [-fpermissive]
+  opArr[opIdx--] = " "; // °ø¹é
+                 ^
+21:43:07 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:43:08 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+..\src\HelloWorld2.cpp: In function 'void calc(int)':
+..\src\HelloWorld2.cpp:28:17: error: invalid conversion from 'const char*' to 'char' [-fpermissive]
+  opArr[opIdx++] = "+"; // µ¡¼À
+                 ^
+..\src\HelloWorld2.cpp:34:17: error: invalid conversion from 'const char*' to 'char' [-fpermissive]
+  opArr[opIdx--] = "-"; // »¬¼À
+                 ^
+..\src\HelloWorld2.cpp:40:17: error: invalid conversion from 'const char*' to 'char' [-fpermissive]
+  opArr[opIdx--] = " "; // °ø¹é
+                 ^
+21:43:11 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:43:11 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+..\src\HelloWorld2.cpp: In function 'void calc(int)':
+..\src\HelloWorld2.cpp:28:17: error: invalid conversion from 'const char*' to 'char' [-fpermissive]
+  opArr[opIdx++] = "+"; // µ¡¼À
+                 ^
+..\src\HelloWorld2.cpp:34:17: error: invalid conversion from 'const char*' to 'char' [-fpermissive]
+  opArr[opIdx--] = "-"; // »¬¼À
+                 ^
+..\src\HelloWorld2.cpp:40:17: error: invalid conversion from 'const char*' to 'char' [-fpermissive]
+  opArr[opIdx--] = " "; // °ø¹é
+                 ^
+21:43:13 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:43:13 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+..\src\HelloWorld2.cpp: In function 'void calc(int)':
+..\src\HelloWorld2.cpp:28:17: error: invalid conversion from 'const char*' to 'char' [-fpermissive]
+  opArr[opIdx++] = "+"; // µ¡¼À
+                 ^
+..\src\HelloWorld2.cpp:34:17: error: invalid conversion from 'const char*' to 'char' [-fpermissive]
+  opArr[opIdx--] = "-"; // »¬¼À
+                 ^
+..\src\HelloWorld2.cpp:40:17: error: invalid conversion from 'const char*' to 'char' [-fpermissive]
+  opArr[opIdx--] = " "; // °ø¹é
+                 ^
+21:43:14 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:43:14 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+..\src\HelloWorld2.cpp: In function 'void calc(int)':
+..\src\HelloWorld2.cpp:28:17: error: invalid conversion from 'const char*' to 'char' [-fpermissive]
+  opArr[opIdx++] = "+"; // µ¡¼À
+                 ^
+..\src\HelloWorld2.cpp:34:17: error: invalid conversion from 'const char*' to 'char' [-fpermissive]
+  opArr[opIdx--] = "-"; // »¬¼À
+                 ^
+..\src\HelloWorld2.cpp:40:17: error: invalid conversion from 'const char*' to 'char' [-fpermissive]
+  opArr[opIdx--] = " "; // °ø¹é
+                 ^
+21:43:23 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:43:23 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+21:43:43 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+21:43:55 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:43:56 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+..\src\HelloWorld2.cpp: In function 'int main()':
+..\src\HelloWorld2.cpp:52:15: warning: format '%s' expects argument of type 'char*', but argument 2 has type 'int' [-Wformat=]
+  printf("%s",3);
+               ^
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+21:43:59 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+21:44:51 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+21:44:56 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:44:57 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+21:45:02 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:45:04 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+21:45:17 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:45:17 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\HelloWorld2.o" "..\\src\\HelloWorld2.cpp" 
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+21:45:32 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:45:32 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+21:45:33 **** Incremental Build of configuration Default for project LVMExec ****
+sh ndk-build all 
+Cannot run program "sh": Launching failed
+
+Error: Program "sh" not found in PATH
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+21:45:34 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+21:45:39 **** Incremental Build of configuration Debug for project helloWorld ****
+Info: Internal Builder is used for build
+g++ -o helloWorld.exe "src\\HelloWorld2.o" 
+c:/mingw/bin/../lib/gcc/mingw32/4.8.1/../../../../mingw32/bin/ld.exe: cannot open output file helloWorld.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
