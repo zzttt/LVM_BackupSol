@@ -1,4 +1,4 @@
-package com.Functions;
+package com.FrameWork;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -58,26 +58,26 @@ public class opSwitch extends Thread {
 				// snapshot �젙蹂� �쟾�넚
 
 				FileSender fs = new FileSender("/home/armin/temp/", opSocket); // �뙆�씪�씠
-																				// 議댁옱�븯�뒗
-																				// �뵒�젆�넗由�
+																				// 議댁?���븯�뒗
+																				// �뵒�젆�넗?���?
 																				// �꽕�젙
-				File hDir = fs.getHomeDir(); // FileSender �쓽 �솃 �뵒�젆�넗由щ�� 媛��졇�샂
+				File hDir = fs.getHomeDir(); // FileSender �쓽 �솃 �뵒�젆�넗?��?���? 媛��졇�샂
 
-				File fileList[] = hDir.listFiles(); // �뵒�젆�넗由� �궡 �뙆�씪 由ъ뒪�듃
+				File fileList[] = hDir.listFiles(); // �뵒�젆�넗?���? �궡 �뙆�씪 ?��?�뒪�듃
 				int fileCnt = 0;
 
 				if (fileList.length != 0) {
 					oos.writeObject(Integer.toString(fileList.length)); // �쟾泥� �뙆�씪
-																		// 媛쒖닔�젙蹂�
+																		// 媛쒖?���젙蹂�
 																		// �쟾�넚
 					while (fileList.length > fileCnt) {
 						oos.writeLong(fileList[fileCnt].length()); // file size
 																	// �쟾�넚
-						oos.writeObject(fileList[fileCnt]); // File �젙蹂대뱾�� 癒쇱� 蹂대궦�떎
+						oos.writeObject(fileList[fileCnt]); // File �젙蹂�?뱾��? ?��?���? 蹂�?�?�떎
 						oos.writeObject(fileList[fileCnt].getName()); // File
-																		// �젙蹂�(�씠由�)�뱾��
-																		// 癒쇱�
-																		// 蹂대궦�떎
+																		// �젙蹂�(�씠?���?)�뱾��
+																		// ?��?���?
+																		// 蹂�?�?�떎
 						fileCnt++;
 					}
 
@@ -90,10 +90,10 @@ public class opSwitch extends Thread {
 					}
 				} else {
 					oos.writeObject(Integer.toString(fileList.length)); // �쟾泥� �뙆�씪
-																		// 媛쒖닔�젙蹂�
+																		// 媛쒖?���젙蹂�
 																		// �쟾�넚
 					System.out.println("File is not exist");
-					return; // �뙆�씪�씠 議댁옱�븯吏� �븡�쑝硫� socket 醫낅즺
+					return; // �뙆�씪�씠 議댁?���븯吏� �븡�쑝硫� socket ?��?���?
 				}
 
 				opSocket.close();
@@ -109,8 +109,8 @@ public class opSwitch extends Thread {
 						opSocket.getInputStream());
 
 				// op 2 - get file list
-				File[] fileList = (File[]) ois.readObject(); // �꽌踰꾩뿉 �벑濡앸맂 �뙆�씪 由ъ뒪�듃瑜�
-																// 諛쏅뒗�떎.
+				File[] fileList = (File[]) ois.readObject(); // �꽌踰꾩�? �벑濡앸�? �뙆�씪 ?��?�뒪�듃?���?
+																// 諛쏅?���떎.
 
 				System.out.println("�떎�슫 �븷 �뙆�씪 �닔 : " + fileList.length);
 
@@ -126,10 +126,10 @@ public class opSwitch extends Thread {
 							+ fileList[fileCnt].getName()); // set home
 															// directory on
 															// client
-					FileOutputStream fos = new FileOutputStream(wFile); // �떎�슫濡쒕뱶
+					FileOutputStream fos = new FileOutputStream(wFile); // �떎�슫濡쒕�?
 																		// �븷 �뙆�씪�쓣
 																		// �엯�젰�븷
-																		// �뒪�듃由�
+																		// �뒪�듃?���?
 					if (fileList[fileCnt].isFile()) {
 						byte[] byteArr = new byte[1024];
 						int readBytes = 0;
@@ -149,11 +149,11 @@ public class opSwitch extends Thread {
 
 						}
 
-						if (fileSize + BUFFSIZE >= fileList[fileCnt].length()) { // �떎�쓬踰꾪띁瑜�
+						if (fileSize + BUFFSIZE >= fileList[fileCnt].length()) { // �떎�쓬踰꾪?��?���?
 																					// �씫�쓣�떆
 																					// �슜�웾�쓣
-																					// 珥덇낵�븷
-																					// 寃쎌슦
+																					// ?��?��?���븷
+																					// 寃쎌?��
 							byte[] tmpBuf;
 
 							int overSize = (int) (fileSize + BUFFSIZE - fileList[fileCnt]
@@ -190,7 +190,7 @@ public class opSwitch extends Thread {
 				e.printStackTrace();
 			}
 			System.out.println("insert opCode on Colsole");
-			System.out.println("-1 : 醫낅즺 || 0 : noOp || 1 : send snapshot || 2 : download snapshot || 3 : get info || 4 : compress files || 5 : decompress files");
+			System.out.println("-1 : ?��?���? || 0 : noOp || 1 : send snapshot || 2 : download snapshot || 3 : get info || 4 : compress files || 5 : decompress files");
 			break;
 		case 3:
 			System.out.println("request file info");
@@ -199,7 +199,7 @@ public class opSwitch extends Thread {
 			break;
 		case 4:// compress files
 			System.out.println("file compressing");
-			// 遺꾪븷�븬異� 諛� �빐�젣
+			// ?��꾪븷�븬?���? 諛� �빐�젣
 			GzipGenerator ggForComp = new GzipGenerator();
 			try {
 				ggForComp.partCompress("/home/armin/ssHome/capstone.tar",

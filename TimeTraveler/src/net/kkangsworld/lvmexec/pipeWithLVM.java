@@ -26,11 +26,11 @@ public class pipeWithLVM {
 		//readFromPipe(); //read도 동시에 실행
 	}
 	
-	public pipeWithLVM(readHandler mHandler) {
+	public pipeWithLVM(readHandler rh) {
 		nativepipe = new NativePipe();
 		nativepipe.createPipe();
-		this.rHandler = mHandler;
-		resultReader = new ResultReader(this.rHandler); //ResultReader thread init;
+		//this.rHandler = mHandler;
+		resultReader = new ResultReader(rh); //ResultReader thread init;
 		resultReader.start();
 		//readFromPipe(); //read도 동시에 실행
 	}

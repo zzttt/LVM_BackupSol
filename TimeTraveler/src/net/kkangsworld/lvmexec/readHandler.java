@@ -7,6 +7,7 @@ import android.util.Log;
 public class readHandler extends Handler {
 	
 	String readResult;
+	
 	public readHandler() {
 	
 	}
@@ -17,7 +18,7 @@ public class readHandler extends Handler {
 		case 0: //case 0
 			//Toast.makeText(getApplicationContext(), (String)msg.obj, Toast.LENGTH_LONG).show();
 			readResult = (String)msg.obj;
-			Log.d("inAction", "[resultMsg] :"+(String)msg.obj);
+			Log.d("inAction", "["+getClass()+"]"+readResult);
 			break;
 		}	
 			

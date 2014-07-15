@@ -1,4 +1,4 @@
-package com.Functions;
+package com.FrameWork;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import android.app.ProgressDialog;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -31,8 +32,8 @@ public class ConnServer extends Thread {
 	File[] snapshotList;
 	Handler andHandler;
 
-	private ObjectInputStream ois;
-
+	private ObjectInputStream ois = null;
+	
 	public ConnServer(String srvIp, int port) {
 		this.srvIp = srvIp;
 		this.port = port;
@@ -60,7 +61,6 @@ public class ConnServer extends Thread {
 	 * @param userCode
 	 * @param andHandler
 	 */
-
 	public ConnServer(String srvIp, int port, int opCode, String userCode,
 			Handler andHandler) {
 		this.srvIp = srvIp;
@@ -69,7 +69,7 @@ public class ConnServer extends Thread {
 		this.authCode = userCode;
 		this.andHandler = andHandler;
 	}
-
+	
 	@Override
 	public void run() {
 		try {
@@ -115,13 +115,14 @@ public class ConnServer extends Thread {
 					}
 					MainActivity.snapshotListInSrv = snapshotList.clone();
 					Snapshot ss = (Snapshot) ois.readObject(); // 스냅샷 읽기
-					ois.close();
-					oos.close();
 				} catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
 					Log.e("eee", "Loading error");
 					e.printStackTrace();
 				} finally {
+
+					ois.close();
+					oos.close();
 					// 정보 조회가 끝남을 알림. Snapshot List 업데이트됨
 					// looper 필요한가?
 					andHandler.post(new Runnable(){
@@ -187,7 +188,7 @@ public class ConnServer extends Thread {
 			case 5:
 				break;
 			}
-
+			oos.close();
 			sc.close();
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
@@ -195,7 +196,8 @@ public class ConnServer extends Thread {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
+		
 	}
 
 	public Socket getSocket() {

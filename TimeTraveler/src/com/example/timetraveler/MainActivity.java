@@ -9,21 +9,25 @@ import java.io.ObjectOutputStream;
 import java.io.Reader;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
-import net.kkangsworld.lvmexec.ResultReader;
 import net.kkangsworld.lvmexec.pipeWithLVM;
 import net.kkangsworld.lvmexec.readHandler;
 
 import com.AuthcodeGen.CodeGenerator;
 import com.FileManager.SnapshotDiskManager;
-import com.Functions.ConnServer;
-import com.Functions.opSwitch;
+import com.FrameWork.ConnServer;
+import com.FrameWork.opSwitch;
 
 import android.R.color;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -73,6 +77,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	private String userCode;
 
 	private opHandler handler;
+	
+	public static ProgressDialog pd;
 
 	ConnectivityManager manager;
 
@@ -81,7 +87,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	WifiManager mng;
 	WifiInfo info;
 
-	public static String homePath = "/sdcard/DCIM/Camera/";
+	public static String homePath = "/dev/vg/";
 	public static PagerAdapterClass pac;
 
 	public static boolean setVal0 = false; // auto snapshot On // Off
@@ -89,11 +95,12 @@ public class MainActivity extends Activity implements OnClickListener {
 	public static int setVal2 = 1; // 백업 용량 세팅 값 2
 
 	public static File[] snapshotListInSrv;
-	public static String[] snapshotInfoListInSrv;
 	public static File[] snapshotListInDev;
-	public static String[] snapshotInfoListInDev;
-	//readHandler rh;
-	//pipeWithLVM pl;
+	
+	readHandler rh;
+	pipeWithLVM pl;
+	String readResult;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -115,7 +122,13 @@ public class MainActivity extends Activity implements OnClickListener {
 				.show();
 
 		userCode = cg.genCode();
+		
 
+		pd = new ProgressDialog(this);
+		pd.setCanceledOnTouchOutside(false);
+		pd.setMessage("Loading initial data ...");
+		pd.show();
+		
 		
 		// 모든 Snapshot List 를 Load (on Device & on Server)
 		// Restore 에서 사용할 리스트를 로드함.
@@ -124,15 +137,14 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		SnapshotDiskManager sdm = new SnapshotDiskManager(homePath);
 		File[] sList = sdm.getSnapshotList();
-		snapshotListInDev = sList;
-
+		
+		snapshotListInDev = sList; // 장치내의 리스트 가져옴
+		
 		// 2. Load Server List on Server
-
 		ConnServer conn = new ConnServer("211.189.19.45", 12345, 0, userCode,
 				handler);
 		conn.start();
 
-		//
 
 		// 하단 메뉴를 위한 Pager
 		pac = new PagerAdapterClass(getApplicationContext());
@@ -153,9 +165,63 @@ public class MainActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.btn_two: // Restore page button
 			setCurrentInflateItem(1);
+			snapshotListInDev = null;
+			snapshotListInSrv = null;
+			
+			pd.setMessage("Loading...");
+			pd.show();
+			
+			handler.sendEmptyMessage(101); // View Reset Handler
+			
+			SnapshotDiskManager sdm = new SnapshotDiskManager(homePath);
+			File[] sList = sdm.getSnapshotList();
+			
+			snapshotListInDev = sList; // 장치내의 리스트 가져옴
+
+			// 2. Load Server List on Server
+			ConnServer conn = new ConnServer("211.189.19.45", 12345, 0, userCode,
+					handler);
+			conn.start();
+			
 			break;
 		case R.id.btn_three:
-			setCurrentInflateItem(2);
+			Process p;
+			try {
+				p = new ProcessBuilder("su").start();
+
+				DataOutputStream os = new DataOutputStream(p.getOutputStream());
+				os.writeBytes("echo \"Do I have root?\" >/sdcard/temporary.txt\n");
+
+				// Close the terminal
+				os.writeBytes("exit\n");
+				os.flush();
+				try {
+					p.waitFor();
+					if (p.exitValue() != 255) {
+						// TODO Code to run on success
+						Toast.makeText(getApplicationContext(), "root", Toast.LENGTH_SHORT).show();
+					} else {
+						// TODO Code to run on unsuccessful
+						Toast.makeText(getApplicationContext(), "not root", Toast.LENGTH_SHORT).show();
+					}
+
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Toast.makeText(getApplicationContext(), "not root", Toast.LENGTH_SHORT).show();
+				}finally{
+					os.close();
+				}
+				
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				Toast.makeText(getApplicationContext(), "not root", Toast.LENGTH_SHORT).show();
+			}
+			
+			
+			//setCurrentInflateItem(2);
 			break;
 		}
 	}
@@ -185,21 +251,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		btn_one.setOnClickListener(this);
 		btn_two.setOnClickListener(this);
-		//btn_three.setOnClickListener(this);
-
-		btn_three.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
-				readHandler rh = new readHandler();
-				pipeWithLVM pl = new pipeWithLVM(rh);
-				pl.ActionWritePipe("lvs");
-				Toast.makeText(getApplicationContext(), rh.readResult(), Toast.LENGTH_SHORT).show();
-
-			}
-		});
+		btn_three.setOnClickListener(this);
 	}
 
 	private View.OnClickListener mPagerListener = new View.OnClickListener() {
@@ -355,48 +407,38 @@ public class MainActivity extends Activity implements OnClickListener {
 							}
 
 							break;
-						case 1: // 복원 시점 생성
+						case 1: // 복원 시점 생성 ------------------------------------------ Create Snapshot
 							// child menu 1개 이므로 바로 진행
 							Toast.makeText(getApplicationContext(),
 									"백업을 시작합니다.", Toast.LENGTH_SHORT).show();
 
 							String line = "";
 							StringBuffer output = new StringBuffer();
-
-							try {
-								ArrayList<String> command = new ArrayList<String>();
-								command.add("su");
-								command.add("|");
-								command.add("./lvm");
-								command.add("lvs");
-								
-								ProcessBuilder pb = new ProcessBuilder(command).directory(new File("/lvm"));
-								
-								pb.redirectErrorStream(true);
-								
-								Process p = pb.start();
-								
-								p.waitFor();
-								BufferedReader reader = new BufferedReader(
-										new InputStreamReader(p
-												.getInputStream()));
-								output.append(command);
-								output.append("\n");
-								output.append("d");
-								
-								while ((line = reader.readLine()) != null) {
-									output.append(line + "\n");
+							
+				
+							// pipe 이용한 Snapshot 생성
+							rh = new readHandler() {
+								public void handleMessage(Message msg) {
+									Log.i("LVMJava", "ResultReader Handler result get");
+									switch(msg.what) {
+									case 0: //case 0
+										Toast.makeText(getApplicationContext(), (String)msg.obj, Toast.LENGTH_LONG).show();
+										readResult = (String)msg.obj;
+										Log.d("inMain", readResult);
+										break;
+									}	
+										
 								}
-								output.append("e");
-								reader.close();
-							} catch (Exception e) {
-								Toast.makeText(getApplicationContext(),  e.getMessage(),
-										Toast.LENGTH_SHORT).show();
-								Log.e("error", e.getMessage());
-							}finally {
-								Toast.makeText(getApplicationContext(), output,
-										Toast.LENGTH_LONG).show();
-							}
+							
+							};
+							Calendar cal = Calendar.getInstance();
+							
+							String today = (new SimpleDateFormat("yyyyMMddHHmm").format(cal
+									.getTime()));
+							
+							pl = new pipeWithLVM(rh);
+							pl.ActionWritePipe("lvcreate -s -L 20M -n "+today+" /dev/vg/userdata");
+							
 
 							// 백업 시작 process
 							/*
@@ -687,7 +729,6 @@ class opHandler extends Handler {
 	private BaseExpandableAdapter bea = null;
 
 	public opHandler() {
-
 		mGroupList = new ArrayList<String>();
 		mChildList = new ArrayList<ArrayList<String>>();
 		mChildListContent = new ArrayList<ArrayList<String>>();
@@ -704,38 +745,150 @@ class opHandler extends Handler {
 		View vv = MainActivity.pac.getView(0);
 
 		switch (msg.what) {
-		case 100:
+		case 0:
+
+			break;
+		case 100: // Snapshot List Handling
 			
 			// pac 에서 View 를 읽어옴
-			childList.add("[ No data ]");
-			mChildDestList.add("변경된 항목이 없습니다.");
 			
+			// mChildDestList , mChildList 는 group 개수만큼 등록해야 함
+			// mChildList 는 childList의 그룹. ( 변경사항이 여러개임을 감안 )
 			for (int i = 0; i < MainActivity.snapshotListInSrv.length; i++) {
-				mGroupList.add(MainActivity.snapshotListInSrv[i].getName());
+				mGroupList.add(MainActivity.snapshotListInSrv[i].getName()+" [Server]");
+				
+				if(childList.size() == 0){
+					childList.add("[ No data ]");
+				}
+				
+				mChildDestList.add("변경된 항목이 없습니다.");
 				mChildList.add(childList);
+
 			}
+			
+			
 			for (int i = 0; i < MainActivity.snapshotListInDev.length; i++) {
-				mGroupList.add(MainActivity.snapshotListInDev[i].getName());
+				mGroupList.add(MainActivity.snapshotListInDev[i].getName()+" [Device]");
+				
+				if(childList.size() == 0){
+					childList.add("[ No data ]");
+				}
+				
+				// mChildDestList 에 파일리스트 입력
+				mChildDestList.add("변경된 항목이 없습니다.");
 				mChildList.add(childList);
 			}
 
 			
 			// 리스트 View 에 적용
+			mListView = (ExpandableListView) vv.findViewById(R.id.elv_list2);
+			mListView.setAdapter(new BaseExpandableAdapter(vv.getContext(),
+					mGroupList, mChildList, mDestList, mChildDestList, 1));
+
+			
+			mListView.setOnGroupClickListener(new OnGroupClickListener() {
+
+				@Override
+				public boolean onGroupClick(ExpandableListView arg0, View vv,
+						int gPosition, long arg3) {
+					// TODO Auto-generated method stub
+					
+					String gName = MainActivity.snapshotListInDev[0].getName();
+					
+					Toast.makeText(vv.getContext(), gName,
+							Toast.LENGTH_SHORT).show();
+					
+					// snapshot File 을 lvm 디렉터리에 mount
+					
+					/*File f = new File("/sdcard/ssDir/"+gName);
+					
+					if(f.mkdirs())
+					{
+						Log.i("lvm","created");
+					}else{
+						Log.i("lvm","error!");
+					}
+					*/
+					
+					try {
+						Process p =  Runtime.getRuntime().exec("su"); //  root 쉘
+						p.getOutputStream().write("mount -t ext4 /dev/vg/userdata /sdcard/ssDir\n".getBytes());
+						//p.getOutputStream().write(<my next command>);
+						
+						p.getOutputStream().write("ls -l /sdcard/ssDir> /sdcard/tmp.txt\n".getBytes());
+						
+						
+						// console 종료
+						p.getOutputStream().write("exit\n".getBytes());			
+						p.getOutputStream().flush();
+						try {
+							p.waitFor();
+							if (p.exitValue() != 255) {
+								// TODO Code to run on success
+								Toast.makeText(vv.getContext(), "root",
+										Toast.LENGTH_SHORT).show();
+							} else {
+								// TODO Code to run on unsuccessful
+								Toast.makeText(vv.getContext(),
+										"not root", Toast.LENGTH_SHORT).show();
+							}
+
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							Toast.makeText(vv.getContext(), "not root",
+									Toast.LENGTH_SHORT).show();
+						} 
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						Log.e("lvm", "error : "+e.toString());
+						e.printStackTrace();
+					}
+					
+					return false;
+				}
+				
+			});
+			
+			mListView.setOnChildClickListener(new OnChildClickListener(){
+
+				@Override
+				public boolean onChildClick(ExpandableListView arg0, View arg1,
+						int arg2, int arg3, long arg4) {
+					// TODO Auto-generated method stub
+					return false;
+				}
+				
+			});
+			
+			
+			Toast.makeText(vv.getContext(), "Reading complete...",
+					Toast.LENGTH_SHORT).show();
+			dismissDialog(MainActivity.pd);
+			
+			break;
+		case 101: // Clearing Snapshot List 
+			mGroupList.clear();
+			mChildList.clear();
+			mDestList.clear();
+			mChildDestList.clear();
 			
 			mListView = (ExpandableListView) vv.findViewById(R.id.elv_list2);
 			mListView.setAdapter(new BaseExpandableAdapter(vv.getContext(),
 					mGroupList, mChildList, mDestList, mChildDestList, 1));
 
-			Toast.makeText(vv.getContext(), "Reading complete...",
-					Toast.LENGTH_SHORT).show();
+			
 			break;
-		case 101:
-
-			break;
-
 		default:
 			break;
 		}
-
+		
 	}
+
+	private void dismissDialog(ProgressDialog pd) {
+		// TODO Auto-generated method stub
+		pd.cancel();
+	}
+	
+	
 };

@@ -30,9 +30,9 @@ import java.util.Scanner;
 import com.AuthcodeGen.CodeGenerator;
 import com.FileManager.FileSender;
 import com.FileManager.GzipGenerator;
-import com.Functions.Payload;
-import com.Functions.Snapshot;
-import com.Functions.opSwitch;
+import com.FrameWork.Payload;
+import com.FrameWork.Snapshot;
+import com.FrameWork.opSwitch;
 
 public class ConnToSrv {
 
