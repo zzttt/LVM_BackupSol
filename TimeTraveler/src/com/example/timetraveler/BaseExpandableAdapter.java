@@ -39,6 +39,10 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
 		this.menuNumber = menuNumber;
 	}
 
+	
+	public ArrayList<String> getChildDestList(int groupPosition){
+		return this.childDestList;
+	}
 	public String getDesc(int groupPosition) {
 		return destList.get(groupPosition);
 	}
@@ -96,7 +100,6 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
 			viewHolder.iv_image = (ImageView) v.findViewById(R.id.iv_image);
 			viewHolder.tv_description = (TextView) v.findViewById(R.id.tv_desc);
 
-			
 			viewHolder.iv_image.setVisibility(View.GONE);
 			
 			// Group name Text Size set

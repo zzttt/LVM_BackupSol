@@ -828,26 +828,24 @@ class opHandler extends Handler {
 			mListView.setOnGroupClickListener(new OnGroupClickListener() {
 
 				@Override
-				public boolean onGroupClick(ExpandableListView arg0, View vv,
+				public boolean onGroupClick(ExpandableListView elv, View vv,
 						int gPosition, long arg3) {
 					// TODO Auto-generated method stub
-					
+						
 
-					String gName = null;
-					
+					String sName = null;
 					
 					if(gPosition > MainActivity.snapshotListInSrv.length ){ // gPosition이  snapshotListInSrv 이상이면 Device Snapshot
-						gName = MainActivity.snapshotListInDev[gPosition].getName(); // Click 한 리스트를 읽음.
+						sName = MainActivity.snapshotListInDev[gPosition].getName(); // Click 한 리스트를 읽음.
 					}else{
-						gName = MainActivity.snapshotListInSrv[gPosition].getName(); // Click 한 리스트를 읽음.
+						sName = MainActivity.snapshotListInSrv[gPosition].getName(); // Click 한 리스트를 읽음.
 					}
 					
-					Toast.makeText(vv.getContext(), gName,
+					Toast.makeText(vv.getContext(), sName,
 							Toast.LENGTH_SHORT).show();
 					
 					// snapshot File 을 lvm 디렉터리에 mount
-					
-					/*File f = new File("/sdcard/ssDir/"+gName);
+					File f = new File("/sdcard/ssDir/"+sName);
 					
 					if(f.mkdirs())
 					{
@@ -855,16 +853,32 @@ class opHandler extends Handler {
 					}else{
 						Log.i("lvm","error!");
 					}
-					*/
 					
 					try {
 						Process p =  Runtime.getRuntime().exec("su"); //  root 쉘
-						p.getOutputStream().write("mount -t ext4 /dev/vg/userdata /sdcard/ssDir\n".getBytes());
+						
+						// gName ( 해당 스냅샷 이름 ) 에 mount 후 해당 디렉토리 리스트를 읽어들임.
+						
+						String mountCom = "mount -t ext4 /dev/vg/"+sName+" /sdcard/ssDir/"+sName+"\n";
+						String getListCom = "ls -l /sdcard/ssDir/"+sName+"> /sdcard/tmp.txt\n";
+						
+						// snapshot list 를 읽어옴.
+						
+						
+						BaseExpandableAdapter bea = (BaseExpandableAdapter) elv.getAdapter();
+						
+						ArrayList<String> cd = bea.getChildDestList(gPosition);
+						
+						//--------------------------------------------------------------------
+						
+						
+						// snapshot list load end
+						
+						p.getOutputStream().write(mountCom.getBytes());
 						//p.getOutputStream().write(<my next command>);
 						
-						
 						// root 계정상태에서 ls 
-						p.getOutputStream().write("ls -l /sdcard/ssDir> /sdcard/tmp.txt\n".getBytes());
+						p.getOutputStream().write(getListCom.getBytes());
 						
 						
 						// console 종료
