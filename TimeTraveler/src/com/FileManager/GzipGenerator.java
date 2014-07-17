@@ -24,18 +24,9 @@ public class GzipGenerator {
 		this.cmpPartNumber = 1;
 	}
 
-	/**
-	 * 遺꾪븷�븬異� 硫붿꽌�뱶
-	 * 
-	 * @param src
-	 *            : �븬異� �븷 �뙆�씪
-	 * @param destDir
-	 *            : �븬異뺣맂 �뙆�씪 寃쎈줈
-	 * @throws IOException
-	 */
-	public void partCompress(String src, String destDir) throws IOException { // 遺꾪븷�븬異�
-		String fileName; // �솗�옣�옄媛� �젣嫄곕맂 �뙆�씪�씠由�
-		String fFullName; // �솗�옣�옄 �룷�븿�븳 �뙆�씪 紐�
+	public void partCompress(String src, String destDir) throws IOException {
+		String fileName;
+		String fFullName;
 		String destFile;
 		File srcFile = new File(src);
 		
@@ -66,10 +57,10 @@ public class GzipGenerator {
 			writeSize += readByte;
 			//System.out.println(writeSize + "/" + totalSize + "/" + limitSize);
 			
-			if(writeSize <= limitSize){ // �젣�븳�궗�씠利� �씠�궡
+			if(writeSize <= limitSize){
 				totalWrite += readByte;
 				out.write(byteArr, 0, readByte);
-			}else{ // �궗�씠利� 珥덇낵
+			}else{
 				out.write(byteArr, 0, readByte);
 				totalWrite += readByte;
 				out.close();
@@ -83,7 +74,7 @@ public class GzipGenerator {
 			
 		}
 		System.out.println(totalWrite);
-		out.close(); // �뙆�씪�쓣 �떕�쓬
+		out.close(); // 占쎈솁占쎌뵬占쎌뱽 占쎈뼍占쎌벉
 		in.close();
 	}
 
@@ -95,8 +86,8 @@ public class GzipGenerator {
 	 * @throws IOException
 	 */
 
-	public void compress(String srcFile, String destDir) throws IOException { // �떒�씪�뙆�씪
-																				// �븬異�
+	public void compress(String srcFile, String destDir) throws IOException { 
+		
 		System.out.println(srcFile);
 
 		String destFile = destDir + "snapshot.gz";
@@ -120,15 +111,6 @@ public class GzipGenerator {
 				+ " ms");
 	}
 
-	/**
-	 * �븬異뺥빐�젣 硫붿꽌�뱶 遺꾪븷�맂 �븬異뺥뙆�씪�쓣 �븬異뺥빐�젣�븯�뿬 �븯�굹�쓽 �씠誘몄�濡� 留뚮뱾�뼱�궦�떎.
-	 * 
-	 * @param src
-	 * @param destDir
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws InterruptedException
-	 */
 	public void decompress(String srcDir, String destDir)
 			throws FileNotFoundException, IOException, InterruptedException {
 
@@ -141,15 +123,15 @@ public class GzipGenerator {
 			File destList[] = snapshotDir.listFiles();
 			Arrays.sort(destList);
 			
-			String resultFileNm = "snapshot"; // 寃곌낵�뙆�씪 �씠由꾩� snapshot�쑝濡� �뼥�뼱�듃由곕떎.
+			String resultFileNm = "snapshot"; 
 
 			System.out.println("file cnt : " + destList.length);
 
-			if (destList[0].getName().contains(".tar")) { // tar �뙆�씪�쓽 遺꾪븷�븬異뺤씪 寃쎌슦
+			if (destList[0].getName().contains(".tar")) { // tar 占쎈솁占쎌뵬占쎌벥 �겫袁る막占쎈릍�빊類ㅼ뵬 野껋럩�뒭
 				resultFileNm = "snapshot.tar";
 			}
 
-			FileOutputStream out = new FileOutputStream(destDir + resultFileNm); // dest濡� �븬異� �빐�젣 �썑 異쒕젰 (�씠由꾩� snapshot�쑝濡� )
+			FileOutputStream out = new FileOutputStream(destDir + resultFileNm); // dest嚥∽옙 占쎈릍�빊占� 占쎈퉸占쎌젫 占쎌뜎 �빊�뮆�젾 (占쎌뵠�뵳袁⑼옙 snapshot占쎌몵嚥∽옙 )
 			long writeSize = 0;
 			FileInputStream fis = null;
 			GZIPInputStream gis = null;
@@ -161,7 +143,7 @@ public class GzipGenerator {
 				fis = new FileInputStream(destList[i]);
 				gis = new GZIPInputStream(fis);
 				
-				// 遺꾪븷�맂 �븬異뺥뙆�씪�쓣 �븯�굹濡� 臾띕뒗�떎.
+				// �겫袁る막占쎈쭆 占쎈릍�빊類λ솁占쎌뵬占쎌뱽 占쎈릭占쎄돌嚥∽옙 �눧�쓹�뮉占쎈뼄.
 				byte[] byteArr = new byte[1024];
 
 				int readByte = 0;

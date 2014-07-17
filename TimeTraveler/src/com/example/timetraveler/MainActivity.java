@@ -30,6 +30,7 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -91,8 +92,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	public static PagerAdapterClass pac;
 
 	public static boolean setVal0 = false; // auto snapshot On // Off
-	public static int setVal1 = 0; // ë°±ì—… ìš©ëŸ‰ ì„¸íŒ… ê°’ 1
-	public static int setVal2 = 1; // ë°±ì—… ìš©ëŸ‰ ì„¸íŒ… ê°’ 2
+	public static int setVal1 = 0; // ¹é¾÷ ¿ë·® ¼¼ÆÃ °ª 1
+	public static int setVal2 = 1; // ¹é¾÷ ¿ë·® ¼¼ÆÃ °ª 2
 
 	public static File[] snapshotListInSrv;
 	public static File[] snapshotListInDev;
@@ -113,10 +114,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		mng = (WifiManager) getSystemService(WIFI_SERVICE);
 		info = mng.getConnectionInfo();
 
-		// Handler ì„¸íŒ…
+		// Handler ¼¼ÆÃ
 		handler = new opHandler();
 
-		// MAC ì´ìš© ì¸ì¦ì½”ë“œ ìƒì„±
+		// MAC ÀÌ¿ë ÀÎÁõÄÚµå »ı¼º
 		CodeGenerator cg = new CodeGenerator(info.getMacAddress());
 		Toast.makeText(getApplication(), cg.genCode(), Toast.LENGTH_SHORT)
 				.show();
@@ -130,15 +131,15 @@ public class MainActivity extends Activity implements OnClickListener {
 		pd.show();
 		
 		
-		// ëª¨ë“  Snapshot List ë¥¼ Load (on Device & on Server)
-		// Restore ì—ì„œ ì‚¬ìš©í•  ë¦¬ìŠ¤íŠ¸ë¥¼ ë¡œë“œí•¨.
+		// ¸ğµç Snapshot List ¸¦ Load (on Device & on Server)
+		// Restore ¿¡¼­ »ç¿ëÇÒ ¸®½ºÆ®¸¦ ·ÎµåÇÔ.
 
 		// 1. Load Snapshot List on Device
 
 		SnapshotDiskManager sdm = new SnapshotDiskManager(homePath);
 		File[] sList = sdm.getSnapshotList();
 		
-		snapshotListInDev = sList; // ì¥ì¹˜ë‚´ì˜ ë¦¬ìŠ¤íŠ¸ ê°€ì ¸ì˜´
+		snapshotListInDev = sList; // ÀåÄ¡³»ÀÇ ¸®½ºÆ® °¡Á®¿È
 		
 		// 2. Load Server List on Server
 		ConnServer conn = new ConnServer("211.189.19.45", 12345, 0, userCode,
@@ -146,7 +147,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		conn.start();
 
 
-		// í•˜ë‹¨ ë©”ë‰´ë¥¼ ìœ„í•œ Pager
+		// ÇÏ´Ü ¸Ş´º¸¦ À§ÇÑ Pager
 		pac = new PagerAdapterClass(getApplicationContext());
 		setLayout();
 
@@ -176,7 +177,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			SnapshotDiskManager sdm = new SnapshotDiskManager(homePath);
 			File[] sList = sdm.getSnapshotList();
 			
-			snapshotListInDev = sList; // ì¥ì¹˜ë‚´ì˜ ë¦¬ìŠ¤íŠ¸ ê°€ì ¸ì˜´
+			snapshotListInDev = sList; // ÀåÄ¡³»ÀÇ ¸®½ºÆ® °¡Á®¿È
 
 			// 2. Load Server List on Server
 			ConnServer conn = new ConnServer("211.189.19.45", 12345, 0, userCode,
@@ -185,7 +186,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			
 			break;
 		case R.id.btn_three:
-			Process p;
+			/*Process p;
 			try {
 				p = new ProcessBuilder("su").start();
 
@@ -220,8 +221,8 @@ public class MainActivity extends Activity implements OnClickListener {
 				Toast.makeText(getApplicationContext(), "not root", Toast.LENGTH_SHORT).show();
 			}
 			
-			
-			//setCurrentInflateItem(2);
+			*/
+			setCurrentInflateItem(2);
 			break;
 		}
 	}
@@ -266,7 +267,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	/**
 	 * PagerAdapter
 	 */
-	public class PagerAdapterClass extends PagerAdapter { // Page Adapterì—ì„œì˜ ë™ì‘
+	public class PagerAdapterClass extends PagerAdapter { // Page Adapter¿¡¼­ÀÇ µ¿ÀÛ
 
 		private ArrayList<View> views = new ArrayList<View>();
 
@@ -286,7 +287,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		@Override
 		public Object instantiateItem(ViewGroup pager, int position) {
 			View v = null;
-			if (position == 0) { // Back up í˜ì´ì§€
+			if (position == 0) { // Back up ÆäÀÌÁö
 				SimpleCursorAdapter mAdapter;
 				v = mInflater.inflate(R.layout.inflate_one, null);
 
@@ -296,20 +297,20 @@ public class MainActivity extends Activity implements OnClickListener {
 				mDestList = new ArrayList<String>();
 				mChildDestList = new ArrayList<String>();
 
-				mGroupList.add("í˜„ì¬ì‹œì ì„ ì„œë²„ì— ë°±ì—…");
-				mGroupList.add("ë³µì›ì‹œì  ìƒì„±");
-				mGroupList.add("ìë™ ë³µì›ì‹œì  ìƒì„±");
+				mGroupList.add("ÇöÀç½ÃÁ¡À» ¼­¹ö¿¡ ¹é¾÷");
+				mGroupList.add("º¹¿ø½ÃÁ¡ »ı¼º");
+				mGroupList.add("ÀÚµ¿ º¹¿ø½ÃÁ¡ »ı¼º");
 
 				ArrayList<String> child1 = new ArrayList<String>();
 				ArrayList<String> child2 = new ArrayList<String>();
 				ArrayList<String> child3 = new ArrayList<String>();
 
-				child1.add("ì„œë²„ ë°±ì—…");
-				child1.add("ì™¸ì¥ ë©”ëª¨ë¦¬ ë°±ì—…");
+				child1.add("¼­¹ö ¹é¾÷");
+				child1.add("¿ÜÀå ¸Ş¸ğ¸® ¹é¾÷");
 
-				child2.add("ë°±ì—… ì‹œì‘");
+				child2.add("¹é¾÷ ½ÃÀÛ");
 
-				child3.add("ìë™ ìŠ¤ëƒ…ìƒ· ì‚¬ìš©");
+				child3.add("ÀÚµ¿ ½º³À¼¦ »ç¿ë");
 
 				mChildListContent.add(child1);
 				mChildListContent.add(child2);
@@ -319,18 +320,18 @@ public class MainActivity extends Activity implements OnClickListener {
 				mChildList.add(mChildListContent.get(1));
 				mChildList.add(mChildListContent.get(2));
 
-				mDestList.add("- í˜„ì¬ì‹œì ì˜ ë°±ì—… ë°ì´í„°ë¥¼ ì„œë²„ ë˜ëŠ” ì™¸ì¥ë©”ëª¨ë¦¬ì— ì €ì¥í•©ë‹ˆë‹¤.");
-				mDestList.add("- í˜„ì¬ìƒíƒœë¥¼ ë³µì›ì‹œì ìœ¼ë¡œ ìƒì„±í•©ë‹ˆë‹¤.");
-				mDestList.add("- ìë™ë³µì›ì‹œì ì„ ìƒì„±í•©ë‹ˆë‹¤.");
+				mDestList.add("- ÇöÀç½ÃÁ¡ÀÇ ¹é¾÷ µ¥ÀÌÅÍ¸¦ ¼­¹ö ¶Ç´Â ¿ÜÀå¸Ş¸ğ¸®¿¡ ÀúÀåÇÕ´Ï´Ù.");
+				mDestList.add("- ÇöÀç»óÅÂ¸¦ º¹¿ø½ÃÁ¡À¸·Î »ı¼ºÇÕ´Ï´Ù.");
+				mDestList.add("- ÀÚµ¿º¹¿ø½ÃÁ¡À» »ı¼ºÇÕ´Ï´Ù.");
 
-				mChildDestList.add("ìŠ¤ëƒ…ìƒ· ì´ë¯¸ì§€ë¥¼ ì„œë²„ì— ì „ì†¡í•©ë‹ˆë‹¤.");
-				mChildDestList.add("ì—°ê²°ëœ SDì¹´ë“œì— ìŠ¤ëƒ…ìƒ· ì´ë¯¸ì§€ë¥¼ ì „ì†¡í•©ë‹ˆë‹¤.");
+				mChildDestList.add("½º³À¼¦ ÀÌ¹ÌÁö¸¦ ¼­¹ö¿¡ Àü¼ÛÇÕ´Ï´Ù.");
+				mChildDestList.add("¿¬°áµÈ SDÄ«µå¿¡ ½º³À¼¦ ÀÌ¹ÌÁö¸¦ Àü¼ÛÇÕ´Ï´Ù.");
 
 				mListView = (ExpandableListView) v.findViewById(R.id.elv_list1);
 				mListView.setAdapter(new BaseExpandableAdapter(v.getContext(),
 						mGroupList, mChildList, mDestList, mChildDestList, 0));
 
-				// ê·¸ë£¹ í´ë¦­ í–ˆì„ ê²½ìš° ì´ë²¤íŠ¸
+				// ±×·ì Å¬¸¯ ÇßÀ» °æ¿ì ÀÌº¥Æ®
 				mListView.setOnGroupClickListener(new OnGroupClickListener() {
 					@Override
 					public boolean onGroupClick(ExpandableListView parent,
@@ -351,7 +352,7 @@ public class MainActivity extends Activity implements OnClickListener {
 					}
 				});
 
-				// Backup ë©”ë‰´ì—ì„œ ì°¨ì¼ë“œ í´ë¦­ í–ˆì„ ê²½ìš° ì´ë²¤íŠ¸
+				// Backup ¸Ş´º¿¡¼­ Â÷ÀÏµå Å¬¸¯ ÇßÀ» °æ¿ì ÀÌº¥Æ®
 				mListView.setOnChildClickListener(new OnChildClickListener() {
 					@Override
 					public boolean onChildClick(ExpandableListView parent,
@@ -364,7 +365,7 @@ public class MainActivity extends Activity implements OnClickListener {
 						 */
 
 						switch (groupPosition) {
-						case 0: // í˜„ì¬ ì‹œì ì„ ì„œë²„ì— ë°±ì—…
+						case 0: // ÇöÀç ½ÃÁ¡À» ¼­¹ö¿¡ ¹é¾÷
 							if (childPosition == 0) // Server Backup
 							{
 								Toast.makeText(getApplicationContext(),
@@ -372,13 +373,13 @@ public class MainActivity extends Activity implements OnClickListener {
 										Toast.LENGTH_SHORT).show();
 								// check the wi-fi connection
 								if (wifi.isConnected()) {
-									// WIFI ì— ë§Œ ì—°ê²° ë˜ì—ˆì„ë•Œ
+									// WIFI ¿¡ ¸¸ ¿¬°á µÇ¾úÀ»¶§
 									Toast.makeText(getApplicationContext(),
-											"Wifi ì—°ê²° í™•ì¸. ì„œë²„í†µì‹  ì‹œë„.",
+											"Wifi ¿¬°á È®ÀÎ. ¼­¹öÅë½Å ½Ãµµ.",
 											Toast.LENGTH_SHORT).show();
 
 									try {
-										// ì†Œì¼“ ì„œë²„ ì ‘ì†
+										// ¼ÒÄÏ ¼­¹ö Á¢¼Ó
 										// opcode == 1 ( Snapshot Server backup
 										// )
 										ConnServer cs = new ConnServer(
@@ -389,34 +390,34 @@ public class MainActivity extends Activity implements OnClickListener {
 
 									} catch (Exception e) {
 										Toast.makeText(getApplicationContext(),
-												"ì„œë²„ì™€ì˜ ì—°ê²°ì„ ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.",
+												"¼­¹ö¿ÍÀÇ ¿¬°áÀ» ½ÇÆĞÇß½À´Ï´Ù.",
 												Toast.LENGTH_SHORT).show();
 									}
 
 								} else {
 									Toast.makeText(
 											getApplicationContext(),
-											"Server Backupì€ Wifi ì—°ê²°ìƒíƒœì—ì„œë§Œ ê°€ëŠ¥í•©ë‹ˆë‹¤.",
+											"Server BackupÀº Wifi ¿¬°á»óÅÂ¿¡¼­¸¸ °¡´ÉÇÕ´Ï´Ù.",
 											Toast.LENGTH_SHORT).show();
 								}
 
-							} else { // ì™¸ì¥ ë©”ëª¨ë¦¬ Full Backup
+							} else { // ¿ÜÀå ¸Ş¸ğ¸® Full Backup
 								Toast.makeText(getApplicationContext(),
-										"ì—°ê²°ëœ ì™¸ì¥ ë©”ëª¨ë¦¬ì— ë°±ì—…ì„ ìˆ˜í–‰í•©ë‹ˆë‹¤.",
+										"¿¬°áµÈ ¿ÜÀå ¸Ş¸ğ¸®¿¡ ¹é¾÷À» ¼öÇàÇÕ´Ï´Ù.",
 										Toast.LENGTH_SHORT).show();
 							}
 
 							break;
-						case 1: // ë³µì› ì‹œì  ìƒì„± ------------------------------------------ Create Snapshot
-							// child menu 1ê°œ ì´ë¯€ë¡œ ë°”ë¡œ ì§„í–‰
+						case 1: // º¹¿ø ½ÃÁ¡ »ı¼º ------------------------------------------ Create Snapshot
+							// child menu 1°³ ÀÌ¹Ç·Î ¹Ù·Î ÁøÇà
 							Toast.makeText(getApplicationContext(),
-									"ë°±ì—…ì„ ì‹œì‘í•©ë‹ˆë‹¤.", Toast.LENGTH_SHORT).show();
+									"¹é¾÷À» ½ÃÀÛÇÕ´Ï´Ù.", Toast.LENGTH_SHORT).show();
 
 							String line = "";
 							StringBuffer output = new StringBuffer();
 							
 				
-							// pipe ì´ìš©í•œ Snapshot ìƒì„±
+							// pipe ÀÌ¿ëÇÑ Snapshot »ı¼º
 							rh = new readHandler() {
 								public void handleMessage(Message msg) {
 									Log.i("LVMJava", "ResultReader Handler result get");
@@ -440,7 +441,7 @@ public class MainActivity extends Activity implements OnClickListener {
 							pl.ActionWritePipe("lvcreate -s -L 20M -n "+today+" /dev/vg/userdata");
 							
 
-							// ë°±ì—… ì‹œì‘ process
+							// ¹é¾÷ ½ÃÀÛ process
 							/*
 							 * try {
 							 * 
@@ -471,7 +472,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 							setVal0 = true;
 							Toast.makeText(getApplicationContext(),
-									"ìë™ ìŠ¤ëƒ…ìƒ·ì´ ì„¤ì •ë˜ì—ˆìŠµë‹ˆë‹¤.", Toast.LENGTH_SHORT)
+									"ÀÚµ¿ ½º³À¼¦ÀÌ ¼³Á¤µÇ¾ú½À´Ï´Ù.", Toast.LENGTH_SHORT)
 									.show();
 
 							break;
@@ -480,7 +481,7 @@ public class MainActivity extends Activity implements OnClickListener {
 					}
 				});
 
-				// ê·¸ë£¹ì´ ë‹«í ê²½ìš° ì´ë²¤íŠ¸
+				// ±×·ìÀÌ ´İÈú °æ¿ì ÀÌº¥Æ®
 				mListView
 						.setOnGroupCollapseListener(new OnGroupCollapseListener() {
 							@Override
@@ -491,7 +492,7 @@ public class MainActivity extends Activity implements OnClickListener {
 							}
 						});
 
-				// ê·¸ë£¹ì´ ì—´ë¦´ ê²½ìš° ì´ë²¤íŠ¸
+				// ±×·ìÀÌ ¿­¸± °æ¿ì ÀÌº¥Æ®
 				mListView.setOnGroupExpandListener(new OnGroupExpandListener() {
 					@Override
 					public void onGroupExpand(int groupPosition) {
@@ -501,13 +502,13 @@ public class MainActivity extends Activity implements OnClickListener {
 					}
 				});
 
-			} else if (position == 1) { // Restore í˜ì´ì§€
+			} else if (position == 1) { // Restore ÆäÀÌÁö
 
 				SimpleCursorAdapter mAdapter;
 
 				v = mInflater.inflate(R.layout.inflate_two, null);
 
-				views.add(v); // Restore Page ë§Œ ì»¬ë ‰ì…˜í”„ë ˆì„ì›Œí¬ì— ë„£ì–´ì¤€ë‹¤.
+				views.add(v); // Restore Page ¸¸ ÄÃ·º¼ÇÇÁ·¹ÀÓ¿öÅ©¿¡ ³Ö¾îÁØ´Ù.
 
 				/*
 				 * mGroupList = new ArrayList<String>(); mChildList = new
@@ -516,15 +517,15 @@ public class MainActivity extends Activity implements OnClickListener {
 				 * ArrayList<String>(); mChildDestList = new
 				 * ArrayList<String>();
 				 * 
-				 * // Group List ê°€ ì…ë ¥ëœë‹¤ ( Snapshot listë¥¼ ê·¸ë£¹ë‹¨ìœ„ë¡œ ë³´ì—¬ì¤Œ )
-				 * mGroupList.add("2014-07-01 21:38 ì„œë²„ ë°±ì—…");
-				 * mGroupList.add("2014-07-02 23:38 ì„œë²„ ë°±ì—…");
-				 * mGroupList.add("2014-07-03 04:38 ìë™ ë°±ì—…");
+				 * // Group List °¡ ÀÔ·ÂµÈ´Ù ( Snapshot list¸¦ ±×·ì´ÜÀ§·Î º¸¿©ÁÜ )
+				 * mGroupList.add("2014-07-01 21:38 ¼­¹ö ¹é¾÷");
+				 * mGroupList.add("2014-07-02 23:38 ¼­¹ö ¹é¾÷");
+				 * mGroupList.add("2014-07-03 04:38 ÀÚµ¿ ¹é¾÷");
 				 * 
 				 * for (int i = 0; i < mGroupList.size(); i++) {
 				 * ArrayList<String> child1 = new ArrayList<String>();
 				 * 
-				 * child1.add("[ìµœê·¼ ë³€ê²½ ì‚¬í•­ ]");
+				 * child1.add("[ÃÖ±Ù º¯°æ »çÇ× ]");
 				 * 
 				 * mChildListContent.add(child1); }
 				 * 
@@ -532,15 +533,15 @@ public class MainActivity extends Activity implements OnClickListener {
 				 * mChildList.add(mChildListContent.get(1));
 				 * mChildList.add(mChildListContent.get(2));
 				 * 
-				 * mChildDestList.clear(); mChildDestList.add("ì—†ìŒ");
-				 * mChildDestList.add("ì—†ìŒ"); mChildDestList.add("ì—†ìŒ");
+				 * mChildDestList.clear(); mChildDestList.add("¾øÀ½");
+				 * mChildDestList.add("¾øÀ½"); mChildDestList.add("¾øÀ½");
 				 * 
 				 * mListView = (ExpandableListView)
 				 * v.findViewById(R.id.elv_list2); mListView.setAdapter(new
 				 * BaseExpandableAdapter(v.getContext(), mGroupList, mChildList,
 				 * mDestList, mChildDestList, 1));
 				 * 
-				 * // ê·¸ë£¹ í´ë¦­ í–ˆì„ ê²½ìš° ì´ë²¤íŠ¸ mListView.setOnGroupClickListener(new
+				 * // ±×·ì Å¬¸¯ ÇßÀ» °æ¿ì ÀÌº¥Æ® mListView.setOnGroupClickListener(new
 				 * OnGroupClickListener() {
 				 * 
 				 * @Override public boolean onGroupClick(ExpandableListView
@@ -552,7 +553,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				 * 
 				 * return false; } });
 				 * 
-				 * // ì°¨ì¼ë“œ í´ë¦­ í–ˆì„ ê²½ìš° ì´ë²¤íŠ¸ mListView.setOnChildClickListener(new
+				 * // Â÷ÀÏµå Å¬¸¯ ÇßÀ» °æ¿ì ÀÌº¥Æ® mListView.setOnChildClickListener(new
 				 * OnChildClickListener() {
 				 * 
 				 * @Override public boolean onChildClick(ExpandableListView
@@ -561,7 +562,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				 * 
 				 * return false; } });
 				 * 
-				 * // ê·¸ë£¹ì´ ë‹«í ê²½ìš° ì´ë²¤íŠ¸ mListView .setOnGroupCollapseListener(new
+				 * // ±×·ìÀÌ ´İÈú °æ¿ì ÀÌº¥Æ® mListView .setOnGroupCollapseListener(new
 				 * OnGroupCollapseListener() {
 				 * 
 				 * @Override public void onGroupCollapse(int groupPosition) {
@@ -571,7 +572,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				 * 
 				 * } });
 				 * 
-				 * // ê·¸ë£¹ì´ ì—´ë¦´ ê²½ìš° ì´ë²¤íŠ¸ mListView.setOnGroupExpandListener(new
+				 * // ±×·ìÀÌ ¿­¸± °æ¿ì ÀÌº¥Æ® mListView.setOnGroupExpandListener(new
 				 * OnGroupExpandListener() {
 				 * 
 				 * @Override public void onGroupExpand(int groupPosition) {
@@ -581,10 +582,15 @@ public class MainActivity extends Activity implements OnClickListener {
 				 * 
 				 * } });
 				 */
-			} else { // // Setting View ( ì„¸íŒ… í˜ì´ì§€ )
+			} else { // // Setting View ( ¼¼ÆÃ ÆäÀÌÁö )
 
 				v = mInflater.inflate(R.layout.inflate_three, null);
 
+				final SharedPreferences pref = getBaseContext().getSharedPreferences("SaveState", getBaseContext().MODE_PRIVATE);
+				final SharedPreferences.Editor edit = pref.edit();
+				
+				setVal1 = pref.getInt("setVal1", 0);
+				
 				final Spinner dateSpinner = (Spinner) v
 						.findViewById(R.id.dateSpinner);
 
@@ -600,7 +606,7 @@ public class MainActivity extends Activity implements OnClickListener {
 						v.getContext(), android.R.layout.simple_spinner_item,
 						date);
 
-				// ë“œë¡­ë‹¤ìš´ í™”ë©´ì— í‘œì‹œ
+				// µå·Ó´Ù¿î È­¸é¿¡ Ç¥½Ã
 				aa.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
 				dateSpinner.setAdapter(aa);
 
@@ -611,7 +617,19 @@ public class MainActivity extends Activity implements OnClickListener {
 				final CheckBox chkBox3 = (CheckBox) v
 						.findViewById(R.id.checkbox_delBackup);
 
-				// ì„¤ì • í˜ì´ì§€ ì²´í¬ë°•ìŠ¤ ì˜¨í´ë¦­ ë¦¬ìŠ¤ë„ˆ
+				// ÀúÀåµÈ °ªµéÀ» ºÒ·¯¿É´Ï´Ù.
+				Boolean chk1 = pref.getBoolean("check1", false);
+				Boolean chk2 = pref.getBoolean("check2", false);
+				Boolean chk3 = pref.getBoolean("check3", false);
+
+				chkBox1.setChecked(chk1);
+				chkBox2.setChecked(chk2);
+				chkBox3.setChecked(chk3);
+				
+				dateSpinner.setSelection(pref.getInt("spinnerSelection",0));
+
+				
+				// ¼³Á¤ ÆäÀÌÁö Ã¼Å©¹Ú½º ¿ÂÅ¬¸¯ ¸®½º³Ê
 				chkBox1.setOnClickListener(new OnClickListener() {
 
 					@Override
@@ -619,7 +637,13 @@ public class MainActivity extends Activity implements OnClickListener {
 						// TODO Auto-generated method stub
 						chkBox2.setChecked(false);
 						chkBox3.setChecked(false);
+
+						Log.i("1_setVal1", Integer.toString(setVal1));
 						setVal1 = 1;
+						edit.putBoolean("check1", chkBox1.isChecked());
+						edit.putBoolean("check2", chkBox2.isChecked());
+						edit.putBoolean("check3", chkBox3.isChecked());
+						edit.commit();
 					}
 
 				});
@@ -631,7 +655,12 @@ public class MainActivity extends Activity implements OnClickListener {
 						// TODO Auto-generated method stub
 						chkBox1.setChecked(false);
 						chkBox3.setChecked(false);
+						Log.i("2_setVal1", Integer.toString(setVal1));
 						setVal1 = 2;
+						edit.putBoolean("check2", chkBox2.isChecked());
+						edit.putBoolean("check1", chkBox1.isChecked());
+						edit.putBoolean("check3", chkBox3.isChecked());
+						edit.commit();
 					}
 
 				});
@@ -643,12 +672,17 @@ public class MainActivity extends Activity implements OnClickListener {
 						// TODO Auto-generated method stub
 						chkBox1.setChecked(false);
 						chkBox2.setChecked(false);
+						Log.i("3_setVal1", Integer.toString(setVal1));
 						setVal1 = 3;
+						edit.putBoolean("check3", chkBox3.isChecked());
+						edit.putBoolean("check1", chkBox1.isChecked());
+						edit.putBoolean("check2", chkBox2.isChecked());
+						edit.commit();
 					}
 
 				});
 
-				// Spinner ì„¤ì • ê°’
+				// Spinner ¼³Á¤ °ª
 				dateSpinner
 						.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -656,10 +690,15 @@ public class MainActivity extends Activity implements OnClickListener {
 							public void onItemSelected(AdapterView<?> arg0,
 									View arg1, int arg2, long arg3) {
 								// TODO Auto-generated method stub
+								
 								setVal2 = Integer.parseInt(arg0
 										.getItemAtPosition(arg2).toString());
 								Log.i("eee", Integer.toString(setVal2));
 
+								int selectedPosition = dateSpinner.getSelectedItemPosition();
+								Log.i("position", "position : " + (Integer.toString(selectedPosition+1)));
+								edit.putInt("spinnerSelection",selectedPosition);
+								edit.commit();
 							}
 
 							@Override
@@ -750,18 +789,18 @@ class opHandler extends Handler {
 			break;
 		case 100: // Snapshot List Handling
 			
-			// pac ì—ì„œ View ë¥¼ ì½ì–´ì˜´
+			// pac ¿¡¼­ View ¸¦ ÀĞ¾î¿È
 			
-			// mChildDestList , mChildList ëŠ” group ê°œìˆ˜ë§Œí¼ ë“±ë¡í•´ì•¼ í•¨
-			// mChildList ëŠ” childListì˜ ê·¸ë£¹. ( ë³€ê²½ì‚¬í•­ì´ ì—¬ëŸ¬ê°œì„ì„ ê°ì•ˆ )
+			// mChildDestList , mChildList ´Â group °³¼ö¸¸Å­ µî·ÏÇØ¾ß ÇÔ
+			// mChildList ´Â childListÀÇ ±×·ì. ( º¯°æ»çÇ×ÀÌ ¿©·¯°³ÀÓÀ» °¨¾È )
 			for (int i = 0; i < MainActivity.snapshotListInSrv.length; i++) {
 				mGroupList.add(MainActivity.snapshotListInSrv[i].getName()+" [Server]");
 				
 				if(childList.size() == 0){
-					childList.add("[ No data ]");
+					childList.add("[ º¹¿ø ´ë»ó ]");
 				}
 				
-				mChildDestList.add("ë³€ê²½ëœ í•­ëª©ì´ ì—†ìŠµë‹ˆë‹¤.");
+				mChildDestList.add("º¯°æµÈ Ç×¸ñÀÌ ¾ø½À´Ï´Ù.");
 				mChildList.add(childList);
 
 			}
@@ -771,16 +810,16 @@ class opHandler extends Handler {
 				mGroupList.add(MainActivity.snapshotListInDev[i].getName()+" [Device]");
 				
 				if(childList.size() == 0){
-					childList.add("[ No data ]");
+					childList.add("[ º¹¿ø ´ë»ó ]");
 				}
 				
-				// mChildDestList ì— íŒŒì¼ë¦¬ìŠ¤íŠ¸ ì…ë ¥
-				mChildDestList.add("ë³€ê²½ëœ í•­ëª©ì´ ì—†ìŠµë‹ˆë‹¤.");
+				// mChildDestList ¿¡ ÆÄÀÏ¸®½ºÆ® ÀÔ·Â
+				mChildDestList.add("º¯°æµÈ Ç×¸ñÀÌ ¾ø½À´Ï´Ù.");
 				mChildList.add(childList);
 			}
 
 			
-			// ë¦¬ìŠ¤íŠ¸ View ì— ì ìš©
+			// ¸®½ºÆ® View ¿¡ Àû¿ë
 			mListView = (ExpandableListView) vv.findViewById(R.id.elv_list2);
 			mListView.setAdapter(new BaseExpandableAdapter(vv.getContext(),
 					mGroupList, mChildList, mDestList, mChildDestList, 1));
@@ -793,12 +832,20 @@ class opHandler extends Handler {
 						int gPosition, long arg3) {
 					// TODO Auto-generated method stub
 					
-					String gName = MainActivity.snapshotListInDev[0].getName();
+
+					String gName = null;
+					
+					
+					if(gPosition > MainActivity.snapshotListInSrv.length ){ // gPositionÀÌ  snapshotListInSrv ÀÌ»óÀÌ¸é Device Snapshot
+						gName = MainActivity.snapshotListInDev[gPosition].getName(); // Click ÇÑ ¸®½ºÆ®¸¦ ÀĞÀ½.
+					}else{
+						gName = MainActivity.snapshotListInSrv[gPosition].getName(); // Click ÇÑ ¸®½ºÆ®¸¦ ÀĞÀ½.
+					}
 					
 					Toast.makeText(vv.getContext(), gName,
 							Toast.LENGTH_SHORT).show();
 					
-					// snapshot File ì„ lvm ë””ë ‰í„°ë¦¬ì— mount
+					// snapshot File À» lvm µğ·ºÅÍ¸®¿¡ mount
 					
 					/*File f = new File("/sdcard/ssDir/"+gName);
 					
@@ -811,14 +858,16 @@ class opHandler extends Handler {
 					*/
 					
 					try {
-						Process p =  Runtime.getRuntime().exec("su"); //  root ì‰˜
+						Process p =  Runtime.getRuntime().exec("su"); //  root ½©
 						p.getOutputStream().write("mount -t ext4 /dev/vg/userdata /sdcard/ssDir\n".getBytes());
 						//p.getOutputStream().write(<my next command>);
 						
+						
+						// root °èÁ¤»óÅÂ¿¡¼­ ls 
 						p.getOutputStream().write("ls -l /sdcard/ssDir> /sdcard/tmp.txt\n".getBytes());
 						
 						
-						// console ì¢…ë£Œ
+						// console Á¾·á
 						p.getOutputStream().write("exit\n".getBytes());			
 						p.getOutputStream().flush();
 						try {

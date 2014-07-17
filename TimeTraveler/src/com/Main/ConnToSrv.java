@@ -1,11 +1,5 @@
 package com.Main;
 
-/*
- * 
- * �옉�꽦�옄 : 議곗쁺誘�
- * 理쒖쥌�닔�젙 : 14.07.01
- * 
- */
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -44,9 +38,8 @@ public class ConnToSrv {
 			sc = new Socket("211.189.19.45", 1234);
 
 			// gg.partCompress("/home/armin/snapshot.tar","/home/armin/snapshot.tar.gz");
-			// // src�뙆�씪怨� dest 寃쎈줈瑜� 吏��젙
 			ObjectOutputStream oos = new ObjectOutputStream(
-					sc.getOutputStream()); // 吏곷젹�솕 媛앹껜 �쟾�넚
+					sc.getOutputStream()); // 
 
 			String opCode = null;
 			Scanner keyScan = new Scanner(System.in);
@@ -56,7 +49,6 @@ public class ConnToSrv {
 					break;
 
 				System.out.println("insert opCode on Colsole");
-				System.out.println("-1 : 醫낅즺 || 0 : noOp || 1 : send snapshot || 2 : download snapshot || 3 : get info || 4 : compress files || 5 : decompress files");
 				opCode = keyScan.nextLine();
 
 				opSwitch op = new opSwitch(Integer.parseInt(opCode), oos, sc);
@@ -67,7 +59,6 @@ public class ConnToSrv {
 				}
 			}
 
-			System.out.println("諛섎났醫낅즺");
 
 		} catch (Exception e) {
 			System.out.println("exception : " + e.getMessage());

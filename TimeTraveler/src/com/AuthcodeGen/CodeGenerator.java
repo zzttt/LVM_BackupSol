@@ -3,13 +3,6 @@ package com.AuthcodeGen;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/*
- * �옉�꽦�옄 : 議곗쁺誘�
- * �옉�꽦�씪 : 14.06.26
- * 
- * Code generator
- * �옣移섏젙蹂대�� �씠�슜�븳 肄붾뱶�깮�꽦 ( 怨좎쑀媛믪쑝濡� �깮�꽦 )
- */
 public class CodeGenerator {
 	private String macAddr;
 	private String addCode;

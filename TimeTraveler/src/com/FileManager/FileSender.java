@@ -95,7 +95,7 @@ public class FileSender {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally{
-			//delSentFile(fileName); // �쟾�넚 �맂 �뙆�씪 �궘�젣
+			//delSentFile(fileName); //
 		}
 
 		 

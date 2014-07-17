@@ -3,8 +3,8 @@ package com.FrameWork;
 import java.io.Serializable;
 
 /*
- * ?ž‘?„±?¼ : 14.06.24 
- * ?ž‘?„±?ž : ì¡°ì˜ë¯?
+ * ìž‘ì„±ì¼ : 14.06.24 
+ * ìž‘ì„±ìž : ì¡°ì˜ë¯¼
  * 
  */
 
@@ -16,25 +16,25 @@ public class Payload implements Serializable {
 	
 	// constuctor
 	/**
-	 * ?„œë²„ì? ?†µ?‹ ?— ?´?š©?˜?Š” payload ?— ?•„?š”?•œ ? •ë³´ë?? ?‹´?Œ.
-	 * @param opCode : ?™?ž‘ì½”ë“œ ( 1 : ?ŒŒ?¼? „?†¡ / 2 : ?ŒŒ?¼ ?‹¤?š´ë¡œë“œ / 3 : ?ŒŒ?¼? •ë³? ?½ê¸?
+	 * ì„œë²„ì™€ í†µì‹ ì— ì´ìš©ë˜ëŠ” payload ì— í•„ìš”í•œ ì •ë³´ë¥¼ ë‹´ìŒ.
+	 * @param opCode : ë™ìž‘ì½”ë“œ ( 1 : íŒŒì¼ì „ì†¡ / 2 : íŒŒì¼ ë‹¤ìš´ë¡œë“œ / 3 : íŒŒì¼ì •ë³´ ì½ê¸°
 	 */
 	public Payload(){
 		
 	}
 	
 	/**
-	 * ?„œë²„ì? ?†µ?‹ ?— ?´?š©?˜?Š” payload ?— ?•„?š”?•œ ? •ë³´ë?? ?‹´?Œ.
-	 * @param opCode : ?™?ž‘ì½”ë“œ ( 1 : ?ŒŒ?¼? „?†¡ / 2 : ?ŒŒ?¼ ?‹¤?š´ë¡œë“œ / 3 : ?ŒŒ?¼? •ë³? ?½ê¸?
+	 * ì„œë²„ì™€ í†µì‹ ì— ì´ìš©ë˜ëŠ” payload ì— í•„ìš”í•œ ì •ë³´ë¥¼ ë‹´ìŒ.
+	 * @param opCode : ë™ìž‘ì½”ë“œ ( 1 : íŒŒì¼ì „ì†¡ / 2 : íŒŒì¼ ë‹¤ìš´ë¡œë“œ / 3 : íŒŒì¼ì •ë³´ ì½ê¸°
 	 */
 	public Payload(int opCode){
 		this.opCode = opCode;
 	}
 	
 	/**
-	 * ?„œë²„ì? ?†µ?‹ ?— ?´?š©?˜?Š” payload ?— ?•„?š”?•œ ? •ë³´ë?? ?‹´?Œ.
-	 * @param opCode : ?™?ž‘ì½”ë“œ ( 1 : ?ŒŒ?¼? „?†¡ / 2 : ?ŒŒ?¼ ?‹¤?š´ë¡œë“œ / 3 : ?ŒŒ?¼? •ë³? ?½ê¸?
-	 * @param authCode : ?¸ì¦ì½”?“œ ( mobile ?—?„œ ?ƒ?„± )
+	 * ì„œë²„ì™€ í†µì‹ ì— ì´ìš©ë˜ëŠ” payload ì— í•„ìš”í•œ ì •ë³´ë¥¼ ë‹´ìŒ.
+	 * @param opCode : ë™ìž‘ì½”ë“œ ( 1 : íŒŒì¼ì „ì†¡ / 2 : íŒŒì¼ ë‹¤ìš´ë¡œë“œ / 3 : íŒŒì¼ì •ë³´ ì½ê¸°
+	 * @param authCode : ì¸ì¦ì½”ë“œ ( mobile ì—ì„œ ìƒì„± )
 	 */
 	public Payload(int opCode, int authCode){
 		this.opCode = opCode;

@@ -4,24 +4,29 @@ import java.io.File;
 import java.io.Serializable;
 
 /*
- * ?‘?„±?¼ : 14.06.24 
- * ?‘?„±? : ì¡°ì˜ë¯?
+ * ì‘ì„±ì¼ : 14.06.24 
+ * ì‘ì„±ì : ì¡°ì˜ë¯¼
  * 
  */
 
 public class Snapshot implements Serializable{
 	private int id;
-	private int ssNumber; // Snapshot ?˜ ë²ˆí˜¸
-	private int ssTotal;  // Snapshot ?´ ë¶„í•  ?••ì¶•ì‹œ ë¶„í• ?œ ê°œìˆ˜
+	private int ssNumber; // Snapshot ì˜ ë²ˆí˜¸
+	private int ssTotal;  // Snapshot ì´ ë¶„í•  ì••ì¶•ì‹œ ë¶„í• ëœ ê°œìˆ˜
 	private int state; // Snapshot state
 	private int date;
 	private int type;
-	private String path; // Snapshot?´ ì¡´ì¬?•˜?Š” ê²½ë¡œ
+	private String path; // Snapshotì´ ì¡´ì¬í•˜ëŠ” ê²½ë¡œ
 
 	public Snapshot(){
 		
 	}
 	
+	/**
+	 * 
+	 * @param id snapshot ID(user ID)
+	 * @param ssNumber 
+	 */
 	public Snapshot(int id, int ssNumber){
 		this.id = id;
 		this.ssNumber = ssNumber;
@@ -31,10 +36,10 @@ public class Snapshot implements Serializable{
 	 * 
 	 * @param id
 	 * @param ssNumber
-	 * @param state
-	 * @param date
-	 * @param type
-	 * @param path ?Š¤?ƒ…?ƒ·?´ ì¡´ì¬?•˜?Š” ?””? ‰?† ë¦? ê²½ë¡œ
+	 * @param state 
+	 * @param date ìŠ¤ëƒ…ìƒ· ìƒì„± ë‚ ì§œ
+	 * @param type 
+	 * @param path ìŠ¤ëƒ…ìƒ·ì´ ì¡´ì¬í•˜ëŠ” ë””ë ‰í† ë¦¬ ê²½ë¡œ
 	 */
 	public Snapshot(int id, int ssNumber, int state, int date, int type, String path){
 		this.id = id;
@@ -45,7 +50,7 @@ public class Snapshot implements Serializable{
 		this.path = path;
 		
 		File f = new File(path);
-		this.ssTotal =  f.list().length; // ? „ì²? snapshot ë¶„í• ?‚¬?´ì¦? ì´ˆê¸°?™”
+		this.ssTotal =  f.list().length; // ì „ì²´ snapshot ë¶„í• ì‚¬ì´ì¦ˆ ì´ˆê¸°í™”
 		
 	}
 	
