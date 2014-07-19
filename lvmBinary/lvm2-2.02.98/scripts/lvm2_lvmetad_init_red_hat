@@ -35,7 +35,7 @@
 
 DAEMON=lvmetad
 
-exec_prefix=${prefix}
+exec_prefix=
 sbindir=${exec_prefix}/sbin
 
 LOCK_FILE="/var/lock/subsys/$DAEMON"

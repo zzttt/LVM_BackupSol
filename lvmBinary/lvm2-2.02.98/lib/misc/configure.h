@@ -5,7 +5,7 @@
 /* #undef CLOSEDIR_VOID */
 
 /* Define to 1 to include built-in support for clustered LVM locking. */
-/* #undef CLUSTER_LOCKING_INTERNAL */
+#define CLUSTER_LOCKING_INTERNAL 1
 
 /* Path to clvmd binary. */
 /* #undef CLVMD_PATH */
@@ -49,19 +49,19 @@
 #define DEFAULT_DM_RUN_DIR "/var/run"
 
 /* Name of default locking directory. */
-#define DEFAULT_LOCK_DIR "/data/lvm/lock"
+#define DEFAULT_LOCK_DIR "/var/lock/lvm"
 
 /* Default directory to keep PID files in. */
 #define DEFAULT_PID_DIR "/var/run"
 
 /* Default LVM run directory. */
-#define DEFAULT_RUN_DIR "/data/lvm/run"
+#define DEFAULT_RUN_DIR "/var/run/lvm"
 
 /* Define to 0 to reinstate the pre-2.02.54 handling of unit suffixes. */
 /* #undef DEFAULT_SI_UNIT_CONSISTENCY */
 
 /* Path to LVM system directory. */
-#define DEFAULT_SYS_DIR "/system/xbin/etc"
+#define DEFAULT_SYS_DIR "/etc/lvm"
 
 /* Define to 1 to enable LVM2 device-mapper interaction. */
 #define DEVMAPPER_SUPPORT 1
@@ -251,7 +251,7 @@
 /* #undef HAVE_REALTIME */
 
 /* Define to 1 if you have the `rl_completion_matches' function. */
-/* #undef HAVE_RL_COMPLETION_MATCHES */
+#define HAVE_RL_COMPLETION_MATCHES 1
 
 /* Define to 1 if you have the `rmdir' function. */
 #define HAVE_RMDIR 1
@@ -287,7 +287,7 @@
 #define HAVE_SIGNAL_H 1
 
 /* Define to 1 if you have the `socket' function. */
-/* #undef HAVE_SOCKET */
+#define HAVE_SOCKET 1
 
 /* Define to 1 if `stat' has the bug that it succeeds when given the
    zero-length file name argument. */
@@ -392,7 +392,7 @@
 /* #undef HAVE_SYS_SEM_H */
 
 /* Define to 1 if you have the <sys/socket.h> header file. */
-/* #undef HAVE_SYS_SOCKET_H */
+#define HAVE_SYS_SOCKET_H 1
 
 /* Define to 1 if you have the <sys/statvfs.h> header file. */
 #define HAVE_SYS_STATVFS_H 1
@@ -410,7 +410,7 @@
 /* #undef HAVE_SYS_UIO_H */
 
 /* Define to 1 if you have the <sys/un.h> header file. */
-/* #undef HAVE_SYS_UN_H */
+#define HAVE_SYS_UN_H 1
 
 /* Define to 1 if you have the <sys/utsname.h> header file. */
 #define HAVE_SYS_UTSNAME_H 1
@@ -466,7 +466,7 @@
 /* #undef LVMETAD_SUPPORT */
 
 /* Path to lvm binary. */
-#define LVM_PATH "/lvm/sbin/lvm"
+#define LVM_PATH "/sbin/lvm"
 
 /* Define to 1 if `major', `minor', and `makedev' are declared in <mkdev.h>.
    */
@@ -504,13 +504,13 @@
 #define PACKAGE_VERSION ""
 
 /* Define to 1 to include built-in support for GFS pool metadata. */
-/* #undef POOL_INTERNAL */
+#define POOL_INTERNAL 1
 
 /* Define to 1 to include built-in support for raid. */
 #define RAID_INTERNAL 1
 
 /* Define to 1 to include the LVM readline shell. */
-/* #undef READLINE_SUPPORT */
+#define READLINE_SUPPORT 1
 
 /* Define to 1 to include built-in support for replicators. */
 /* #undef REPLICATOR_INTERNAL */

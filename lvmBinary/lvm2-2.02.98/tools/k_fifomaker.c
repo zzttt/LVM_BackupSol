@@ -23,9 +23,16 @@ read cmd, cmd_pipe
 #define MAX_BUFSZ 2048
 #define CMDFIFO "cmd_pipe"
 #define RESULTFIFO "result_pipe"
+/*
 #define APP_PATH "/data/data/net.kkangsworld.lvmexec/"
 #define tmpcmdfifo "/data/data/net.kkangsworld.lvmexec/cmd_pipe"
 #define tmpresultfifo "/data/data/net.kkangsworld.lvmexec/result_pipe"
+*/
+
+#define APP_PATH "/data/data/com.example.timetraveler/"
+#define tmpcmdfifo "/data/data/com.example.timetraveler/cmd_pipe"
+#define tmpresultfifo "/data/data/com.example.timetraveler/result_pipe"
+
 
 void errquit(char *mesg) { perror(mesg); exit(1); }
 void thr_errquit(char* msg, int errcode)
@@ -48,21 +55,21 @@ int write_fifo(const char* buffer) {
 		errquit("result_fifo open fail");
 
 	else {
-		printf("[write_fifo][result] : %s\n", buffer);
-		printf("[wrtie_fifo][buffsize] : %d\n", strlen(buffer));
-		printf("resultwd opened. with FD = %d\n", resultwd);
+		printf("[buffer] : %s\n", buffer);
+		//printf("[wrtie_fifo][buffsize] : %d\n", strlen(buffer));
+		//printf("resultwd opened. with FD = %d\n", resultwd);
 		
 		//write fifo a result
 		//while(1) {
-		if(nbytes = write(resultwd, buffer, strlen(buffer))) {
+		if(nbytes = write(resultwd, buffer, strlen(buffer)) < 0) {
 			errquit("[result_fifo write fail :]");
-			//close(resultwd);
+			close(resultwd);
 			//unlink(tmpresultfifo);
 		}
 		else {
 			printf("nbytes = %d\n", nbytes);
 			//printf("%s\n", strerror(errno));
-			perror("[error]:");
+			//perror("[error]:");
 			close(resultwd);
 			return 1;
 		}
@@ -98,40 +105,6 @@ int run_fork_fifo(int rw, int pipefd[])
 
 }
 
-int test_func() {
-		printf("hello world");
-}
-
-//function pointer needs
-//int run_thread_fifo(int (*func
-/*
-int run_thread_fifo(int rw)
-{
-	pthread_t tid[10];
-	int status;
-
-	if(rw==1)
-	{
-		if((status=pthread_create(&tid[1], NULL, read_fifo, NULL))!=0)
-			thr_errquit("ERR! pthread_create with read_fifo\n", errno);
-		pthread_join(&tid[1], NULL);
-		log_print("Use pthread read_fifo\n");
-		return 1;
-	}
-
-	else if(rw==0)
-	{
-		if((status=pthread_create(&tid[0], NULL, write_fifo, NULL))!=0)
-			thr_errquit("ERR! pthread_create with write_fifo\n", errno);
-		pthread_join(&tid[0], NULL);
-		log_print("Use pthread write_fifo\n");
-		return 0;
-	}
-
-	return -1;
-}
-*/
-
 //int read_fifo() {
 /* 실질적으로 pipe를 읽는 function run_fork_fifo()로 부터 pmsg addr넘겨 받음 */
 //int read_fifo(pipe_msg *pmsg) {
@@ -145,7 +118,7 @@ int read_fifo(int pipefd[]) {
 	if(cmdwd == -1)
 		errquit("cmdwd open fail");
 	else
-		log_print("[wait for command! use PIPE! whiling...]");
+		printf("[wait for command! use PIPE! whiling...]");
 
 	while(1) {
 	//read fifo a cmd input
@@ -174,7 +147,7 @@ int read_fifo(int pipefd[]) {
 	값을 write_fifo()에 넘겨서 쓰도록 한다.
  */
 
-int writeresultmsg(const char* format, ...)
+int write_pipe_resultmsg(const char* format, ...)
 {
 	char buffer[4096];
 	va_list args;

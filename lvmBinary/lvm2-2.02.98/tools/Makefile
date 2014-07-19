@@ -82,7 +82,7 @@ INSTALL_LVM_TARGETS = install_tools_dynamic
 INSTALL_DMSETUP_TARGETS = install_dmsetup_dynamic
 INSTALL_CMDLIB_TARGETS = install_cmdlib_dynamic install_cmdlib_include 
 
-ifeq ("yes", "yes")
+ifeq ("no", "yes")
   TARGETS += lvm.static
   TARGETS_DM += dmsetup.static
   INSTALL_LVM_TARGETS += install_tools_static

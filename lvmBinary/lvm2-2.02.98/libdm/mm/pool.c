@@ -83,7 +83,9 @@ void dm_pools_check_leaks(void)
 
 	if (dm_list_empty(&_dm_pools))
 		return;
-
+	
+		//return;
+		
 	log_error("You have a memory leak (not released memory pool):");
 	dm_list_iterate_items(p, &_dm_pools) {
 #ifdef DEBUG_POOL

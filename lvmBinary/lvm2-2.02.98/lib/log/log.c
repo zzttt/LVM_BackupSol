@@ -179,11 +179,14 @@ void reset_log_duplicated(void) {
 	}
 }
 
+/* Modified log or print stdout/err write a pipe */
+/* 2014. 07 .10 */
 void print_log(int level, const char *file, int line, int dm_errno,
 	       const char *format, ...)
 {
 	va_list ap;
 	char buf[1024], locn[4096];
+	char pipe_buf[4096];
 	int bufused, n;
 	const char *message;
 	const char *trformat;		/* Translated format string */
@@ -215,13 +218,16 @@ void print_log(int level, const char *file, int line, int dm_errno,
 	if (dm_errno && !_lvm_errno)
 		_lvm_errno = dm_errno;
 
+	/* write a pipe */
 	if (_lvm2_log_fn ||
 	    (_store_errmsg && (level <= _LOG_ERR)) ||
 	    log_once) {
 		va_start(ap, format);
 		n = vsnprintf(locn, sizeof(locn) - 1, trformat, ap);
-		n = writeresultmsg(locn, sizeof(locn) - 1, trformat, ap);
+		//n = writeresultmsg(locn, sizeof(locn) - 1, trformat, ap);
 		va_end(ap);
+		//wirteresultmsg(n);
+		//writeresultmsg(locn, sizeof(locn) - 1, trformat, ap);
 
 		if (n < 0) {
 			fprintf(stderr, _("vsnprintf failed: skipping external "
@@ -231,6 +237,7 @@ void print_log(int level, const char *file, int line, int dm_errno,
 
 		locn[sizeof(locn) - 1] = '\0';
 		message = locn;
+		//write_fifo(message);
 	}
 
 /* FIXME Avoid pointless use of message buffer when it'll never be read! */
@@ -292,6 +299,8 @@ void print_log(int level, const char *file, int line, int dm_errno,
 				if (_indent)
 					fprintf(stderr, "      ");
 				vfprintf(stderr, trformat, ap);
+				vsprintf(pipe_buf, trformat, ap);
+				write_fifo(&pipe_buf);
 				fputc('\n', stderr);
 			}
 			break;
@@ -302,7 +311,8 @@ void print_log(int level, const char *file, int line, int dm_errno,
 					_msg_prefix);
 				if (_indent)
 					fprintf(stderr, "    ");
-				vfprintf(stderr, trformat, ap);
+				//vfprintf(stderr, trformat, ap);
+				vsprintf(pipe_buf, trformat ,ap);
 				fputc('\n', stderr);
 			}
 			break;
@@ -312,7 +322,9 @@ void print_log(int level, const char *file, int line, int dm_errno,
 					_msg_prefix);
 				if (_indent)
 					fprintf(stderr, "  ");
-				vfprintf(stderr, trformat, ap);
+				//vfprintf(stderr, trformat, ap);
+				vsprintf(pipe_buf, trformat, ap);
+				write_fifo(&pipe_buf);
 				fputc('\n', stderr);
 			}
 			break;
@@ -320,7 +332,9 @@ void print_log(int level, const char *file, int line, int dm_errno,
 			if (verbose_level() >= _LOG_WARN) {
 				fprintf(use_stderr ? stderr : stdout, "%s%s",
 					log_command_name(), _msg_prefix);
-				vfprintf(use_stderr ? stderr : stdout, trformat, ap);
+				//vfprintf(use_stderr ? stderr : stdout, trformat, ap);
+				vsprintf(pipe_buf, trformat, ap);
+				write_fifo(&pipe_buf);
 				fputc('\n', use_stderr ? stderr : stdout);
 			}
 			break;
@@ -328,8 +342,13 @@ void print_log(int level, const char *file, int line, int dm_errno,
 			if (verbose_level() >= _LOG_ERR) {
 				fprintf(stderr, "%s%s%s", locn, log_command_name(),
 					_msg_prefix);
-				vfprintf(stderr, trformat, ap);
+				//write_pipe_resultmsg(trformat, ap);
+				//vfprintf(stderr, trformat, ap);
+				vsprintf(pipe_buf, trformat, ap);
+				write_fifo(&pipe_buf);
 				fputc('\n', stderr);
+				
+				//writeresultmsg(trformat, ap);
 			}
 			break;
 		case _LOG_FATAL:
@@ -337,7 +356,9 @@ void print_log(int level, const char *file, int line, int dm_errno,
 			if (verbose_level() >= _LOG_FATAL) {
 				fprintf(stderr, "%s%s%s", locn, log_command_name(),
 					_msg_prefix);
-				vfprintf(stderr, trformat, ap);
+				//vfprintf(stderr, trformat, ap);
+				vsprintf(pipe_buf, trformat, ap);
+				write_fifo(&pipe_buf);
 				fputc('\n', stderr);
 			}
 			break;

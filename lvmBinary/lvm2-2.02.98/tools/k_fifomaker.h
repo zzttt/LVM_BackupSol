@@ -28,7 +28,7 @@ int write_fifo(const char* buffer);
 //int read_fifo(pipe_msg *pmsg);
 //int run_fork_fifo(int rw);
 int read_fifo(int pipefd[]);
-int writeresultmsg(const char* format, ...);
+int write_pipe_resultmsg(const char* format, ...);
 #ifdef __cplusplus
 }
 #endif

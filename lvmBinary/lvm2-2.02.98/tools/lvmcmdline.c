@@ -41,7 +41,7 @@ extern char *optarg;
 #  define OPTIND_INIT 1
 #endif
 
-#define tmpcmdfifo "/data/data/net.kkangsworld.lvmexec/cmd_pipe"
+#define tmpcmdfifo "/data/data/com.example.timetraveler/cmd_pipe"
 
 /*
  * Table of valid switches
@@ -1493,10 +1493,7 @@ int lvm2_main(int argc, char **argv)
 	const char *base;
 	int ret, alias = 0;
 	struct cmd_context *cmd;
-	int fifo_ret;
-
 	pipe_msg pmsg;
-	int pipefd[2];
 	int cmdwd;
 
 
@@ -1506,15 +1503,6 @@ int lvm2_main(int argc, char **argv)
 
 	if(strcmp(argv[0], "lvm"))
 			alias = 1;
-	/*
-	// user for write a result of commands (pipe0 == write result)
-	if(run_thread_fifo(0)!=-1)
-	log_print("Make a fifo worked!!");
-	else
-	log_error("Failed make a fifo");
-	run_thread_fifo(1);
-	 */
-
 	/* Mod 2014.07.03
 	 * no check std fd
 	 */
@@ -1536,40 +1524,6 @@ int lvm2_main(int argc, char **argv)
 			log_sys_error("unsetenv", "LVM_DID_EXEC");
 	}
 
-	// cmd->argv = argv;
-	// lvm_register_commands();
-	//run_fork_fifo(0); //write fifo
-
-
-	/* fork() read cmd_pipe
-	   if(run_fork_fifo(1, &pmsg)) {
-	//read fifo pipe cmd_pipe
-	//into pipe command
-	argv = pmsg->cmd;
-	//argc = pmsg->argc;
-	log_print("USE PIPE : %s\n", pmsg->cmd);
-	}*/
-
-	if(pipe(pipefd) == -1)
-		log_error("internal pipe create error");
-	//run_fork_fifo(1, &pmsg);
-	//run_fork_fifo(1, pipefd);
-	/* pid_t pid;
-	   pid = fork();
-	   if(pid> 0) {
-	   close(pipefd[0]);
-	//read_fifo(pipefd);
-	}
-	else if(pid == 0){
-	close(pipefd[1]);
-	//while(1) {
-	if(read(pipefd[0], pmsg->cmd, sizeof(pmsg->cmd)) < 0)
-	log_error("internal pipe reading error");
-	log_print("read from cmd_pipe");
-	printf("[lvm2_main()] : %s\n", pmsg->cmd);
-	//} */
-
-
 	/* "version" command is simple enough so it doesn't need any complex init */
 	if (!alias && argc > 1 && !strcmp(argv[1], "version"))
 		return lvm_return_code(version(NULL, argc, argv));
@@ -1579,14 +1533,20 @@ int lvm2_main(int argc, char **argv)
 
 	cmd->argv = argv;
 	lvm_register_commands();
-	log_print("lvm_register_command executed");
+	//log_print("lvm_register_command executed");
 
 	/* lvm pipe commuication init */
+	if(mkfifo(tmpcmdfifo, 0777) == -1 && errno != EEXIST)
+		log_warn("cmdfifo make failed, already cmdfifo?");
+
+	/* open pipe with app to lvm */	
 	cmdwd = open(tmpcmdfifo, O_RDWR);
-	if(cmdwd == -1)
+	if(cmdwd == -1) {
 		log_error("cmdwd open fail");
+		return;
+	}
 	else
-		log_print("[waiting for command !]");
+		printf("[waiting for command !] ");
 
 	while(1) {
 		printf("alias %d, argc %d\n", alias, argc);
@@ -1611,7 +1571,7 @@ int lvm2_main(int argc, char **argv)
 					//continue;
 				}
 				else {
-					log_print("[in lvm_main] cmd : %s\n argc : %d\n argv : %s\n", pmsg.cmd, argc, argv[0]);
+					printf("[in lvm_main] cmd : %s\n argc : %d\n argv : %s\n", pmsg.cmd, argc, argv[0]);
 				}
 			}
 		//}

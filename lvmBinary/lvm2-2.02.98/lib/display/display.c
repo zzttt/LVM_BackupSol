@@ -475,6 +475,7 @@ int pvdisplay_short(const struct cmd_context *cmd __attribute__((unused)),
 	return 0;
 }
 
+/* Modified 2014. 07. 07 */
 void lvdisplay_colons(const struct logical_volume *lv)
 {
 	/*add snapshot information to colons */
@@ -483,22 +484,22 @@ void lvdisplay_colons(const struct logical_volume *lv)
 	struct lv_segment *snap_seg = NULL;
 	percent_t snap_percent;
 
-	inkernel = lv_info(lv->vg->cmd, lv, 0, &info, 1, 1) && info.exists;
+	inkernel = lv_info(lv->vg->cmd, lv, 0, &info, 1, 0) && info.exists;
 
 	/* snapshot check use find_cow */	
-	if(snap_seg = find_cow(lv)) {
+	/*if(snap_seg = find_cow(lv)) {
 		if(inkernel && 
 			(snap_active = lv_snapshot_percent(snap_seg->cow, &snap_percent)))
 			if(snap_percent == PERCENT_INVALID)
 				snap_active = 0;
-	}
+	}*/
 	//log_print to changed
 		
 	/*    0  1  2         3     4                 5           6
 	   /dev/vg/appdata : vg : Read/Wrtie : Open Count : Size(need /2) : LE Count : 
 	   Data% : -1 : lv->alloc not 0 : lv->read_ahead, 
 	   Block device(inkernel infor.major, inkernel infor.minor)	 */
-	writeresultmsg("%s%s/%s:%s:%" PRIu64 ":%d:-1:%d:%" PRIu64 "KB:%d:%.2f%:-1:%d:%d:%d:%d",
+	log_print("%s%s/%s:%s:%" PRIu64 ":%d:-1:%d:%" PRIu64 "KB:%d:%.2f%:-1:%d:%d:%d:%d",
 		  lv->vg->cmd->dev_dir,
 		  lv->vg->name,
 		  lv->name,
@@ -507,7 +508,7 @@ void lvdisplay_colons(const struct logical_volume *lv)
 		  ((inkernel && info.read_only) ? 4 : 0), inkernel ? 1 : 0,
 		  /* FIXME lv->lv_number,  */
 		  inkernel ? info.open_count : 0, (lv->size)/2, lv->le_count,
-		   snap_active ? percent_to_float(snap_percent) : -2,
+		  snap_active ? percent_to_float(snap_percent) : -2,
 		  /* FIXME Add num allocated to struct! lv->lv_allocated_le, */
 		  (lv->alloc == ALLOC_CONTIGUOUS ? 2 : 0), lv->read_ahead,
 		  inkernel ? info.major : -1, inkernel ? info.minor : -1);
@@ -542,7 +543,7 @@ int lvdisplay_full(struct cmd_context *cmd,
 	else
 		access_str = "read only";
 
-	writeresultmsg("--- Logical volume ---");
+	log_print("--- Logical volume ---");
 
 	lvm1compat = find_config_tree_int(cmd, "global/lvdisplay_shows_full_device_path",
 					  DEFAULT_LVDISPLAY_SHOWS_FULL_DEVICE_PATH);
@@ -869,7 +870,7 @@ void vgdisplay_colons(const struct volume_group *vg)
 		return;
 	}
 
-	writeresultmsg("%s:%s:%" PRIu64 ":-1:%u:%u:%u:-1:%u:%u:%u:%" PRIu64 ":%" PRIu32
+	log_print("%s:%s:%" PRIu64 ":-1:%u:%u:%u:-1:%u:%u:%u:%" PRIu64 ":%" PRIu32
 		  ":%u:%u:%u:%s",
 		vg->name,
 		access_str,
