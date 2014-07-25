@@ -1,0 +1,28 @@
+package com.FrameWork;
+
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+
+public 
+class readHandler extends Handler{
+	
+	private String readResult;
+	
+	public readHandler(){
+		
+	}
+	
+	@Override	
+	public void handleMessage(Message msg) {
+		Log.i("LVMJava", "ResultReader Handler result get");
+		switch(msg.what) {
+		case 0: //case 0
+			readResult = (String)msg.obj;
+			Log.d("inMain", readResult);
+			break;
+		}	
+			
+	}
+
+};

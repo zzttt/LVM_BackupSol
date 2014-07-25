@@ -1,0 +1,9 @@
+package com.FrameWork;
+
+public class ComExec {
+
+	
+	public ComExec(){
+		
+	}
+}

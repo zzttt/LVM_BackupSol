@@ -1,0 +1,17 @@
+package com.FileManager;
+
+public class DirectoryViewer {
+	
+	private String dirLoc = null;
+	
+	public DirectoryViewer(String dirLoc){
+		
+		
+	}
+	
+	
+	
+	
+	
+
+}

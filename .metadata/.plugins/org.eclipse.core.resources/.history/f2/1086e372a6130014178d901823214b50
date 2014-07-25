@@ -1,0 +1,176 @@
+package com.example.timetraveler;
+
+import java.util.ArrayList;
+
+import com.example.timetraveler.BaseExpandableAdapter.ViewHolder;
+
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+public class SnapListExpandableAdapter extends BaseExpandableListAdapter{
+
+	
+	private ArrayList<String> groupList = null;
+	private ArrayList<ArrayList<String>> childList = null;
+	private ArrayList<String> destList = null;
+	private ArrayList<ArrayList<String>> mchildDestList = null;
+	private LayoutInflater inflater = null;
+	private ViewHolder viewHolder = null;
+	private int menuNumber;
+
+	public SnapListExpandableAdapter(Context c, ArrayList<String> groupList,
+			ArrayList<ArrayList<String>> childList, ArrayList<String> destList, ArrayList<ArrayList<String>> mchildDestList
+			,int menuNumber) {
+		super();
+
+		this.inflater = LayoutInflater.from(c);
+		this.groupList = groupList;
+		this.childList = childList;
+		this.destList = destList;
+		this.mchildDestList = mchildDestList;
+		this.menuNumber = menuNumber;
+	}
+	
+	public String getDesc(int groupPosition) {
+		return destList.get(groupPosition);
+	}
+	
+	public String getChildDesc(int groupPosition,int childPosition) {
+		return mchildDestList.get(groupPosition).get(childPosition);
+	}
+	
+	@Override
+	public String getChild(int groupPosition, int childPosition) {
+		return childList.get(groupPosition).get(childPosition);
+	}
+
+	@Override
+	public long getChildId(int groupPosition, int childPosition) {
+		return groupPosition;
+	}
+
+	@Override
+	public View getChildView(int groupPosition, int childPosition,
+			boolean isLastChild, View convertView, ViewGroup parent) {
+		// TODO Auto-generated method stub
+		View v = convertView;
+
+		if (v == null) {
+			viewHolder = new ViewHolder();
+			v = inflater.inflate(R.layout.list_row, null);
+
+			viewHolder.tv_childName = (TextView) v.findViewById(R.id.tv_child);
+			viewHolder.tv_groupName = (TextView) v.findViewById(R.id.tv_group);
+			viewHolder.tv_description = (TextView) v.findViewById(R.id.tv_desc);
+
+			// Child View Text의 margin - left 설정
+			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			lp.setMargins(20, 0, 0, 0);
+			viewHolder.tv_childName.setLayoutParams(lp);
+			viewHolder.tv_childName
+					.setLayoutParams(new LinearLayout.LayoutParams(
+							LayoutParams.MATCH_PARENT,
+							LayoutParams.WRAP_CONTENT));
+
+			viewHolder.tv_description.setPadding(0, 5, 0, 15);
+			viewHolder.tv_description.setTextSize(18);
+			viewHolder.tv_description.setLayoutParams(new LinearLayout.LayoutParams(
+					LayoutParams.MATCH_PARENT,
+					LayoutParams.WRAP_CONTENT));
+
+			viewHolder.tv_groupName.setVisibility(View.GONE);
+
+			v.setTag(viewHolder);
+		} else {
+			viewHolder = (ViewHolder) v.getTag();
+		}
+
+		viewHolder.tv_childName.setText(getChild(groupPosition, childPosition));
+		String desc = getChildDesc(groupPosition, childPosition);
+		if(desc.equals("s") || desc.equals("d")){
+			viewHolder.tv_description.setVisibility(View.GONE);
+			viewHolder.tv_childName.setPadding(0, 15, 0, 15);
+		}else{
+			viewHolder.tv_description
+			.setText(desc);
+		}
+		
+		return v;
+	}
+
+	@Override
+	public int getChildrenCount(int arg0) {
+		// TODO Auto-generated method stub
+		return this.childList.size();
+	}
+
+	@Override
+	public String getGroup(int groupPosition) {
+		// TODO Auto-generated method stub
+		return this.groupList.get(groupPosition);
+	}
+
+	@Override
+	public int getGroupCount() {
+		// TODO Auto-generated method stub
+		return this.groupList.size();
+	}
+
+	@Override
+	public long getGroupId(int arg0) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+		View v = convertView;
+
+		viewHolder = (ViewHolder) v.getTag();
+
+
+		// 그룹을 펼칠때와 닫을때 아이콘을 변경해 준다.
+		if (isExpanded) {
+			viewHolder.iv_image.setBackgroundColor(Color.GREEN);
+		} else {
+			viewHolder.iv_image.setBackgroundColor(Color.WHITE);
+		}
+
+		viewHolder.tv_groupName.setText(getGroup(groupPosition));
+
+		return v;
+	}
+
+	@Override
+	public boolean hasStableIds() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isChildSelectable(int arg0, int arg1) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+
+	class ViewHolder {
+		public ImageView iv_image;
+		public TextView tv_groupName;
+		public TextView tv_description;
+		public TextView tv_childName;
+	}
+
+}

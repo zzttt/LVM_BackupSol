@@ -1,0 +1,173 @@
+package com.example.timetraveler;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+
+import com.FileManager.FileInfo;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class RecvActivity extends Activity {
+
+	final static int RECV_APP = 1;
+	final static int RECV_USER_DATA = 2;
+	final static int RECV_SETTINGS = 3;
+	final static int RECV_ALL = 4;
+	
+	private int func_code = 0;
+	
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_recv);
+		
+		String sName = getIntent().getStringExtra("sName");
+		String mName = getIntent().getStringExtra("mName");
+		
+		/*
+		 *  sName ( snapshot name )
+		 *  mName ( selected menu name )
+		 *  sName 데이터에서 mName 에 해당하는 데이터를 읽어온다.
+		 */
+		
+		if(sName.equals("어플리케이션")){ // 어플리케이션 복원
+			func_code = RECV_APP;
+		}else if(sName.equals("사용자 데이터")){ // 사용자 데이터 복원
+			func_code = RECV_USER_DATA;
+		}else if(sName.equals("전화번호부, SMS, 설정 복원")){ // 전화, sms , 설정 복원
+			func_code = RECV_SETTINGS;
+		}else{ // 전체 복원
+			func_code = RECV_ALL;
+		}
+
+		switch(func_code){
+		case RECV_ALL:
+			break;
+		case RECV_APP:
+			break;
+		case RECV_USER_DATA:
+			break;
+		case RECV_SETTINGS:
+			break;
+		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.recv, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
+	
+	// 복원항목 리스트 어댑터
+	private class ItemListArrayAdapter extends ArrayAdapter<String> {
+
+		HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
+
+		public ItemListArrayAdapter(Context context, int textViewResourceId,
+				List<String> objects) {
+			super(context, textViewResourceId, objects);
+			for (int i = 0; i < objects.size(); ++i) {
+				mIdMap.put(objects.get(i), i);
+			}
+		}
+
+		@Override
+		public long getItemId(int position) {
+			String item = getItem(position);
+			return mIdMap.get(item);
+		}
+
+		@Override
+		public boolean hasStableIds() {
+			return true;
+		}
+
+	}
+
+	
+	public void mOnClick(View v) {
+		switch (v.getId()) {
+		case R.id.startRecv: // startRecovery
+			AlertDialog.Builder adb = new AlertDialog.Builder(this);
+			adb.setTitle("Notice");
+			adb.setMessage("복원을 진행하시겠습니까?");
+			final Dialog mDialog = adb.create();
+
+			adb.setPositiveButton("복원시작", new OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) {
+					// TODO Auto-generated method stub
+					mDialog.dismiss();
+
+					ProgressDialog progressDialog;
+					progressDialog = new ProgressDialog(RecvActivity.this);
+					progressDialog
+							.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+					progressDialog.setMessage("복원 중 입니다...");
+					progressDialog.setCancelable(true);
+					progressDialog.show();
+				}
+
+			});
+
+			adb.setNegativeButton("취소", new OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					mDialog.dismiss();// 종료
+				}
+
+			});
+			
+			
+			adb.show();
+			
+
+		}
+
+	}
+	
+}

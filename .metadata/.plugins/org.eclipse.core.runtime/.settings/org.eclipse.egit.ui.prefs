@@ -1,2 +1,4 @@
-commit_dialog_history_messages=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<messages>\r\n<message>\uCD5C\uC2E0\uD654&\#x0A;</message>\r\n<message>ss</message>\r\n<message>test\#2</message>\r\n<message>Androd Time Traveler</message>\r\n</messages>
+commit_dialog_history_messages=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<messages>\r\n<message>MainActivity 860~&\#x0A;&\#x0A;ListView \uC218\uC815</message>\r\n<message>gPosition \uC5D0 \uB530\uB978&\#x0A;Device / Server \uAD6C\uBD84</message>\r\n<message>\uCD5C\uC2E0\uD654&\#x0A;</message>\r\n<message>ss</message>\r\n<message>test\#2</message>\r\n<message>Androd Time Traveler</message>\r\n</messages>
 eclipse.preferences.version=1
+resourcehistory_graph_split=500,500
+resourcehistory_rev_split=700,300

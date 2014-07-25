@@ -1,0 +1,13 @@
+package com.FrameWork;
+
+public class ComExec {
+
+	private String command;
+
+	public ComExec(){
+		
+	}
+	
+	
+	
+}

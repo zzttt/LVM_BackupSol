@@ -1,0 +1,26 @@
+package com.FrameWork;
+
+import java.io.IOException;
+
+public class ComExec {
+
+	private String command;
+	private Process p;
+	private InputStream is;
+	private OutputStream os;
+	
+	
+	public ComExec(){
+		try {
+			this.p = new ProcessBuilder("su").start();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	
+	
+}

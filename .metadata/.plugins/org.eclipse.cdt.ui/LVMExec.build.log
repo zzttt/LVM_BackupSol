@@ -1,9 +1,9 @@
-21:45:33 **** Incremental Build of configuration Default for project LVMExec ****
+05:43:29 **** Incremental Build of configuration Default for project LVMExec ****
 sh ndk-build all 
 Cannot run program "sh": Launching failed
 
 Error: Program "sh" not found in PATH
-PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
+PATH=[C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\cmd;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\platform-tools\;C:\MinGW\bin]
 
-21:45:34 Build Finished (took 250ms)
+05:43:30 Build Finished (took 96ms)
 

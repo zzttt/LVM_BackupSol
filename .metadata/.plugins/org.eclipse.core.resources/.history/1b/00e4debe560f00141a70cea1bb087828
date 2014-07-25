@@ -1,0 +1,32 @@
+package com.FileManager;
+
+public class FileInfo {
+
+	private String fType, permission, fSize, mMonth, mDate, fName;
+	
+	public FileInfo(){
+		
+	}
+
+	public FileInfo(String fType, String permission,
+			String mMonth, String mDate, String fName) { // 일반 파일이 아닌경우 Size 가 나오지 않음
+		this.fType = fType;
+		this.permission = permission;
+		this.mMonth = mMonth;
+		this.mDate = mDate;
+		this.fName = fName;
+	}
+	public FileInfo(String fType, String permission, String fSize,
+			String mMonth, String mDate, String fName) {
+		this.fType = fType;
+		this.permission = permission;
+		this.fSize = fSize;
+		this.mMonth = mMonth;
+		this.mDate = mDate;
+		this.fName = fName;
+	}
+
+	
+	
+	
+}

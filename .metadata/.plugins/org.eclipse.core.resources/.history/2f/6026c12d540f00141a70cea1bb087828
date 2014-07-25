@@ -1,0 +1,14 @@
+package com.FileManager;
+
+public class FileInfo {
+
+	public FileInfo(String fType, String permission, String fSize,
+			String mMonth, String mDate, String fName) {
+
+	}
+
+	public FileInfo(String fType, String permission, String fSize,
+			String mMonth, String mDate, String fName) {
+
+	}
+}
