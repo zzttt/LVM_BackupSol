@@ -62,7 +62,7 @@ public class GzipGenerator {
 				out.write(byteArr, 0, readByte);
 			}else{
 				out.write(byteArr, 0, readByte);
-				totalWrite += readByte;
+				totalWrite += readByte; 
 				out.close();
 				System.out.println("make next File!");
 				cmpPartNumber++;
@@ -74,7 +74,7 @@ public class GzipGenerator {
 			
 		}
 		System.out.println(totalWrite);
-		out.close(); // 占쎈솁占쎌뵬占쎌뱽 占쎈뼍占쎌벉
+		out.close(); 
 		in.close();
 	}
 
@@ -127,11 +127,11 @@ public class GzipGenerator {
 
 			System.out.println("file cnt : " + destList.length);
 
-			if (destList[0].getName().contains(".tar")) { // tar 占쎈솁占쎌뵬占쎌벥 �겫袁る막占쎈릍�빊類ㅼ뵬 野껋럩�뒭
+			if (destList[0].getName().contains(".tar")) { // tar 
 				resultFileNm = "snapshot.tar";
 			}
 
-			FileOutputStream out = new FileOutputStream(destDir + resultFileNm); // dest嚥∽옙 占쎈릍�빊占� 占쎈퉸占쎌젫 占쎌뜎 �빊�뮆�젾 (占쎌뵠�뵳袁⑼옙 snapshot占쎌몵嚥∽옙 )
+			FileOutputStream out = new FileOutputStream(destDir + resultFileNm); // dest
 			long writeSize = 0;
 			FileInputStream fis = null;
 			GZIPInputStream gis = null;
@@ -143,7 +143,7 @@ public class GzipGenerator {
 				fis = new FileInputStream(destList[i]);
 				gis = new GZIPInputStream(fis);
 				
-				// �겫袁る막占쎈쭆 占쎈릍�빊類λ솁占쎌뵬占쎌뱽 占쎈릭占쎄돌嚥∽옙 �눧�쓹�뮉占쎈뼄.
+				// �겫袁る막占
 				byte[] byteArr = new byte[1024];
 
 				int readByte = 0;

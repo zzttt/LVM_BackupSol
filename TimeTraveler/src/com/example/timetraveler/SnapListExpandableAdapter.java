@@ -2,6 +2,8 @@ package com.example.timetraveler;
 
 import java.util.ArrayList;
 
+import com.example.timetraveler.BaseExpandableAdapter.ViewHolder;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -17,7 +19,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-public class BaseExpandableAdapter extends BaseExpandableListAdapter {
+public class SnapListExpandableAdapter extends BaseExpandableListAdapter {
+
 
 	private ArrayList<String> groupList = null;
 	private ArrayList<ArrayList<String>> childList = null;
@@ -27,7 +30,7 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
 	private ViewHolder viewHolder = null;
 	private int menuNumber;
 
-	public BaseExpandableAdapter(Context c, ArrayList<String> groupList,
+	public SnapListExpandableAdapter(Context c, ArrayList<String> groupList,
 			ArrayList<ArrayList<String>> childList, ArrayList<String> destList, ArrayList<ArrayList<String>> mchildDestList
 			,int menuNumber) {
 		super();
@@ -206,7 +209,7 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
 
 			viewHolder.tv_groupName.setVisibility(View.GONE);
 
-			v.setTag(viewHolder);
+			v.setTag(viewHolder); 
 		} else {
 			viewHolder = (ViewHolder) v.getTag();
 		}

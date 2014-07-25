@@ -4,21 +4,29 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.io.Reader;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.text.Collator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.logging.Logger;
 
 import net.kkangsworld.lvmexec.pipeWithLVM;
 import net.kkangsworld.lvmexec.readHandler;
 
 import com.AuthcodeGen.CodeGenerator;
+import com.FileManager.FileInfo;
 import com.FileManager.SnapshotDiskManager;
 import com.FrameWork.ConnServer;
 import com.FrameWork.opSwitch;
@@ -26,12 +34,19 @@ import com.FrameWork.opSwitch;
 import android.R.color;
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
@@ -52,8 +67,10 @@ import android.widget.AbsSpinner;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
@@ -61,6 +78,7 @@ import android.widget.ExpandableListView.OnGroupCollapseListener;
 import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -71,8 +89,10 @@ public class MainActivity extends Activity implements OnClickListener {
 	private ArrayList<String> mGroupList = null;
 	private ArrayList<ArrayList<String>> mChildList = null;
 	private ArrayList<String> mDestList = null;
-	private ArrayList<String> mChildDestList = null;
+	private ArrayList<ArrayList<String>> mChildDestList = null;
 	private ArrayList<ArrayList<String>> mChildListContent = null;
+	private ArrayList<String> childDestList = null;
+	
 	private ExpandableListView mListView;
 
 	private String userCode;
@@ -115,8 +135,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		info = mng.getConnectionInfo();
 
 		// Handler 세팅
-		handler = new opHandler();
-
+		handler = new opHandler(MainActivity.this);
 		// MAC 이용 인증코드 생성
 		CodeGenerator cg = new CodeGenerator(info.getMacAddress());
 		Toast.makeText(getApplication(), cg.genCode(), Toast.LENGTH_SHORT)
@@ -145,7 +164,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		ConnServer conn = new ConnServer("211.189.19.45", 12345, 0, userCode,
 				handler);
 		conn.start();
-
 
 		// 하단 메뉴를 위한 Pager
 		pac = new PagerAdapterClass(getApplicationContext());
@@ -295,7 +313,8 @@ public class MainActivity extends Activity implements OnClickListener {
 				mChildList = new ArrayList<ArrayList<String>>();
 				mChildListContent = new ArrayList<ArrayList<String>>();
 				mDestList = new ArrayList<String>();
-				mChildDestList = new ArrayList<String>();
+				mChildDestList = new ArrayList<ArrayList<String>>();
+				childDestList = new ArrayList<String>();
 
 				mGroupList.add("현재시점을 서버에 백업");
 				mGroupList.add("복원시점 생성");
@@ -306,7 +325,6 @@ public class MainActivity extends Activity implements OnClickListener {
 				ArrayList<String> child3 = new ArrayList<String>();
 
 				child1.add("서버 백업");
-				child1.add("외장 메모리 백업");
 
 				child2.add("백업 시작");
 
@@ -320,12 +338,12 @@ public class MainActivity extends Activity implements OnClickListener {
 				mChildList.add(mChildListContent.get(1));
 				mChildList.add(mChildListContent.get(2));
 
-				mDestList.add("- 현재시점의 백업 데이터를 서버 또는 외장메모리에 저장합니다.");
+				mDestList.add("- 현재시점의 백업 데이터를 서버에 저장합니다.");
 				mDestList.add("- 현재상태를 복원시점으로 생성합니다.");
 				mDestList.add("- 자동복원시점을 생성합니다.");
 
-				mChildDestList.add("스냅샷 이미지를 서버에 전송합니다.");
-				mChildDestList.add("연결된 SD카드에 스냅샷 이미지를 전송합니다.");
+				childDestList.add("스냅샷 이미지를 서버에 전송합니다.");
+				mChildDestList.add(childDestList);
 
 				mListView = (ExpandableListView) v.findViewById(R.id.elv_list1);
 				mListView.setAdapter(new BaseExpandableAdapter(v.getContext(),
@@ -363,7 +381,6 @@ public class MainActivity extends Activity implements OnClickListener {
 						 * + childPosition + "(" + groupPosition + ")",
 						 * Toast.LENGTH_SHORT).show();
 						 */
-
 						switch (groupPosition) {
 						case 0: // 현재 시점을 서버에 백업
 							if (childPosition == 0) // Server Backup
@@ -377,34 +394,31 @@ public class MainActivity extends Activity implements OnClickListener {
 									Toast.makeText(getApplicationContext(),
 											"Wifi 연결 확인. 서버통신 시도.",
 											Toast.LENGTH_SHORT).show();
-
 									try {
-										// 소켓 서버 접속
-										// opcode == 1 ( Snapshot Server backup
-										// )
-										ConnServer cs = new ConnServer(
+										// 소켓 서버 접속 , Snapshot 전송할 Snapshot 을 선택
+										// opcode == 1 ( Snapshot Server backup )
+										
+										/*ConnServer cs = new ConnServer(
 												"211.189.19.45", 12345, 1,
 												userCode);
-
 										cs.start();
-
+										*/
+										
+										Intent sBackIntent = new Intent(MainActivity.this,SrvBackupActivity.class);
+										startActivity(sBackIntent);
+										
+										
 									} catch (Exception e) {
 										Toast.makeText(getApplicationContext(),
 												"서버와의 연결을 실패했습니다.",
 												Toast.LENGTH_SHORT).show();
 									}
-
 								} else {
 									Toast.makeText(
 											getApplicationContext(),
 											"Server Backup은 Wifi 연결상태에서만 가능합니다.",
 											Toast.LENGTH_SHORT).show();
 								}
-
-							} else { // 외장 메모리 Full Backup
-								Toast.makeText(getApplicationContext(),
-										"연결된 외장 메모리에 백업을 수행합니다.",
-										Toast.LENGTH_SHORT).show();
 							}
 
 							break;
@@ -416,7 +430,6 @@ public class MainActivity extends Activity implements OnClickListener {
 							String line = "";
 							StringBuffer output = new StringBuffer();
 							
-				
 							// pipe 이용한 Snapshot 생성
 							rh = new readHandler() {
 								public void handleMessage(Message msg) {
@@ -440,31 +453,25 @@ public class MainActivity extends Activity implements OnClickListener {
 							pl = new pipeWithLVM(rh);
 							pl.ActionWritePipe("lvcreate -s -L 20M -n "+today+" /dev/vg/userdata");
 							
+							
+							
+							// 어플 리스트를 읽어들인다.
+							
+							
+							PackageManager pm = getPackageManager();
 
-							// 백업 시작 process
-							/*
-							 * try {
-							 * 
-							 * Process pc = new ProcessBuilder("id")
-							 * .directory(new File("/lvm")).start();
-							 * 
-							 * BufferedReader br = new BufferedReader( new
-							 * InputStreamReader(pc .getInputStream()));
-							 * 
-							 * String s = null; String resCommand = ""; while
-							 * ((s = br.readLine()) != null) { if (s != null) {
-							 * resCommand += s; resCommand += "\n"; } }
-							 * Toast.makeText(getApplicationContext(),
-							 * resCommand, Toast.LENGTH_LONG).show();
-							 * 
-							 * br.close();
-							 * 
-							 * } catch (IOException e) { // TODO Auto-generated
-							 * catch block Log.e("eee",
-							 * "EXEPTION!------------- :" + e.toString());
-							 * Toast.makeText(getApplicationContext(),
-							 * e.getMessage(), Toast.LENGTH_LONG) .show(); }
-							 */
+							List<PackageInfo> packs = getPackageManager()
+									.getInstalledPackages(
+											PackageManager.PERMISSION_GRANTED);
+
+							for (PackageInfo pack : packs) {
+
+								Log.i("TAG", pack.applicationInfo.loadLabel(pm)
+										.toString());
+
+								//Log.i("TAG", pack.packageName);
+
+							}
 
 							break;
 						case 2: // scheduled snapshot
@@ -510,78 +517,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 				views.add(v); // Restore Page 만 컬렉션프레임워크에 넣어준다.
 
-				/*
-				 * mGroupList = new ArrayList<String>(); mChildList = new
-				 * ArrayList<ArrayList<String>>(); mChildListContent = new
-				 * ArrayList<ArrayList<String>>(); mDestList = new
-				 * ArrayList<String>(); mChildDestList = new
-				 * ArrayList<String>();
-				 * 
-				 * // Group List 가 입력된다 ( Snapshot list를 그룹단위로 보여줌 )
-				 * mGroupList.add("2014-07-01 21:38 서버 백업");
-				 * mGroupList.add("2014-07-02 23:38 서버 백업");
-				 * mGroupList.add("2014-07-03 04:38 자동 백업");
-				 * 
-				 * for (int i = 0; i < mGroupList.size(); i++) {
-				 * ArrayList<String> child1 = new ArrayList<String>();
-				 * 
-				 * child1.add("[최근 변경 사항 ]");
-				 * 
-				 * mChildListContent.add(child1); }
-				 * 
-				 * mChildList.add(mChildListContent.get(0));
-				 * mChildList.add(mChildListContent.get(1));
-				 * mChildList.add(mChildListContent.get(2));
-				 * 
-				 * mChildDestList.clear(); mChildDestList.add("없음");
-				 * mChildDestList.add("없음"); mChildDestList.add("없음");
-				 * 
-				 * mListView = (ExpandableListView)
-				 * v.findViewById(R.id.elv_list2); mListView.setAdapter(new
-				 * BaseExpandableAdapter(v.getContext(), mGroupList, mChildList,
-				 * mDestList, mChildDestList, 1));
-				 * 
-				 * // 그룹 클릭 했을 경우 이벤트 mListView.setOnGroupClickListener(new
-				 * OnGroupClickListener() {
-				 * 
-				 * @Override public boolean onGroupClick(ExpandableListView
-				 * parent, View v, int groupPosition, long id) {
-				 * 
-				 * Toast.makeText(getApplicationContext(), "g click = " +
-				 * groupPosition, Toast.LENGTH_SHORT).show();
-				 * 
-				 * 
-				 * return false; } });
-				 * 
-				 * // 차일드 클릭 했을 경우 이벤트 mListView.setOnChildClickListener(new
-				 * OnChildClickListener() {
-				 * 
-				 * @Override public boolean onChildClick(ExpandableListView
-				 * parent, View v, int groupPosition, int childPosition, long
-				 * id) {
-				 * 
-				 * return false; } });
-				 * 
-				 * // 그룹이 닫힐 경우 이벤트 mListView .setOnGroupCollapseListener(new
-				 * OnGroupCollapseListener() {
-				 * 
-				 * @Override public void onGroupCollapse(int groupPosition) {
-				 * 
-				 * Toast.makeText(getApplicationContext(), "g Collapse = " +
-				 * groupPosition, Toast.LENGTH_SHORT).show();
-				 * 
-				 * } });
-				 * 
-				 * // 그룹이 열릴 경우 이벤트 mListView.setOnGroupExpandListener(new
-				 * OnGroupExpandListener() {
-				 * 
-				 * @Override public void onGroupExpand(int groupPosition) {
-				 * 
-				 * Toast.makeText(getApplicationContext(), "g Expand = " +
-				 * groupPosition, Toast.LENGTH_SHORT).show();
-				 * 
-				 * } });
-				 */
+				
 			} else { // // Setting View ( 세팅 페이지 )
 
 				v = mInflater.inflate(R.layout.inflate_three, null);
@@ -761,21 +697,26 @@ class opHandler extends Handler {
 	private ArrayList<String> mGroupList = null;
 	private ArrayList<ArrayList<String>> mChildList = null;
 	private ArrayList<String> mDestList = null;
-	private ArrayList<String> mChildDestList = null;
+	private ArrayList<ArrayList<String>> mChildDestList = null;
 	private ArrayList<ArrayList<String>> mChildListContent = null;
 	private ExpandableListView mListView;
 	private ArrayList<String> childList;
-	private BaseExpandableAdapter bea = null;
+	private ArrayList<String> childDestList;
 
-	public opHandler() {
+	private AlertDialog mDialog ; // restore menu 변경 리스트 Dialog
+	private Context context;
+	
+	public opHandler(Context context) {
 		mGroupList = new ArrayList<String>();
 		mChildList = new ArrayList<ArrayList<String>>();
 		mChildListContent = new ArrayList<ArrayList<String>>();
 		mDestList = new ArrayList<String>();
-		mChildDestList = new ArrayList<String>();
+		mChildDestList = new ArrayList<ArrayList<String>>();
 		childList = new ArrayList<String>();
+		childDestList = new ArrayList<String>();
+		this.context = context;
 	}
-
+	
 	@Override
 	public void handleMessage(Message msg) {
 
@@ -791,17 +732,30 @@ class opHandler extends Handler {
 			
 			// pac 에서 View 를 읽어옴
 			
+			
 			// mChildDestList , mChildList 는 group 개수만큼 등록해야 함
 			// mChildList 는 childList의 그룹. ( 변경사항이 여러개임을 감안 )
 			for (int i = 0; i < MainActivity.snapshotListInSrv.length; i++) {
 				mGroupList.add(MainActivity.snapshotListInSrv[i].getName()+" [Server]");
 				
-				if(childList.size() == 0){
-					childList.add("[ 복원 대상 ]");
-				}
 				
-				mChildDestList.add("변경된 항목이 없습니다.");
-				mChildList.add(childList);
+				childList.add("[ 복원 대상 ]");
+				childDestList.add(("s"));
+				childList.add("어플리케이션");
+				childDestList.add(("s"));
+				childList.add("사용자 데이터");
+				childDestList.add(("s"));
+				childList.add("전화번호부, SMS, 설정 복원");
+				childDestList.add(("s"));
+				childList.add("전체");
+				childDestList.add(("s"));
+				
+				//mChildDestList.add("변경된 항목이 없습니다."+i); 
+				mChildList.add((ArrayList<String>) childList.clone()); //childList를 복제3
+				mChildDestList.add((ArrayList<String>) childDestList.clone());
+				
+				childList.clear();
+				childDestList.clear();
 
 			}
 			
@@ -809,19 +763,31 @@ class opHandler extends Handler {
 			for (int i = 0; i < MainActivity.snapshotListInDev.length; i++) {
 				mGroupList.add(MainActivity.snapshotListInDev[i].getName()+" [Device]");
 				
-				if(childList.size() == 0){
-					childList.add("[ 복원 대상 ]");
-				}
+				childList.add("[ 복원 대상 ]");
+				childDestList.add(("d"));
+				childList.add("어플리케이션");
+				childDestList.add(("d"));
+				childList.add("사용자 데이터");
+				childDestList.add(("d"));
+				childList.add("전화번호부, SMS, 설정 복원");
+				childDestList.add(("d"));
+				childList.add("전체 복원");
+				childDestList.add(("d"));
 				
-				// mChildDestList 에 파일리스트 입력
-				mChildDestList.add("변경된 항목이 없습니다.");
-				mChildList.add(childList);
+				//mChildDestList.add("변경된 항목이 없습니다."+i); 
+				
+				mChildList.add((ArrayList<String>) childList.clone());
+				mChildDestList.add((ArrayList<String>) childDestList.clone());
+				
+				childList.clear();
+				childDestList.clear();
+				
 			}
 
 			
 			// 리스트 View 에 적용
 			mListView = (ExpandableListView) vv.findViewById(R.id.elv_list2);
-			mListView.setAdapter(new BaseExpandableAdapter(vv.getContext(),
+			mListView.setAdapter(new SnapListExpandableAdapter(vv.getContext(),
 					mGroupList, mChildList, mDestList, mChildDestList, 1));
 
 			
@@ -831,18 +797,18 @@ class opHandler extends Handler {
 				public boolean onGroupClick(ExpandableListView elv, View vv,
 						int gPosition, long arg3) {
 					// TODO Auto-generated method stub
-						
-
-					String sName = null;
 					
-					if(gPosition > MainActivity.snapshotListInSrv.length ){ // gPosition이  snapshotListInSrv 이상이면 Device Snapshot
-						sName = MainActivity.snapshotListInDev[gPosition].getName(); // Click 한 리스트를 읽음.
+					// elv.getChildCount(); // child 수 받는다.
+					
+					 
+					String sName = null;
+					int srvSnapshotLen = MainActivity.snapshotListInSrv.length;
+					
+					if(gPosition >= srvSnapshotLen){ // gPosition이  snapshotListInSrv 이상이면 Device Snapshot
+						sName = MainActivity.snapshotListInDev[gPosition-srvSnapshotLen].getName(); // Click 한 리스트를 읽음.
 					}else{
 						sName = MainActivity.snapshotListInSrv[gPosition].getName(); // Click 한 리스트를 읽음.
 					}
-					
-					Toast.makeText(vv.getContext(), sName,
-							Toast.LENGTH_SHORT).show();
 					
 					// snapshot File 을 lvm 디렉터리에 mount
 					File f = new File("/sdcard/ssDir/"+sName);
@@ -851,39 +817,165 @@ class opHandler extends Handler {
 					{
 						Log.i("lvm","created");
 					}else{
-						Log.i("lvm","error!");
+						Log.i("lvm","mkdir error!");
 					}
 					
+					return false;
+				}
+				
+			});
+			
+			mListView.setOnChildClickListener(new OnChildClickListener(){
+
+				@Override
+				public boolean onChildClick(ExpandableListView parent, View vv,
+						int groupPosition, int childPosition, long id) {
+					// TODO Auto-generated method stub
+					
+					String sName = null;
+					int srvSnapshotLen = MainActivity.snapshotListInSrv.length;
+					ArrayList<FileInfo> fiList = new ArrayList<FileInfo>(); // fileInfo List
+					
+					ProgressDialog pd = new ProgressDialog(context);
+					pd.setTitle("Processing...");
+					pd.setMessage("Please wait ..");
+					pd.show();
+					
+					if(groupPosition >= srvSnapshotLen){ // gPosition이  snapshotListInSrv 이상이면 Device Snapshot
+						sName = MainActivity.snapshotListInDev[groupPosition-srvSnapshotLen].getName(); // Click 한 리스트를 읽음.
+					}else{
+						sName = MainActivity.snapshotListInSrv[groupPosition].getName(); // Click 한 리스트를 읽음.
+					}
+					
+					SnapListExpandableAdapter eAdapter = (SnapListExpandableAdapter) mListView.getExpandableListAdapter();
+					String mName = eAdapter.getChild(groupPosition, childPosition);
+					
+					
+					//
+					Toast.makeText(vv.getContext(), "sName : "+sName+"\nmName:"+mName,
+							Toast.LENGTH_SHORT).show();
+					
+					// 변경리스트 로딩 ( 스레드 처리 필요성 )
+					
 					try {
+
 						Process p =  Runtime.getRuntime().exec("su"); //  root 쉘
 						
 						// gName ( 해당 스냅샷 이름 ) 에 mount 후 해당 디렉토리 리스트를 읽어들임.
 						
 						String mountCom = "mount -t ext4 /dev/vg/"+sName+" /sdcard/ssDir/"+sName+"\n";
-						String getListCom = "ls -l /sdcard/ssDir/"+sName+"> /sdcard/tmp.txt\n";
-						
-						// snapshot list 를 읽어옴.
-						
-						
-						BaseExpandableAdapter bea = (BaseExpandableAdapter) elv.getAdapter();
-						
-						ArrayList<String> cd = bea.getChildDestList(gPosition);
-						
-						//--------------------------------------------------------------------
-						
-						
-						// snapshot list load end
 						
 						p.getOutputStream().write(mountCom.getBytes());
-						//p.getOutputStream().write(<my next command>);
 						
-						// root 계정상태에서 ls 
-						p.getOutputStream().write(getListCom.getBytes());
-						
-						
-						// console 종료
+						// root 계정상태에서 ls -lR (sub directory 까지 read)
+						String com = "ls -lR /sdcard/ssDir/"+sName+"\n";
+						p.getOutputStream().write( com.getBytes());
+
+						// roote 종료
 						p.getOutputStream().write("exit\n".getBytes());			
 						p.getOutputStream().flush();
+						
+						// snapshot list load standard i/o
+						BufferedReader br = new BufferedReader(new InputStreamReader( p.getInputStream()));
+
+						String line = null;
+						ArrayList<String> lineArr = new ArrayList<String>(); // 명령의 결과 String line
+						//StringBuffer sTotalList = new StringBuffer();
+						
+						while((line = br.readLine()) != null){
+							//sTotalList.append(line+"\n");
+							lineArr.add(line);
+						}
+						
+						
+						
+						for(String s : lineArr){
+							
+							String[] info = s.split(" ");
+							ArrayList<String> splitedInfo = new ArrayList<String>();
+							
+							for(String ss : info){
+								ss = ss.trim();
+								if(ss.length() != 0)
+									splitedInfo.add(ss);
+							}
+
+							FileInfo fi;
+							// split 결과는 실제 파일의 정보 , 하위 디렉토리 이름 으로 나누어짐.
+							// 하위디렉토리 이름은 무시한다
+							int idx = 0;
+							
+							
+							char fileType = ' ';
+							
+							if(splitedInfo.size() != 0){ // 한 라인의 가장 첫번째 문자는 파일 형식을 나타냄..
+								fileType = splitedInfo.get(0).charAt(0);
+								//Log.d("lvm", "("+String.valueOf(fileType)+")");
+								
+								if(fileType == 'l'){ // 링크파일의 경우 파일명 수정 필요 ( idx 5 부터 fileName.. 5 이후 문자열을 통합 )
+									String fName = splitedInfo.get(5)+splitedInfo.get(6)+splitedInfo.get(7);
+									splitedInfo.set(5, fName);
+									splitedInfo.remove(7);
+									splitedInfo.remove(6);
+								}
+								
+							}
+							
+							if(fileType == 'd' || fileType == 'b' || fileType == 'c' ||fileType == 'p' || fileType == 'l' || fileType == 's' ){ // special files
+								// b(Block file(b) , Character device file(c) , Named pipe file or just a pipe file(p)
+								// Symbolic link file(l), Socket file(s)
+							
+								fi = new FileInfo(String.valueOf(fileType), splitedInfo.get(0).substring(1),splitedInfo.get(3) , splitedInfo.get(4) , splitedInfo.get(5) );
+								fiList.add(fi); // fiList 에 등록
+							}else if(fileType == '-'){ // general files
+								// general file에는 용량정보까지 포함 됨.
+								fi = new FileInfo(String.valueOf(fileType), splitedInfo.get(0).substring(1), splitedInfo.get(3) , splitedInfo.get(4) , splitedInfo.get(5) ,  splitedInfo.get(6));
+								fiList.add(fi); // fiList 에 등록
+							}else{ // directory 정보는 객체를 따로 저장하지 않음.
+								// nothing to do
+							}
+							
+						}
+						Log.d("lvm", "file count : "+Integer.toString(fiList.size()) );
+
+						
+						// ------------ 읽어온 리스트를 정렬한다 --------------
+						Collections.sort(fiList ,timeComparator); // 날짜별 정렬
+						Collections.reverse(fiList);
+						
+						//log
+/*						for(int i = 0 ; i < fiList.size() ; i ++){
+							Log.i("lvm", "type "+fiList.get(i).getType()+"/"+fiList.get(i).getName()+"/"+fiList.get(i).getDate() +"/"+ fiList.get(i).getTime());
+						}
+*/					
+						
+						
+						String mountedDirLoc = "/sdcard/ssDir/"+sName; // sName 은 스냅샷 이 마운트되는 디렉터리
+						
+						SnapshotDiskManager sdm = new SnapshotDiskManager(mountedDirLoc);
+						// 스냅샷 디렉터리 내의 모든 리스트를 읽어온다.
+						//ArrayList<File> fileArrInDir = sdm.getAllFilesInDepth();
+						
+						//Log.i("lvm",Integer.toString(fileArrInDir.size()) );
+						/*
+						ArrayList<File> latestThree = sdm.getLatModified(fileArrInDir);
+						*/
+						// latestThree 에서 File name list 로 출력
+						
+						
+						// list view update
+						
+						
+/*						BaseExpandableAdapter eAdapter = (BaseExpandableAdapter) mListView.getExpandableListAdapter();
+
+						Object obj1 = eAdapter.getChild(0, 0); // get Child
+						eAdapter.setChildDesc(0, "eee");
+						eAdapter.notifyDataSetChanged();
+						
+						
+						Toast.makeText(vv.getContext(), obj1.toString(),
+								Toast.LENGTH_SHORT).show();
+*/
 						try {
 							p.waitFor();
 							if (p.exitValue() != 255) {
@@ -902,25 +994,105 @@ class opHandler extends Handler {
 							Toast.makeText(vv.getContext(), "not root",
 									Toast.LENGTH_SHORT).show();
 						} 
+						
+						
+						
+					
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
-						Log.e("lvm", "error : "+e.toString());
+						Log.e("lvm", "error (ioError) : "+e.toString());
 						e.printStackTrace();
+					} 
+					
+					
+					pd.dismiss();
+					
+					// 변경 리스트 로딩 끝
+					
+					if(mName.equals("[ 복원 대상 ]")){
+						// nothing to do
+					}else{
+						// scroll View changed List
+						
+						//final ScrollView linear = (ScrollView)View.inflate(context, R.layout.scrolldialog, null);
+						
+						// Dialog as user want to see
+						AlertDialog.Builder ab = new AlertDialog.Builder(context);
+						
+						ab.setTitle("Recently changed items  ["+mName+"]");
+						
+						// 최근 변경사항을 Message에 띄움.
+						
+						// 변경사항 Read 
+						ArrayList<String> changedList = new ArrayList<String>();
+						StringBuffer sbMessage = new StringBuffer();
+						int vListSize = 0;
+						
+						for(int i = 0 ; i < fiList.size() && vListSize < 3 ; i++){
+							changedList.add(fiList.get(i).getName());
+							
+							if(!fiList.get(i).getType().equals("d")){
+								vListSize++;
+								sbMessage.append(vListSize+") "+fiList.get(i).getName()+" ( 수정 시간 : "+fiList.get(i).getDate()+" "+fiList.get(i).getTime()+")"+"\n\n");	
+							}
+						}
+						
+						ab.setMessage(sbMessage); 
+						
+						ab.setCancelable(false); // Cancelable
+
+					
+						
+						// custom view 필요
+						final String f_sName = sName;
+						final String f_mName = mName;
+						
+						ab.setPositiveButton(mName+" 복원",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface arg0,
+											int arg1) {
+										setDismiss(mDialog);
+										
+										// NextActivity > Recv Activity 메뉴로 이동 
+										Intent recvIntent = new Intent( context , RecvActivity.class).putExtra("sName", f_sName).putExtra("mName", f_mName);
+										context.startActivity(recvIntent);
+										
+									}
+
+								});
+
+						ab.setNegativeButton("이전으로",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface arg0,
+											int arg1) {
+										setDismiss(mDialog);
+									}
+								});
+						mDialog = ab.create();
+						
+						mDialog.show();
 					}
 					
+					
 					return false;
-				}
+				}// child on Click end
 				
-			});
-			
-			mListView.setOnChildClickListener(new OnChildClickListener(){
 
-				@Override
-				public boolean onChildClick(ExpandableListView arg0, View arg1,
-						int arg2, int arg3, long arg4) {
-					// TODO Auto-generated method stub
-					return false;
-				}
+				private final Comparator<FileInfo> timeComparator = new Comparator<FileInfo>() {
+				
+					private final Collator collator = Collator
+							.getInstance();
+
+					@Override
+					public int compare(FileInfo object1, FileInfo object2) {
+						return collator.compare(object1.getDate()+object1.getTime(),
+								object2.getDate()+object1.getTime()); // 내림차순 정렬
+
+					}
+				};
+				
 				
 			});
 			
@@ -937,7 +1109,7 @@ class opHandler extends Handler {
 			mChildDestList.clear();
 			
 			mListView = (ExpandableListView) vv.findViewById(R.id.elv_list2);
-			mListView.setAdapter(new BaseExpandableAdapter(vv.getContext(),
+			mListView.setAdapter(new SnapListExpandableAdapter(vv.getContext(),
 					mGroupList, mChildList, mDestList, mChildDestList, 1));
 
 			
@@ -951,6 +1123,11 @@ class opHandler extends Handler {
 	private void dismissDialog(ProgressDialog pd) {
 		// TODO Auto-generated method stub
 		pd.cancel();
+	}
+
+	private void setDismiss(Dialog dialog) {
+		if (dialog != null && dialog.isShowing())
+			dialog.dismiss();
 	}
 	
 	
