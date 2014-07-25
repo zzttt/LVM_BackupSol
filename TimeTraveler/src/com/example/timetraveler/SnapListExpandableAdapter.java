@@ -218,7 +218,7 @@ public class SnapListExpandableAdapter extends BaseExpandableListAdapter {
 		String desc = getChildDesc(groupPosition, childPosition);
 		if(desc.equals("s") || desc.equals("d")){
 			viewHolder.tv_description.setVisibility(View.GONE);
-			viewHolder.tv_childName.setPadding(0, 15, 0, 15);
+			viewHolder.tv_childName.setPadding(0, 25, 0, 25);
 		}else{
 			viewHolder.tv_description
 			.setText(desc);

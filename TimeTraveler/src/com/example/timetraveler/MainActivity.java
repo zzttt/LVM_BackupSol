@@ -45,10 +45,12 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -115,8 +117,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	public static int setVal1 = 0; // 백업 용량 세팅 값 1
 	public static int setVal2 = 1; // 백업 용량 세팅 값 2
 
-	public static File[] snapshotListInSrv;
-	public static File[] snapshotListInDev;
+	public static File[] snapshotListInSrv = null;
+	public static File[] snapshotListInDev = null;
 	
 	readHandler rh;
 	pipeWithLVM pl;
@@ -204,42 +206,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			
 			break;
 		case R.id.btn_three:
-			/*Process p;
-			try {
-				p = new ProcessBuilder("su").start();
-
-				DataOutputStream os = new DataOutputStream(p.getOutputStream());
-				os.writeBytes("echo \"Do I have root?\" >/sdcard/temporary.txt\n");
-
-				// Close the terminal
-				os.writeBytes("exit\n");
-				os.flush();
-				try {
-					p.waitFor();
-					if (p.exitValue() != 255) {
-						// TODO Code to run on success
-						Toast.makeText(getApplicationContext(), "root", Toast.LENGTH_SHORT).show();
-					} else {
-						// TODO Code to run on unsuccessful
-						Toast.makeText(getApplicationContext(), "not root", Toast.LENGTH_SHORT).show();
-					}
-
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					Toast.makeText(getApplicationContext(), "not root", Toast.LENGTH_SHORT).show();
-				}finally{
-					os.close();
-				}
-				
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				Toast.makeText(getApplicationContext(), "not root", Toast.LENGTH_SHORT).show();
-			}
-			
-			*/
+		
 			setCurrentInflateItem(2);
 			break;
 		}
@@ -441,9 +408,7 @@ public class MainActivity extends Activity implements OnClickListener {
 										Log.d("inMain", readResult);
 										break;
 									}	
-										
 								}
-							
 							};
 							Calendar cal = Calendar.getInstance();
 							
@@ -457,7 +422,6 @@ public class MainActivity extends Activity implements OnClickListener {
 							
 							// 어플 리스트를 읽어들인다.
 							
-							
 							PackageManager pm = getPackageManager();
 
 							List<PackageInfo> packs = getPackageManager()
@@ -468,12 +432,75 @@ public class MainActivity extends Activity implements OnClickListener {
 
 								Log.i("TAG", pack.applicationInfo.loadLabel(pm)
 										.toString());
-
+								String sDir = pack.applicationInfo.sourceDir;
 								//Log.i("TAG", pack.packageName);
+								
+								Log.i("TAG", "appDir : "+sDir);
+								
+							}
+							
+							
+							// 어플리스트 백업
+							
+							
+							
+							// 개인정보
+							
+							// SMS
+							/*String MESSAGE_TYPE_INBOX = "1";
+							String MESSAGE_TYPE_SENT = "2";
+							String MESSAGE_TYPE_CONVERSATIONS = "3";
+							String MESSAGE_TYPE_NEW = "new";
+							
+							Uri allMessage = Uri.parse("content://sms/");
+							
+							Cursor cur = getContentResolver().query(allMessage,
+									null, null, null, null);
+							int count = cur.getCount();
+							Log.i("TAG", "SMS count = " + count);
+							String row = "";
+							String msg = "";
+							String date = "";
+							String protocol = "";
+							while (cur.moveToNext()) {
+								row = cur.getString(cur
+										.getColumnIndex("address"));
+								msg = cur.getString(cur.getColumnIndex("body"));
+								date = cur.getString(cur.getColumnIndex("date"));
+								protocol = cur.getString(cur
+										.getColumnIndex("protocol"));
+								// Logger.d( TAG , "SMS PROTOCOL = " +
+								// protocol);
 
+								String type = "";
+								if (protocol == MESSAGE_TYPE_SENT)
+									type = "sent";
+								else if (protocol == MESSAGE_TYPE_INBOX)
+									type = "receive";
+								else if (protocol == MESSAGE_TYPE_CONVERSATIONS)
+									type = "conversations";
+								else if (protocol == null)
+									type = "send";
+
+								Log.i("TAG", "SMS Phone: " + row + " / Mesg: "
+										+ msg + " / Type: " + type
+										+ " / Date: " + date);
 							}
 
-							break;
+							break;*/
+							
+
+							// 통화내역
+							
+							
+							
+							// 설정
+							
+							// settings db 이용
+							
+							
+							// 연락처
+							
 						case 2: // scheduled snapshot
 							// Alarm Manager
 
@@ -735,54 +762,54 @@ class opHandler extends Handler {
 			
 			// mChildDestList , mChildList 는 group 개수만큼 등록해야 함
 			// mChildList 는 childList의 그룹. ( 변경사항이 여러개임을 감안 )
-			for (int i = 0; i < MainActivity.snapshotListInSrv.length; i++) {
-				mGroupList.add(MainActivity.snapshotListInSrv[i].getName()+" [Server]");
-				
-				
-				childList.add("[ 복원 대상 ]");
-				childDestList.add(("s"));
-				childList.add("어플리케이션");
-				childDestList.add(("s"));
-				childList.add("사용자 데이터");
-				childDestList.add(("s"));
-				childList.add("전화번호부, SMS, 설정 복원");
-				childDestList.add(("s"));
-				childList.add("전체");
-				childDestList.add(("s"));
-				
-				//mChildDestList.add("변경된 항목이 없습니다."+i); 
-				mChildList.add((ArrayList<String>) childList.clone()); //childList를 복제3
-				mChildDestList.add((ArrayList<String>) childDestList.clone());
-				
-				childList.clear();
-				childDestList.clear();
+			if(MainActivity.snapshotListInSrv  != null){
+				for (int i = 0; i < MainActivity.snapshotListInSrv.length; i++) {
+					mGroupList.add(MainActivity.snapshotListInSrv[i].getName()+" [Server]");
+					
+					childList.add("어플리케이션");
+					childDestList.add(("s"));
+					childList.add("사용자 데이터");
+					childDestList.add(("s"));
+					childList.add("전화번호부, SMS, 설정 복원");
+					childDestList.add(("s"));
+					childList.add("전체");
+					childDestList.add(("s"));
+					
+					//mChildDestList.add("변경된 항목이 없습니다."+i); 
+					mChildList.add((ArrayList<String>) childList.clone()); //childList를 복제3
+					mChildDestList.add((ArrayList<String>) childDestList.clone());
+					
+					childList.clear();
+					childDestList.clear();
 
+				}
 			}
 			
-			
-			for (int i = 0; i < MainActivity.snapshotListInDev.length; i++) {
-				mGroupList.add(MainActivity.snapshotListInDev[i].getName()+" [Device]");
-				
-				childList.add("[ 복원 대상 ]");
-				childDestList.add(("d"));
-				childList.add("어플리케이션");
-				childDestList.add(("d"));
-				childList.add("사용자 데이터");
-				childDestList.add(("d"));
-				childList.add("전화번호부, SMS, 설정 복원");
-				childDestList.add(("d"));
-				childList.add("전체 복원");
-				childDestList.add(("d"));
-				
-				//mChildDestList.add("변경된 항목이 없습니다."+i); 
-				
-				mChildList.add((ArrayList<String>) childList.clone());
-				mChildDestList.add((ArrayList<String>) childDestList.clone());
-				
-				childList.clear();
-				childDestList.clear();
-				
+			if(MainActivity.snapshotListInDev != null){
+				for (int i = 0; i < MainActivity.snapshotListInDev.length; i++) {
+					mGroupList.add(MainActivity.snapshotListInDev[i].getName()+" [Device]");
+					
+					
+					childList.add("어플리케이션");
+					childDestList.add(("d"));
+					childList.add("사용자 데이터");
+					childDestList.add(("d"));
+					childList.add("전화번호부, SMS, 설정 복원");
+					childDestList.add(("d"));
+					childList.add("전체 복원");
+					childDestList.add(("d"));
+					
+					//mChildDestList.add("변경된 항목이 없습니다."+i); 
+					
+					mChildList.add((ArrayList<String>) childList.clone());
+					mChildDestList.add((ArrayList<String>) childDestList.clone());
+					
+					childList.clear();
+					childDestList.clear();
+					
+				}
 			}
+			
 
 			
 			// 리스트 View 에 적용
@@ -797,10 +824,13 @@ class opHandler extends Handler {
 				public boolean onGroupClick(ExpandableListView elv, View vv,
 						int gPosition, long arg3) {
 					// TODO Auto-generated method stub
+
+					/*SnapListExpandableAdapter slea = (SnapListExpandableAdapter) elv.getAdapter();
 					
-					// elv.getChildCount(); // child 수 받는다.
+					int cCount = slea.getChildrenCount(gPosition);
+
+					Log.d("lvm", Integer.toString(cCount));*/
 					
-					 
 					String sName = null;
 					int srvSnapshotLen = MainActivity.snapshotListInSrv.length;
 					
