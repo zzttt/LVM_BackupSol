@@ -19,7 +19,8 @@ public class LVSizeObserver extends Thread {
 	public static final String LOGTAG = "LVSizeOb";
 	public static final int STEP_SEC = 10 * 1000;	// 몇 초마다 check할 것인지 설정
 
-	private static final int ONLY_NUMBER_OF_LV = 4;	//테스트로 tempLV도 넣기 위해 4개로 잡음
+	private static final int ONLY_NUMBER_OF_LV = 3;	//테스트로 tempLV도 넣기 위해 4개로 잡음
+	private static boolean RESIZE_SH_GENERATE_COMPLETED = false;	//resize용 shellscript 생성이 완료 되었으면 complete 한다.
 	
 	/* df파싱 데이터 */
 	private static final int VOLUME_NAME = 0;
@@ -29,7 +30,7 @@ public class LVSizeObserver extends Thread {
 	private static final int SIZE_BLOCK = 4;
 	private static final int SIZE_PERCENT = 5; //splite에서 string array를 재정의하기에 쓸 수 없음
 	
-	public static final float ExecuteTHRESHOLD = 0.6f;		//extend 실행한 임계치
+	public static final float ExecuteTHRESHOLD = 0.8f;		//extend 실행한 임계치
 	public static final float ExpandSizePercent = 1.15f;		//얼만큼 확장할 것인지 -- 15%확장
 	public static final float ReduceSizePercent = 0.85f;	//줄일 것인지 -- 15% 축소
 	public static final float MyFullSizePercent = 0.95f;	//내 최대 용량도 전체 12G의 0.95%까지로 한정
@@ -93,7 +94,7 @@ public class LVSizeObserver extends Thread {
 						/* 용량 증가 메소드 실행 */
 					}
 					else if(readit.contains("Rounding size")) {
-						Log.d(LOGTAG, "equally size");
+						Log.d(LOGTAG, "equally size. no anything work.");
 						/*Log.i(LOGTAG, "SSG target :"+targetVolumeName+"/size:"+targetExtendSize);
 						ShellScriptGenerator ssg = 
 								new ShellScriptGenerator(ShellScriptGenerator.EXECUTE_EXTEND, 
@@ -106,7 +107,11 @@ public class LVSizeObserver extends Thread {
 						msg.what = -1;
 						Log.e(LOGTAG, "no recognized error\n"+readit);
 					}
-
+					
+					/* 모든 스크립트 생성 완료 후 copytoinitvol을 한다. */
+					Log.i(LOGTAG, "in execute copystart");
+					m_pipeWithLVM.ActionCopystartPipe();
+					
 				/**
 				 * 파싱한 데이터에서 현재 용량과 Data Usage를 파싱하고 우리의 THRESHOLD기준하여 계산된 값을 넘을경우 EXTEND
 				 * THRESHOLD는 두가지. 
@@ -143,12 +148,13 @@ public class LVSizeObserver extends Thread {
 	//constructor
 	public LVSizeObserver() {
 		m_pipeWithLVM = new pipeWithLVM(rh);
-		
+		DeleteTheExistResizeSH();
 	}
 	
 	public LVSizeObserver(Handler observHandler) {
 		m_pipeWithLVM = new pipeWithLVM(rh);
 		this.observHandler = observHandler;
+		DeleteTheExistResizeSH();
 		
 	}
 	
@@ -156,8 +162,17 @@ public class LVSizeObserver extends Thread {
 		m_pipeWithLVM = new pipeWithLVM(rh);
 		this.observHandler = observHandler;
 		this.rh = rh;
-		
+		DeleteTheExistResizeSH();
 	}
+	
+	private void DeleteTheExistResizeSH() {
+		File resize_sh  = new File("/data/data/com.example.timetraveler/resize.sh");
+		if(resize_sh.exists()) {
+			resize_sh.delete();
+			Log.w(LOGTAG, "deleted the already exist resiz.sh");
+		}
+	}
+	
 	/* df를 체크하고 리턴되는 데이터를, StringBuilder로 묶으면서 파싱이 용이 하도록 하여 저장 */
 	private void CommandCheckSize() {
 		String cmdOfdf = "df";
@@ -201,7 +216,7 @@ public class LVSizeObserver extends Thread {
 		String[][] AfterparsedString = new String[ONLY_NUMBER_OF_LV][5]; //[Name][Total][Used][Free][Block][PERCENT]
 		
 		BeforeparsedString = cmdReturn.toString().split("\n");
-		Log.d(LOGTAG, "parsedString : "+cmdReturn.toString());
+		//Log.d(LOGTAG, "parsedString : "+cmdReturn.toString());
 		
 		int index = 0;
 		/* 해당 path로 Parsing하기 /data 부터 시작하면 계속해서 걸리기 때문에 제일 나중에 찾는다. */
@@ -228,11 +243,11 @@ public class LVSizeObserver extends Thread {
 				index++;
 			}
 			
-			else if(BeforeparsedString[i].contains("/data/tempLV:")) {
+			/*else if(BeforeparsedString[i].contains("/data/tempLV:")) {
 				Log.d(LOGTAG, "is /data/tempLV? "+BeforeparsedString[i]);
 				AfterparsedString[index] = BeforeparsedString[i].split(":");
 				index++;
-			}
+			}*/
 			//init PERCENT
 			//AfterparsedString[index][SIZE_PERCENT] = "0";
 			
@@ -270,7 +285,7 @@ public class LVSizeObserver extends Thread {
 					AfterparsedString[i][j] = "/data/usersdcard";
 			}
 			
-			Log.d(LOGTAG, "now i = "+i);
+			//Log.d(LOGTAG, "now i = "+i);
 			
 			/* Percent 계산 */
 			/*String PercentOfUsage = String.valueOf(
@@ -296,20 +311,30 @@ public class LVSizeObserver extends Thread {
 						Float.parseFloat(input_data[i][SIZE_TOTAL]);
 			Log.d(LOGTAG, input_data[i][VOLUME_NAME]+"_PercentOfUsage : "+PercentOfUsage);
 			
-			/* 체크한 사용량이 임계치보다 클 경우 */
+			/* 체크한 사용량이 임계치보다 클 경우에만 작동!!!! */
 			if(PercentOfUsage >= ExecuteTHRESHOLD) {
 				/* sdcard가 타겟이면 userdata를, userdata가 타겟이면 sdcard를 반대것 -- opposeVolume으로 추가 */
 				if(input_data[i][VOLUME_NAME].equals(DF_NAME_DATA)) {
 					this.opposeVolume = input_data[1];
-					Log.d(LOGTAG, "reduce oppose를 위한 extend타겟 저장 : "+input_data[i][VOLUME_NAME].substring(5));
+					Log.d(LOGTAG, "reduce oppose를 위한, extend타겟 저장 : "+input_data[i][VOLUME_NAME].substring(5));
 				}
 				else if(input_data[i][VOLUME_NAME].equals(DF_NAME_DATA_MEDIA)) {
 					this.opposeVolume = input_data[0];
 					Log.d(LOGTAG, "reduce oppose를 위한 extend타겟 저장 : "+input_data[i][VOLUME_NAME].substring(5));
 				}
 				
-				ExtendSizeOfLV(input_data[i], input_data);
+				/* 임계치 넘었음이 확인되었을 때
+				 * Resize sh생성이 완료되었었는지 체크한다. 
+				 * 완료되어 있지 않으면 완료 flag on하고 실행한다.
+				 * 완료되었으면 하지 않는다. */
+				if(!RESIZE_SH_GENERATE_COMPLETED) {
+					Log.i(LOGTAG, "not generated ShellScript. START GENERATING");
+					RESIZE_SH_GENERATE_COMPLETED = true;
+					ExtendSizeOfLV(input_data[i], input_data);
+				} else
+					Log.i(LOGTAG, "Already generated ShellScript. STOP GENERATING");
 			}
+			Log.i(LOGTAG, "Don't over ExtendThreshold! :) so not generate ShellScript :)");
 		}
 		return PercentOfUsage;
 	}
@@ -322,7 +347,6 @@ public class LVSizeObserver extends Thread {
 		//target의 확장하려는 사이즈 1보다 크면 그 사이즈로 아예 만드는 것이고 1보다 작은 값이면 그만큼을 증가하는 것이다. 결국 같음
 		float targetExtendSize = (Float.parseFloat(targetVolume[SIZE_TOTAL]) * ExpandSizePercent);
 		targetExtendSize = Math.round(targetExtendSize);
-		Log.d(LOGTAG, "Will Extend Size? "+targetExtendSize+"\ntarget name : "+targetVolume[VOLUME_NAME].substring(5));
 		/**
 			리턴된 값이 Success면 상관없이 PE가 부족하다면 우선순위에 의해 다른 것들을 지우거나 줄여야 한다.
 			그리고 줄일 수 있는 minimum들도 찾아서 줄일 수 있게해야 한다.
@@ -339,11 +363,14 @@ public class LVSizeObserver extends Thread {
 		//지금은 Max8G까지 (Snapshot지워진 것을 가정)해서 조건 추가됨
 		//if(targetExtendSize < MyFullSizeVolume) {
 		if(targetExtendSize < 5000) {
+			Log.d(LOGTAG, "targetExtend Size is SMALLER THAN 5000!");
+			Log.d(LOGTAG, "Will Extend Size? "+targetExtendSize+"\ntarget name : "+targetVolume[VOLUME_NAME].substring(5));
 			/* target Extend */
 			m_pipeWithLVM.ActionWritePipe("lvextend -n /dev/vg"+targetVolume[VOLUME_NAME].substring(5)+" -L"+Math.round(targetExtendSize)+"M");
 			Log.d(LOGTAG, "lvresize -n /dev/vg"+targetVolume[VOLUME_NAME].substring(5)+" -L"+Math.round(targetExtendSize)+"M");
 		}
 		else {
+			Log.d(LOGTAG, "targetExtend Size is BIGGER THAN 5000!");
 			/* target Extend */
 			m_pipeWithLVM.ActionWritePipe("lvextend -n /dev/vg"+targetVolume[VOLUME_NAME].substring(5)+" -L"+99999+"M");
 			Log.d(LOGTAG, "lvresize -n /dev/vg"+targetVolume[VOLUME_NAME].substring(5)+" -L"+Math.round(targetExtendSize)+"M");
@@ -379,8 +406,9 @@ public class LVSizeObserver extends Thread {
 		float opposeReduceSize = (Float.parseFloat(opposeVolume[SIZE_TOTAL]) * ReduceSizePercent);
 		
 		//target의 확장하려는 사이즈 1보다 크면 그 사이즈로 아예 만드는 것이고 1보다 작은 값이면 그만큼을 증가하는 것이다. 결국 같음
-		//opposeVolume을 줄이고, 실질 타겟은 extend 실행
+		//opposeVolume타겟은 Reduce, 실질 (확장)타겟은 extend 실행
 		Log.d(LOGTAG, "Will Reduce Size? "+opposeReduceSize+"\nreduce target name : "+opposeVolume[VOLUME_NAME].substring(5));
+		Log.e(LOGTAG, "opposeVolume name : "+opposeVolume[VOLUME_NAME].substring(5));
 				ShellScriptGenerator ssg_reduce = 
 						new ShellScriptGenerator(ShellScriptGenerator.EXECUTE_REDUCE, 
 						"/dev/vg"+opposeVolume[VOLUME_NAME].substring(5), opposeReduceSize);
@@ -395,14 +423,16 @@ public class LVSizeObserver extends Thread {
 					"/dev/vg"+targetVolumeName, targetExtendSize);
 		}
 		
-		//그러나 확장하려는 용량이 줄이려는 용량보다 크면 줄인만큼만 확장시켜줌 
+		//그러나 확장하려는 용량이 줄이려는 용량보다 크면, 줄인 만큼만 확장시켜줌 
 		else {
-			float myTempSize = (Float.parseFloat(opposeVolume[SIZE_TOTAL])-opposeReduceSize)+Float.parseFloat(targetVolume[SIZE_TOTAL]);
+			float myTempSize = Math.round((Float.parseFloat(opposeVolume[SIZE_TOTAL])-opposeReduceSize)
+								+Float.parseFloat(targetVolume[SIZE_TOTAL]));
 			Log.d(LOGTAG, "Will Reduce at Extend Size? "+myTempSize+"\nextend target name : "+targetVolumeName);
+			Log.e(LOGTAG, "in reduce for extend Volume name : "+targetVolume[VOLUME_NAME].substring(5));
 		//확장도 opposeReduceSize만큼 확장 한다.
 		ShellScriptGenerator ssg_extend = 
 				new ShellScriptGenerator(ShellScriptGenerator.EXECUTE_EXTEND, 
-				"/dev/vg"+targetVolume[VOLUME_NAME], myTempSize);
+				"/dev/vg"+targetVolume[VOLUME_NAME].substring(5), myTempSize);
 		}
 	}
 	

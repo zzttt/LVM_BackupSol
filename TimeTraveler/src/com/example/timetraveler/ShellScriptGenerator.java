@@ -14,22 +14,25 @@ import android.util.Log;
 
 public class ShellScriptGenerator {
 	
-	public static final String scriptpath = "/data/data/com.example.timetraveler/resize.sh"; ////"/initvol/resize.sh";
+	public static final String scriptpath = "/data/data/com.example.timetraveler/resize.sh"; // "/initvol/resize.sh";
 	
 	public static final int EXECUTE_EXTEND = 1;
 	public static final int EXECUTE_REDUCE= 0;
+	
 	private String targetVolume = "";
-	private float targetSize = 0; //targetSize는 MB단위로 던져준다.
-	private int executeOp = 2;
+	private float targetSize = 0; 	//targetSize는 MB단위로 던져준다.
+	private int t_targetSize = 0;
+	private int executeOp = 2;		//초기설정은 0,1아닌 다른 값
 	private BufferedWriter sw;
 	
 	//targetSize는 MB단위로 던져준다.
 	public ShellScriptGenerator(int executeOp, String targetVolume, float targetExtendSize) {
 		this.targetSize = targetExtendSize;
+		this.t_targetSize = (int)targetExtendSize;
 		this.targetVolume = targetVolume;
 		this.executeOp = executeOp;
 		
-		Log.d("SSG", "executeOp :"+executeOp);
+		Log.d("SSG", "executeOp :"+executeOp +" --> 0 : REDUCE, 1 : EXTEND");
 		switch(executeOp) {
 			case EXECUTE_EXTEND:
 				scriptGenerateToExtendPartition();
@@ -57,11 +60,11 @@ public class ShellScriptGenerator {
 			/*lv extend는 리붓 전에 App단에서 처리되었을 수도 있고
 			아닐 경우도 있으므로 일단 먼저 확장 시도 */
 			
-			reScript.append("/lvm/lvm lvresize "+targetVolume+" -L"+targetSize+"M\n");
+			reScript.append("/lvm/lvm lvresize "+targetVolume+" -L"+t_targetSize+"M\n");
 			//partition extend
 			reScript.append("./e2fsck -f ");
 			reScript.append(targetVolume+"\n");
-			reScript.append("./resize2fs "+targetVolume+" "+targetSize+"M\n");
+			reScript.append("./resize2fs "+targetVolume+" "+t_targetSize+"M\n");
 
 			//write to script
 			sw.write(reScript.toString());
@@ -88,12 +91,12 @@ public class ShellScriptGenerator {
 			
 			//lvreduce는 파티션 축소 후에 해야함! 먼저 lv를 줄이면 파티션 깨짐.
 			//partition extend
-			reScript.append("./e2fsck -f ");
+			reScript.append("./e2fsck -fy ");
 			reScript.append(targetVolume+"\n");
-			reScript.append("./resize2fs "+targetVolume+" "+targetSize+"M\n");
+			reScript.append("./resize2fs "+targetVolume+" "+t_targetSize+"M\n");
 			
 			//파티션 축소 후에 lvSize도 축소
-			reScript.append("/lvm/lvm lvresize "+targetVolume+" -L"+targetSize+"M\n");
+			reScript.append("/lvm/lvm lvresize "+targetVolume+" -L"+t_targetSize+"M\n");
 			//write to script
 			sw.write(reScript.toString());
 			sw.flush();
