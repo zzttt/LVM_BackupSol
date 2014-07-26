@@ -142,11 +142,15 @@ public class MainActivity extends Activity implements OnClickListener {
 		// Handler 세팅
 		handler = new opHandler(MainActivity.this);
 
+		/* SnapShot Service 시작 */
+		Intent i = new Intent(this, SnapshotService.class);
+		startService(i);
 		
 		pd = new ProgressDialog(this);
 		pd.setCanceledOnTouchOutside(false);
 		pd.setMessage("Loading initial data ...");
 		pd.show();
+		
 		
 		// 모든 Snapshot List 를 Load (on Device & on Server)
 		// Restore 에서 사용할 리스트를 로드함.
