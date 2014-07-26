@@ -2,6 +2,7 @@
 <section name="Workbench">
 	<item value="C:\Users\Administrator\Downloads\adt-bundle-windows-x86_64-20140624\adt-bundle-windows-x86_64-20140624\sdk\extras\android\support\v4" key="org.eclipse.jdt.ui.lastextjar"/>
 	<item value="filter_imports;" key="filters_last_used"/>
+	<item value="C:\Users\Administrator\workspace\ssServer" key="org.eclipse.jdt.ui.last.external.project"/>
 	<section name="RefactoringWizard.preview">
 		<item value="600" key="width"/>
 		<item value="400" key="height"/>

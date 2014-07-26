@@ -1,9 +1,0 @@
-package com.Authorization;
-
-public class RegistrationDevice {
-
-	public RegistrationDevice(){
-		
-		
-	}
-}

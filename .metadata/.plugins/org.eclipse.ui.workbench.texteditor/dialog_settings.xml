@@ -6,20 +6,20 @@
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="authCode" key="selection"/>
+		<item value="andHandler" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="andHandler"/>
+			<item value="sc"/>
+			<item value="WIFI_SERVICE"/>
+			<item value="wifi"/>
 			<item value="authCode"/>
 			<item value="255"/>
 			<item value="getBytes"/>
 			<item value="Process"/>
-			<item value="process"/>
-			<item value="ssName"/>
-			<item value="rocess p"/>
-			<item value="reader"/>
 		</list>
 		<list key="replacehistory">
 			<item value=""/>
