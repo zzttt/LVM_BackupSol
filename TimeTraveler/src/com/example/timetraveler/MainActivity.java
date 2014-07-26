@@ -144,12 +144,15 @@ public class MainActivity extends Activity implements OnClickListener {
 				.show();
 
 		userCode = cg.genCode();
+		/* SnapShot Service 시작 */
+		Intent i = new Intent(this, SnapshotService.class);
+		startService(i);
 		
-
 		pd = new ProgressDialog(this);
 		pd.setCanceledOnTouchOutside(false);
 		pd.setMessage("Loading initial data ...");
 		pd.show();
+		
 		
 		
 		// 모든 Snapshot List 를 Load (on Device & on Server)
