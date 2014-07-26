@@ -112,7 +112,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	
 	private ConnServer conn;
 	
-
+	public static String srvIp = "211.189.19.45";
 	public static String homePath = "/dev/vg/";
 	public static PagerAdapterClass pac;
 
@@ -151,7 +151,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		// 모든 Snapshot List 를 Load (on Device & on Server)
 		// Restore 에서 사용할 리스트를 로드함.
 		
-		// 0. 기기 인증처리
+		// 0. 기기 인증처리 ( 서버에 기기정보가 존재하는지 확인 ) 
+		
 		RegistrationDevice rd = new RegistrationDevice(mng,handler);
 		
 		if(!rd.chkUserOnSrv()){ // 기기 등록여부 확인 
@@ -159,6 +160,12 @@ public class MainActivity extends Activity implements OnClickListener {
 			rd.createUser(); // 기기에 사용자 생성.
 			
 		}
+		
+		
+		
+		
+		
+		
 		
 		// 1. Load Snapshot List on Device
 
@@ -170,7 +177,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 		// 2. Load Server List on Server
 		
-		conn = new ConnServer("211.189.19.45", 12345, 0, userCode,
+		conn = new ConnServer(this.srvIp, 12345, 0, userCode,
 				handler);
 		conn.start();
 		

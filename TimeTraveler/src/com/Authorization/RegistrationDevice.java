@@ -1,6 +1,7 @@
 package com.Authorization;
 
 import com.FrameWork.ConnServer;
+import com.example.timetraveler.MainActivity;
 
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -14,8 +15,7 @@ public class RegistrationDevice {
 
 	/**
 	 * 
-	 * @param mng
-	 *            : wifiManager
+	 * @param mng : wifiManager
 	 */
 	public RegistrationDevice(WifiManager mng, Handler handler) {
 
@@ -26,6 +26,8 @@ public class RegistrationDevice {
 
 		// 사용자 코드 생성
 		userCode = cg.genCode();
+		
+		this.handler = handler;
 
 	}
 
@@ -40,7 +42,7 @@ public class RegistrationDevice {
 
 		userCode = this.getUserCode(); // 기기코드
 
-		ConnServer conn = new ConnServer("211.189.19.45", 12345, 3, userCode);
+		ConnServer conn = new ConnServer(MainActivity.srvIp, 12345, 3, userCode , handler);
 		conn.start();
 
 		return false;
@@ -51,7 +53,7 @@ public class RegistrationDevice {
 	 */
 	public void createUser() { // 사용자 정보 생성
 		
-		ConnServer conn = new ConnServer("211.189.19.45", 12345 , 4 , userCode);
+		ConnServer conn = new ConnServer(MainActivity.srvIp , 12345 , 4 , userCode, handler);
 		conn.start();
 
 	}
@@ -60,7 +62,8 @@ public class RegistrationDevice {
 	 * 사용자 정보 읽기
 	 */
 	public void getUserInfo() {
-
+		ConnServer conn = new ConnServer(MainActivity.srvIp , 12345 , 5, userCode, handler);
+		conn.start();
 	}
 
 }

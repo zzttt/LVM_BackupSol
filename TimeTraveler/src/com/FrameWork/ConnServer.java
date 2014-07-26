@@ -77,32 +77,28 @@ public class ConnServer extends Thread {
 			ObjectOutputStream oos = new ObjectOutputStream(
 					sc.getOutputStream());
 
-			// 1 ( 소켓은 이미 앞에서 연결함 )
-			FileSender fs = new FileSender(MainActivity.homePath, this.sc);
-
-			// 1 - 1 .. Server에 Connect 시 auth Code 전송
-			oos.writeObject(authCode); // authCode == userCode
-			
-			
-
-			Calendar time = Calendar.getInstance();
-			String today = (new SimpleDateFormat("yyyyMMddHHmm").format(time
-					.getTime()));
-			System.out.println(today);
-
-			// Date 전송
-			oos.writeObject(today);
-			Payload pl;
 
 			Log.i("eee", "opCode :" + Integer.toString(opCode));
 			switch (this.opCode) {
-			case 0: // 기기 code 에 따라 정보 조회
+			case 0: // 기기 code 에 따라 스냅샷 정보 조회
 				// Snapshot 정보조회
 				/*
 				 * 1. opcode 포함 payload 전송 2. Snapshot Object 수신
 				 */
-				// 1.
-				pl = new Payload(0);
+				
+				// 1 - 1 .. Server에 Connect 시 auth Code 전송
+				oos.writeObject(authCode); // authCode == userCode
+				
+				
+
+				Calendar time = Calendar.getInstance();
+				String today = (new SimpleDateFormat("yyyyMMddHHmm").format(time
+						.getTime()));
+				System.out.println(today);
+
+				// Date 전송
+				oos.writeObject(today);
+				Payload pl = new Payload(0);
 				oos.writeObject(pl);
 
 				try {
@@ -139,7 +135,10 @@ public class ConnServer extends Thread {
 				}
 
 				break;
-			case 1:
+			case 1: // 파일 업로드
+
+				FileSender fs = new FileSender(MainActivity.homePath, this.sc);
+				
 				// File 전송 절차
 				/*
 				 * 1. 소켓연결 , FileSender 초기화(앞에서 미리 실행) 2. Opcode 포함한 Payload 를
@@ -184,17 +183,36 @@ public class ConnServer extends Thread {
 			case 2: // file download
 				
 				pl = new Payload(2);
+				oos.writeObject(pl);
+				
 				
 				break;
 			case 3:  // chk Device ( 등록여부 체크 )
 				
 				Snapshot ss = new Snapshot(); // 현재 기기가 관리하고있는 스냅샷 정보
 				pl = new Payload(3);
+				oos.writeObject(pl);
 				
 				break;
 			case 4: // add user ( 사용자 등록 )
+				pl = new Payload(4);
+				oos.writeObject(pl);
+				
+				
+				
+				
+				
 				break;
-			case 5:
+			case 5: // get user Information ( 사용자 정보 조회 )
+				pl = new Payload(5);
+				
+				
+				
+				break;
+				
+			case 6:
+				break;
+			case 7:
 				break;
 			}
 			

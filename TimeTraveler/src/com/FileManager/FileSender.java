@@ -19,9 +19,7 @@ public class FileSender {
 	/**
 	 * 
 	 * @param path
-	 *            전송할 파일들이 존재하는 디렉토리 경로
 	 * @param scTarget
-	 *            연결 될 소켓
 	 */	
 	public FileSender(String path, Socket scTarget) {
 		this.path = path;
@@ -30,9 +28,9 @@ public class FileSender {
 	
 	/**
 	 * 
-	 * @param fileName 전송할 파일 이름 ( 파일명만 써준다. )
+	 * @param fileName 
 	 */
-	public void sendFile(String fileName) {  // 파일 전송 메서드
+	public void sendFile(String fileName) {  // 
 		
 		String realPath = path + fileName;
 

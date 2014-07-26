@@ -35,6 +35,10 @@ public class SocketConnector extends Thread {
 	public void run() {
 		//authCode , time check
 		try {
+			// Payload 를 우선 받음.
+			Payload pl = (Payload) ois.readObject();
+			
+			
 			authCode = (String)ois.readObject(); // authCode 를 client로부터 받음
 			
 			// authCode 에 따르는 directory가 존재하는지 확인.
@@ -51,9 +55,6 @@ public class SocketConnector extends Thread {
 				
 				
 			}
-			
-			
-			
 			
 			getTime = (String)ois.readObject();
 			
