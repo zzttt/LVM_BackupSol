@@ -49,16 +49,17 @@ public class RegistrationDevice {
 
 		ConnServer conn = new ConnServer(MainActivity.srvIp, 12345, 3, userCode , handler);
 		
-		
 		conn.start();
-
-		ObjectInputStream ois;
+		
 		try {
-			ois = new ObjectInputStream(conn.getSocket().getInputStream());
+			ObjectInputStream ois = new ObjectInputStream(conn.getSocket().getInputStream());
 
 			if(ois.readBoolean()){ // true 면 등록된 기기를 의미함
+				ois.close();
 				return true;
 			}
+			
+			ois.close();
 			
 		} catch (StreamCorruptedException e) {
 			// TODO Auto-generated catch block

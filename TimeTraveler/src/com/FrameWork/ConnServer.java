@@ -189,25 +189,17 @@ public class ConnServer extends Thread {
 				break;
 			case 3:  // chk Device ( 등록여부 체크 )
 				
-				Snapshot ss = new Snapshot(); // 현재 기기가 관리하고있는 스냅샷 정보
 				pl = new Payload(3);
-				oos.writeObject(pl);
+				oos.writeObject(pl); // 등록여부 확인 요청
 				
 				break;
 			case 4: // add user ( 사용자 등록 )
 				pl = new Payload(4);
 				oos.writeObject(pl);
-				
-				
-				
-				
-				
 				break;
 			case 5: // get user Information ( 사용자 정보 조회 )
+				
 				pl = new Payload(5);
-				
-				
-				
 				break;
 				
 			case 6:

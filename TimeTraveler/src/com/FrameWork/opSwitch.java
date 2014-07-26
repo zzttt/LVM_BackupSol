@@ -51,10 +51,6 @@ public class opSwitch extends Thread {
 			System.out.println("file upload");
 			try {
 
-				Snapshot ss = new Snapshot(); // �뒪�깄�꺑 �깮�꽦
-
-				pl.setSnapshot(ss); // payload�뿉 snapshot �쓣 �떞�뒗�떎.
-
 				// snapshot �젙蹂� �쟾�넚
 
 				FileSender fs = new FileSender("/home/armin/temp/", opSocket); // �뙆�씪�씠

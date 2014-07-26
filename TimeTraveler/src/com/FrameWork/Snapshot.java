@@ -9,17 +9,16 @@ import java.io.Serializable;
  * 
  */
 
-public class Snapshot implements Serializable{
-	private int id;
-	private int ssNumber; // Snapshot 의 번호
+public class Snapshot extends UserData implements Serializable{
+	private String id; // Snapshot Identifier
 	private int ssTotal;  // Snapshot 이 분할 압축시 분할된 개수
 	private int state; // Snapshot state
 	private int date;
 	private int type;
 	private String path; // Snapshot이 존재하는 경로
 
-	public Snapshot(){
-		
+	public Snapshot(String userCode){
+		super(userCode);
 	}
 	
 	/**
@@ -27,9 +26,9 @@ public class Snapshot implements Serializable{
 	 * @param id snapshot ID(user ID)
 	 * @param ssNumber 
 	 */
-	public Snapshot(int id, int ssNumber){
+	public Snapshot(String userCode, String id){
+		super(userCode);
 		this.id = id;
-		this.ssNumber = ssNumber;
 	}
 	
 	/**
@@ -41,9 +40,10 @@ public class Snapshot implements Serializable{
 	 * @param type 
 	 * @param path 스냅샷이 존재하는 디렉토리 경로
 	 */
-	public Snapshot(int id, int ssNumber, int state, int date, int type, String path){
+	public Snapshot(String userCode,  String id, int state, int date, int type, String path){
+		super(userCode);
+		
 		this.id = id;
-		this.ssNumber = ssNumber;
 		this.state = state;
 		this.date = date;
 		this.type = type;
@@ -54,12 +54,8 @@ public class Snapshot implements Serializable{
 		
 	}
 	
-	public void setId(int id){
+	public void setId(String id){
 		this.id = id;
-	}
-	
-	public void setSnapshotNum(int ssNumber){
-		this.ssNumber = ssNumber;
 	}
 	
 	public void setState(int state){
@@ -80,8 +76,16 @@ public class Snapshot implements Serializable{
 	
 	public String SnapshotInfo(){
 		String result = null;
-		result = "sId = "+this.id+"\n sNumber = "+this.ssNumber+"\n state = "+this.state;
+		result = "sId = "+this.id+"\n state = "+this.state;
 		return result;
 	}
+	
+	// -- get methodss
+	
+	
+	public String getSId(){
+		return this.id;
+	}
+	
 			
 }		
