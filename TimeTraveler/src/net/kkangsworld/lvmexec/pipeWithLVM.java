@@ -13,9 +13,9 @@ public class pipeWithLVM {
 	public static final String RESULTFIFO = "/data/data/com.example.timetraveler/result_pipe";
 	public static final String CMDFIFO = "/data/data/com.example.timetraveler/cmd_pipe";
 	
-	private NativePipe nativepipe;
-	private ResultReader resultReader;
-	private readHandler rHandler;
+	private NativePipe nativepipe  = null;
+	private ResultReader resultReader = null;
+	private readHandler rHandler  = null;
 	
 	public pipeWithLVM() {
 		//constructor
@@ -27,11 +27,16 @@ public class pipeWithLVM {
 	}
 	
 	public pipeWithLVM(readHandler rh) {
-		nativepipe = new NativePipe();
-		nativepipe.createPipe();
+		
 		//this.rHandler = mHandler;
-		resultReader = new ResultReader(rh); //ResultReader thread init;
-		resultReader.start();
+		if(resultReader == null){
+			nativepipe = new NativePipe();
+			nativepipe.createPipe();
+			
+			
+			resultReader = new ResultReader(rh); //ResultReader thread init;
+			resultReader.start();
+		}
 		//readFromPipe(); //read도 동시에 실행
 	}
 	

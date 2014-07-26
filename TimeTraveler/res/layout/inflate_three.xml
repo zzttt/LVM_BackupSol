@@ -15,7 +15,7 @@
             android:id="@+id/ll_three"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="#0B3861"
+            android:background="#000000"
             android:orientation="vertical" >
 
             <TextView

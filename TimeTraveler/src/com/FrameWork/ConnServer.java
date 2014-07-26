@@ -43,7 +43,7 @@ public class ConnServer extends Thread {
 	 * 
 	 * @param srvIp
 	 * @param port
-	 * @param opCode
+	 * @param opCode 
 	 * @param userCode
 	 */
 	public ConnServer(String srvIp, int port, int opCode, String userCode) {
@@ -57,8 +57,8 @@ public class ConnServer extends Thread {
 	 * 
 	 * @param srvIp
 	 * @param port
-	 * @param opCode
-	 * @param userCode
+	 * @param opCode : operation Code ( 0 : read sInfo  / 2: file download  / 3: chk device / 4 : add user / 
+	 * @param userCode 
 	 * @param andHandler
 	 */
 	public ConnServer(String srvIp, int port, int opCode, String userCode,
@@ -81,7 +81,9 @@ public class ConnServer extends Thread {
 			FileSender fs = new FileSender(MainActivity.homePath, this.sc);
 
 			// 1 - 1 .. Server에 Connect 시 auth Code 전송
-			oos.writeObject(authCode);
+			oos.writeObject(authCode); // authCode == userCode
+			
+			
 
 			Calendar time = Calendar.getInstance();
 			String today = (new SimpleDateFormat("yyyyMMddHHmm").format(time
@@ -179,15 +181,24 @@ public class ConnServer extends Thread {
 				}
 
 				break;
-			case 2:
+			case 2: // file download
+				
+				pl = new Payload(2);
+				
 				break;
-			case 3:
+			case 3:  // chk Device ( 등록여부 체크 )
+				
+				Snapshot ss = new Snapshot(); // 현재 기기가 관리하고있는 스냅샷 정보
+				pl = new Payload(3);
+				
 				break;
-			case 4:
+			case 4: // add user ( 사용자 등록 )
 				break;
 			case 5:
 				break;
 			}
+			
+			
 			oos.close();
 			sc.close();
 		} catch (UnknownHostException e) {

@@ -25,7 +25,8 @@ import java.util.logging.Logger;
 import net.kkangsworld.lvmexec.pipeWithLVM;
 import net.kkangsworld.lvmexec.readHandler;
 
-import com.AuthcodeGen.CodeGenerator;
+import com.Authorization.CodeGenerator;
+import com.Authorization.RegistrationDevice;
 import com.FileManager.FileInfo;
 import com.FileManager.SnapshotDiskManager;
 import com.FrameWork.ConnServer;
@@ -107,8 +108,10 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	NetworkInfo mobile;
 	NetworkInfo wifi;
-	WifiManager mng;
-	WifiInfo info;
+	
+	
+	private ConnServer conn;
+	
 
 	public static String homePath = "/dev/vg/";
 	public static PagerAdapterClass pac;
@@ -128,33 +131,35 @@ public class MainActivity extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		WifiManager mng = (WifiManager) getSystemService(WIFI_SERVICE);
+		
 		manager = (ConnectivityManager) getApplicationContext()
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
 
 		wifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-		mng = (WifiManager) getSystemService(WIFI_SERVICE);
-		info = mng.getConnectionInfo();
+		
 
 		// Handler 세팅
 		handler = new opHandler(MainActivity.this);
-		// MAC 이용 인증코드 생성
-		CodeGenerator cg = new CodeGenerator(info.getMacAddress());
-		Toast.makeText(getApplication(), cg.genCode(), Toast.LENGTH_SHORT)
-				.show();
 
-		userCode = cg.genCode();
 		
-
 		pd = new ProgressDialog(this);
 		pd.setCanceledOnTouchOutside(false);
 		pd.setMessage("Loading initial data ...");
 		pd.show();
 		
-		
 		// 모든 Snapshot List 를 Load (on Device & on Server)
 		// Restore 에서 사용할 리스트를 로드함.
+		
+		// 0. 기기 인증처리
+		RegistrationDevice rd = new RegistrationDevice(mng,handler);
+		
+		if(!rd.chkUserOnSrv()){ // 기기 등록여부 확인 
 
+			rd.createUser(); // 기기에 사용자 생성.
+			
+		}
+		
 		// 1. Load Snapshot List on Device
 
 		SnapshotDiskManager sdm = new SnapshotDiskManager(homePath);
@@ -162,10 +167,14 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 		snapshotListInDev = sList; // 장치내의 리스트 가져옴
 		
+		
 		// 2. Load Server List on Server
-		ConnServer conn = new ConnServer("211.189.19.45", 12345, 0, userCode,
+		
+		conn = new ConnServer("211.189.19.45", 12345, 0, userCode,
 				handler);
 		conn.start();
+		
+		
 
 		// 하단 메뉴를 위한 Pager
 		pac = new PagerAdapterClass(getApplicationContext());
@@ -352,9 +361,6 @@ public class MainActivity extends Activity implements OnClickListener {
 						case 0: // 현재 시점을 서버에 백업
 							if (childPosition == 0) // Server Backup
 							{
-								Toast.makeText(getApplicationContext(),
-										"MAC : " + info.getMacAddress(),
-										Toast.LENGTH_SHORT).show();
 								// check the wi-fi connection
 								if (wifi.isConnected()) {
 									// WIFI 에 만 연결 되었을때
@@ -416,12 +422,11 @@ public class MainActivity extends Activity implements OnClickListener {
 									.getTime()));
 							
 							pl = new pipeWithLVM(rh);
-							pl.ActionWritePipe("lvcreate -s -L 20M -n "+today+" /dev/vg/userdata");
-							
+							pl.ActionWritePipe("lvcreate -s -L 200M -n "+today+" /dev/vg/userdata");
 							
 							
 							// 어플 리스트를 읽어들인다.
-							
+						/*	
 							PackageManager pm = getPackageManager();
 
 							List<PackageInfo> packs = getPackageManager()
@@ -437,7 +442,7 @@ public class MainActivity extends Activity implements OnClickListener {
 								
 								Log.i("TAG", "appDir : "+sDir);
 								
-							}
+							}*/
 							
 							
 							// 어플리스트 백업
@@ -825,11 +830,6 @@ class opHandler extends Handler {
 						int gPosition, long arg3) {
 					// TODO Auto-generated method stub
 
-					/*SnapListExpandableAdapter slea = (SnapListExpandableAdapter) elv.getAdapter();
-					
-					int cCount = slea.getChildrenCount(gPosition);
-
-					Log.d("lvm", Integer.toString(cCount));*/
 					
 					String sName = null;
 					int srvSnapshotLen = MainActivity.snapshotListInSrv.length;
@@ -1142,6 +1142,9 @@ class opHandler extends Handler {
 			mListView.setAdapter(new SnapListExpandableAdapter(vv.getContext(),
 					mGroupList, mChildList, mDestList, mChildDestList, 1));
 
+			break;
+		case 102:
+			
 			
 			break;
 		default:

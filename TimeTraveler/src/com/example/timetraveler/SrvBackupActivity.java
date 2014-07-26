@@ -38,10 +38,13 @@ public class SrvBackupActivity extends Activity {
 		setContentView(R.layout.activity_srv_backup);
 		
 		ListView lv = (ListView) this.findViewById(R.id.lv_sList);
-		/*rh = new readHandler(this,lv);
 		
+		rh = new readHandler(this,lv);
+		
+		// LVM pipe 에 핸들러와 함께 전송
 		pl = new pipeWithLVM(rh);
-		pl.ActionWritePipe("lvs --separator , ");*/
+		
+		pl.ActionWritePipe("lvs --separator , ");
 	}
 
 	@Override

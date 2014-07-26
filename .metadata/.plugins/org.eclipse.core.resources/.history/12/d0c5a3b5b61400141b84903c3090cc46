@@ -1,0 +1,18 @@
+package com.Authorization;
+
+import android.widget.Toast;
+
+public class RegistrationDevice {
+
+	
+	
+	
+	
+	public RegistrationDevice(String userCode){
+
+		// MAC 이용 인증코드 생성
+		CodeGenerator cg = new CodeGenerator(info.getMacAddress());
+				
+		
+	}
+}

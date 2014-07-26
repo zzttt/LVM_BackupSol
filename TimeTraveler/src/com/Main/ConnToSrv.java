@@ -21,7 +21,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import com.AuthcodeGen.CodeGenerator;
+import com.Authorization.CodeGenerator;
 import com.FileManager.FileSender;
 import com.FileManager.GzipGenerator;
 import com.FrameWork.Payload;

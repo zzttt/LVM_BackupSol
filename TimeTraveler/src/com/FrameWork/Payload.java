@@ -17,7 +17,7 @@ public class Payload implements Serializable {
 	// constuctor
 	/**
 	 * 서버와 통신에 이용되는 payload 에 필요한 정보를 담음.
-	 * @param opCode : 동작코드 ( 1 : 파일전송 / 2 : 파일 다운로드 / 3 : 파일정보 읽기
+	 * @param opCode : 동작코드 ( 1 : 파일전송 / 2 : 파일 다운로드 / 3 : 사용자 확인 / 4: 사용자 등록
 	 */
 	public Payload(){
 		
@@ -25,7 +25,7 @@ public class Payload implements Serializable {
 	
 	/**
 	 * 서버와 통신에 이용되는 payload 에 필요한 정보를 담음.
-	 * @param opCode : 동작코드 ( 1 : 파일전송 / 2 : 파일 다운로드 / 3 : 파일정보 읽기
+	 * @param opCode : 동작코드 ( 1 : 파일전송 / 2 : 파일 다운로드 / 3 : 사용자 확인 / 4: 사용자 등록
 	 */
 	public Payload(int opCode){
 		this.opCode = opCode;
@@ -33,7 +33,7 @@ public class Payload implements Serializable {
 	
 	/**
 	 * 서버와 통신에 이용되는 payload 에 필요한 정보를 담음.
-	 * @param opCode : 동작코드 ( 1 : 파일전송 / 2 : 파일 다운로드 / 3 : 파일정보 읽기
+	 * @param opCode : 동작코드 ( 1 : 파일전송 / 2 : 파일 다운로드 / 3 : 사용자 확인 / 4: 사용자 등록
 	 * @param authCode : 인증코드 ( mobile 에서 생성 )
 	 */
 	public Payload(int opCode, int authCode){

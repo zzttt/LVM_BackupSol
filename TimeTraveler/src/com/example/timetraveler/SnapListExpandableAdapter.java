@@ -83,13 +83,13 @@ public class SnapListExpandableAdapter extends BaseExpandableListAdapter {
 		return groupPosition;
 	}
 
+	
 	// 그룹뷰 각각의 ROW
 	@Override
 	public View getGroupView(int groupPosition, boolean isExpanded,
 			View convertView, ViewGroup parent) {
 
 		View v = convertView;
-
 		if (v == null) { // 메뉴 1 ( Back Up )
 			viewHolder = new ViewHolder();
 			v = inflater.inflate(R.layout.list_row, parent, false);
@@ -103,25 +103,26 @@ public class SnapListExpandableAdapter extends BaseExpandableListAdapter {
 			viewHolder.tv_description = (TextView) v.findViewById(R.id.tv_desc);
 
 			viewHolder.iv_image.setVisibility(View.GONE);
-			
+			// Child View Text의 margin - left 설정
+			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			lp.setMargins(20, 0, 0, 0);
+			viewHolder.tv_groupName.setLayoutParams(lp);
+			viewHolder.tv_groupName
+					.setLayoutParams(new LinearLayout.LayoutParams(
+							LayoutParams.MATCH_PARENT,
+							LayoutParams.WRAP_CONTENT));
+
 			// Group name Text Size set
 			viewHolder.tv_groupName.setTextSize(30);
+			viewHolder.tv_groupName.setPadding(0, 20, 0, 20);
 			viewHolder.tv_groupName.setTypeface(null, Typeface.BOLD);
 
 			if (menuNumber == 0) { // 0 번 메뉴에서만 사용하는 View
-				viewHolder.tv_groupName.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 150));
-				viewHolder.tv_groupName.setGravity(Gravity.CENTER);
-				
-				viewHolder.tv_description.setTextSize(20);
-				viewHolder.tv_description.setText(getDesc(groupPosition));
-				viewHolder.tv_description.setGravity(Gravity.CENTER);
-				viewHolder.tv_description.setPadding(0, 0, 0, 50);
-				viewHolder.iv_image
-						.setLayoutParams(new LinearLayout.LayoutParams(300, 300));
-				
-				v.setBackgroundColor(Color.DKGRAY);
 			} else {
-				viewHolder.tv_groupName.setGravity(Gravity.CENTER);
+				viewHolder.tv_groupName.setGravity(Gravity.CENTER_HORIZONTAL);
+				v .setBackgroundColor(Color.BLACK);
 				viewHolder.tv_description.setVisibility(View.GONE);
 				viewHolder.iv_image.setVisibility(View.GONE);
 			}
@@ -208,7 +209,7 @@ public class SnapListExpandableAdapter extends BaseExpandableListAdapter {
 					LayoutParams.WRAP_CONTENT));
 
 			viewHolder.tv_groupName.setVisibility(View.GONE);
-
+			v .setBackgroundColor(Color.DKGRAY);
 			v.setTag(viewHolder); 
 		} else {
 			viewHolder = (ViewHolder) v.getTag();

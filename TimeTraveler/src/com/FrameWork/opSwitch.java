@@ -9,7 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import com.AuthcodeGen.CodeGenerator;
+import com.Authorization.CodeGenerator;
 import com.FileManager.FileSender;
 import com.FileManager.GzipGenerator;
 

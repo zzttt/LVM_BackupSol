@@ -1,0 +1,24 @@
+package com.Authorization;
+
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.widget.Toast;
+
+public class RegistrationDevice {
+
+	
+	
+	
+	
+	public RegistrationDevice(String userCode){
+
+
+		WifiManager mng = (WifiManager) getSystemService("wifi);
+		
+		WifiInfo info = mng.getConnectionInfo();
+		// MAC 이용 인증코드 생성
+		CodeGenerator cg = new CodeGenerator(info.getMacAddress());
+				
+		
+	}
+}

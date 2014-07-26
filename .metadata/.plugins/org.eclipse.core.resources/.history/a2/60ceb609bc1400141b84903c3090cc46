@@ -1,0 +1,56 @@
+package com.Authorization;
+
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.widget.Toast;
+
+public class RegistrationDevice {
+
+	private String userCode; // 사용자 코드
+	
+	/**
+	 * 
+	 * @param mng : wifiManager
+	 */
+	public RegistrationDevice(WifiManager mng){
+
+		WifiInfo info = mng.getConnectionInfo();
+		// MAC 이용 인증코드 생성
+		CodeGenerator cg = new CodeGenerator(info.getMacAddress());
+		
+		// 사용자 코드 생성
+		userCode = cg.genCode(); 	
+		
+	}
+	
+	public String getUserCode(){
+		return this.userCode;
+	}
+	
+	/**
+	 * 사용자 등록 여부 확인
+	 */
+	public boolean chkUserOnSrv(){ // 서버에 사용자 등록여부 확인
+		
+		return false;
+	}
+	
+	/**
+	 *  사용자 정보 생성
+	 */
+	public void createUser(){ // 사용자 정보 생성
+		
+	}
+	
+	/**
+	 * 사용자 정보 읽기
+	 */
+	public void getUserInfo(){
+		
+	}
+	
+	
+	
+	
+	
+}

@@ -1,7 +1,0 @@
-package com.example.timetraveler;
-
-import android.widget.BaseExpandableListAdapter;
-
-public class SnapListExpandableAdapter extends BaseExpandableListAdapter{
-
-}
