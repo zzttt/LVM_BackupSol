@@ -8,6 +8,7 @@ public class NativePipe {
 	public native String test_getPipe();
 	public native int createPipe();
 	public native int writePipe(String command);
+	public native int copystartPipe();
 	
 	static
 	{
