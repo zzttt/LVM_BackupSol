@@ -1,6 +1,11 @@
 package com.Authorization;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.StreamCorruptedException;
+
 import com.FrameWork.ConnServer;
+import com.FrameWork.Payload;
 import com.example.timetraveler.MainActivity;
 
 import android.net.wifi.WifiInfo;
@@ -43,8 +48,26 @@ public class RegistrationDevice {
 		userCode = this.getUserCode(); // 기기코드
 
 		ConnServer conn = new ConnServer(MainActivity.srvIp, 12345, 3, userCode , handler);
+		
+		
 		conn.start();
 
+		ObjectInputStream ois;
+		try {
+			ois = new ObjectInputStream(conn.getSocket().getInputStream());
+
+			if(ois.readBoolean()){ // true 면 등록된 기기를 의미함
+				return true;
+			}
+			
+		} catch (StreamCorruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return false;
 	}
 

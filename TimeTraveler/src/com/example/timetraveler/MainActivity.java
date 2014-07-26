@@ -150,8 +150,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		pd.setCanceledOnTouchOutside(false);
 		pd.setMessage("Loading initial data ...");
 		pd.show();
-		
-		
+
 		// 모든 Snapshot List 를 Load (on Device & on Server)
 		// Restore 에서 사용할 리스트를 로드함.
 		
@@ -164,13 +163,6 @@ public class MainActivity extends Activity implements OnClickListener {
 			rd.createUser(); // 기기에 사용자 생성.
 			
 		}
-		
-		
-		
-		
-		
-		
-		
 		// 1. Load Snapshot List on Device
 
 		SnapshotDiskManager sdm = new SnapshotDiskManager(homePath);
@@ -178,14 +170,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 		snapshotListInDev = sList; // 장치내의 리스트 가져옴
 		
-		
 		// 2. Load Server List on Server
-		
 		conn = new ConnServer(this.srvIp, 12345, 0, userCode,
 				handler);
 		conn.start();
-		
-		
 
 		// 하단 메뉴를 위한 Pager
 		pac = new PagerAdapterClass(getApplicationContext());
