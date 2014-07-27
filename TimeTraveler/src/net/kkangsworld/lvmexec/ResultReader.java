@@ -58,12 +58,7 @@ public class ResultReader extends Thread {
 					    	Message msg = Message.obtain();
 							msg.what = 0; msg.arg1 = 0; //여기에 해당 COMMAND구분용 넣음될듯
 		
-							
-							
-							
 							msg.obj = txt; 
-							
-							
 							
 							//값 던져줌 use Handler
 							rHandler.sendMessage(msg);

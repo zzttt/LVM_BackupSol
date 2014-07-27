@@ -87,10 +87,11 @@ public class ConnServer extends Thread {
 				 */
 				
 				// 1 - 1 .. Server에 Connect 시 auth Code 전송
-				oos.writeObject(authCode); // authCode == userCode
+				//oos.writeObject(authCode); // authCode == userCode
+				Payload pl = new Payload(0, authCode);
+				oos.writeObject(pl);
 				
 				
-
 				Calendar time = Calendar.getInstance();
 				String today = (new SimpleDateFormat("yyyyMMddHHmm").format(time
 						.getTime()));
@@ -98,8 +99,7 @@ public class ConnServer extends Thread {
 
 				// Date 전송
 				oos.writeObject(today);
-				Payload pl = new Payload(0);
-				oos.writeObject(pl);
+				
 
 				try {
 					ois = new ObjectInputStream(sc.getInputStream());
@@ -146,7 +146,7 @@ public class ConnServer extends Thread {
 				 * HomeDir내의 파일 정보들을 모두 전송 5. FileSender를 통한 파일전송
 				 */
 				// 2
-				pl = new Payload(1);
+				pl = new Payload(1, authCode);
 				oos.writeObject(pl);
 
 				// 3. HomeDir내의 파일 개수를 전송
@@ -182,24 +182,25 @@ public class ConnServer extends Thread {
 				break;
 			case 2: // file download
 				
-				pl = new Payload(2);
+				pl = new Payload(2,authCode);
 				oos.writeObject(pl);
 				
 				
 				break;
 			case 3:  // chk Device ( 등록여부 체크 )
 				
-				pl = new Payload(3);
+				pl = new Payload(3,authCode);
 				oos.writeObject(pl); // 등록여부 확인 요청
+
 				
 				break;
 			case 4: // add user ( 사용자 등록 )
-				pl = new Payload(4);
+				pl = new Payload(4,authCode);
 				oos.writeObject(pl);
 				break;
 			case 5: // get user Information ( 사용자 정보 조회 )
 				
-				pl = new Payload(5);
+				pl = new Payload(5,authCode);
 				break;
 				
 			case 6:
@@ -207,7 +208,6 @@ public class ConnServer extends Thread {
 			case 7:
 				break;
 			}
-			
 			
 			oos.close();
 			sc.close();

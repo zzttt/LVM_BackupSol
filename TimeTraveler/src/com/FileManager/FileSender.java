@@ -6,6 +6,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import android.util.Log;
+
 public class FileSender {
 
 	private String path;
@@ -16,6 +18,11 @@ public class FileSender {
 	public FileSender(){
 		
 	}
+	
+	public FileSender(Socket scTarget) {
+		this.scTarget = scTarget;
+	}
+	
 	/**
 	 * 
 	 * @param path
@@ -25,6 +32,18 @@ public class FileSender {
 		this.path = path;
 		this.scTarget = scTarget;
 	}
+	
+	/**
+	 * 스트림을 전송 ( buffer 단위로 전송 )
+	 * @param is 파일의 스트림을 읽어옴
+	 */
+	public void sendStream(byte[] buffer, int size) {  // 파일 스트림 전송 
+		
+		Log.d("lvm", "size : " + Integer.toString(size) );
+		
+	}
+	
+	
 	
 	/**
 	 * 

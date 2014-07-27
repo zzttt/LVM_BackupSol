@@ -113,6 +113,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	private ConnServer conn;
 	
 	public static String srvIp = "211.189.19.45";
+	public static int srvPort = 12345 ;
 	public static String homePath = "/dev/vg/";
 	public static PagerAdapterClass pac;
 
@@ -162,7 +163,6 @@ public class MainActivity extends Activity implements OnClickListener {
 			
 			//등록이 안되어 있으면 일단은 자동생성.
 			// 사용자에게 물어볼 수도 있는거고..
-			
 			rd.createUser(); // 기기에 사용자 생성.
 		}else{
 			
@@ -177,7 +177,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		snapshotListInDev = sList; // 장치내의 리스트 가져옴
 		
 		// 2. Load Server List on Server
-		conn = new ConnServer(this.srvIp, 12345, 0, userCode,
+		conn = new ConnServer(this.srvIp, 12345, 0, rd.getUserCode(),
 				handler);
 		conn.start();
 
@@ -765,6 +765,13 @@ class opHandler extends Handler {
 		case 0:
 
 			break;
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+			
 		case 100: // Snapshot List Handling
 			
 			// pac 에서 View 를 읽어옴

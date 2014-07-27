@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
+import com.FrameWork.SnapshotImageMaker;
 import com.example.timetraveler.R;
 import com.example.timetraveler.SrvBackupActivity;
 
@@ -24,6 +25,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+/**
+ * Piped LVM 을 이용한 결과를 반영하는 핸들러
+ * @author Administrator
+ *
+ */
 public class readHandler extends Handler {
 
 	private String readResult;
@@ -68,16 +74,17 @@ public class readHandler extends Handler {
 			for(int i = 0 ; i < strArr.length ; i++){
 				if(strArr[i].equals("vg")){
 					ssStrList.add(strArr[i-1]); // 임시등록
-					if(strArr[i+1].startsWith("s"))
-						ssStrList.add(strArr[i-1]);
+					
+					/*if(strArr[i+1].startsWith("s")) // 스냅샷만 출력해 주는 부분
+						ssStrList.add(strArr[i-1]);*/
 				}
 			}
 			
-			Toast.makeText(context, readResult, Toast.LENGTH_SHORT).show();
+			//Toast.makeText(context, readResult, Toast.LENGTH_SHORT).show();
+			
 			
 			
 			//dd if="filePath" obs="bytes"
-			
 			
 			// ssList를 이용하여 View Listing
 			
@@ -114,76 +121,14 @@ public class readHandler extends Handler {
 							pd.setCancelable(true);
 							pd.show();
 							
-							// Snapshot Imaging
-							try {
-								Process p =  Runtime.getRuntime().exec("su"); //  root 쉘
-								
-								
-								// obs : 10240 (10 kb 씩 read)
-								String command = "dd if=/dev/vg/"+ssName+" obs=10240";
-								Log.i("lvm", "command : "+command);
-								OutputStream os = p.getOutputStream();
-								
-								// input command 
-								os.write(command.getBytes());
-								
-
-								os.write("exit\n".getBytes());		
-								os.flush();
-
-								
-								
-								
-								
-								
-								/*
-								 * p.exitValue 로 끝을 체크하려고 함
-								 * 끊길지 잘 모르겠다.
-								 */
-								try {
-									p.waitFor();
-									if (p.exitValue() != 255) {
-										// TODO Code to run on success
-										Log.i("lvm", "su and dd command successed");
-									} else {
-										// TODO Code to run on unsuccessful
-										Log.i("lvm", "su fail");
-									}
-
-								} catch (InterruptedException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-									Log.i("lvm", "not root");
-								} 
-								
-								byte buffer[] = new byte[10240];
-								int size  = 0;
-								int totalSize = 0;
-								InputStream is = p.getInputStream();
-								
-								
-								while( (size = is.read(buffer)) > 0){
-									Log.d("lvm", "size : "+Integer.toString(size));
-									totalSize += size;
-								}
-								
-								
-								Log.d("lvm", "Stream finished");
-								Log.d("lvm", "total : "+Integer.toString(totalSize));
-								
-								 
-								is.close();
-								os.close();
-
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}finally{
-								
-							}
 							
-
+							
+							// Snapshot Imaging
 							// Snapshot Send to Server
+							
+							SnapshotImageMaker sim = new SnapshotImageMaker(ssName);
+							sim.start();
+							
 
 							// confirm
 

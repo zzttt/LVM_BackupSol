@@ -8,22 +8,90 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.zip.*;
 
+import android.util.Log;
+
 public class GzipGenerator {
 
 	private int cmpPartNumber;
 	private BufferedReader in;
+	private InputStream is;
 	private GZIPOutputStream out;
 
+	
 	public GzipGenerator() {
 		this.cmpPartNumber = 1;
 	}
+	
+	public GzipGenerator(InputStream is) {
+		this.cmpPartNumber = 1;
+		this.is = is;
+	}
 
+	/**
+	 * 스트림을 압축해서 서버에 전송함.
+	 * @param srvIp
+	 * @throws IOException
+	 */
+	
+	public void SendCompImgToSrv(String srvIp,int port) throws IOException { 
+		byte buffer[] = new byte[1024*1024];
+		int size = 0;
+		int totalSize = 0;
+		Socket sc = new Socket(srvIp, port); // 서버에 연결
+		FileSender fs ;
+		
+		if(sc.isConnected()){ // 소켓 연결시 파일전송 
+			fs = new FileSender(sc);
+			
+		}else{
+			return;
+		}
+		
+		
+		/*
+		 * input stream 에서 읽어 socket 으로 쏜다.
+		 */
+		while ((size = is.read(buffer)) == 0) { // size == 0 일 동안 대기
+			// do nothing
+		}
+		// buffer 1 전송
+		fs.sendStream(buffer,size); // buffer size  : 1024*1024
+		while ((size = is.read(buffer)) > 0) {
+			// buffer 2 ~ end 까지 전송
+
+			fs.sendStream(buffer,size);
+			
+			Log.d("lvm", Integer.toString(size) );
+			totalSize += size;
+		}
+		
+
+		Log.d("lvm", "total : " + Integer.toString(totalSize/1024/1024)+"mb");
+		
+		
+
+		/*BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+		String l;
+		while(( l = br.readLine()) == null){ // size == 0일동안 대기	
+
+			Log.d("thread", "waiting .." ); 
+		}
+
+		Log.d("lvm", l );
+		while(( l = br.readLine()) != null){
+			Log.d("lvm", l );
+		}*/
+	}
+	
 	public void partCompress(String src, String destDir) throws IOException {
 		String fileName;
 		String fFullName;
@@ -34,6 +102,7 @@ public class GzipGenerator {
 		int postIdx = srcFile.getName().indexOf(".");
 		fileName = srcFile.getName().substring(preIdx+1, postIdx);
 		fFullName = srcFile.getName();
+		
 		destFile = destDir + fFullName.replace(fileName, fileName+"1") + ".gz";
 
 		in = new BufferedReader(new FileReader(src));
@@ -143,7 +212,6 @@ public class GzipGenerator {
 				fis = new FileInputStream(destList[i]);
 				gis = new GZIPInputStream(fis);
 				
-				// 占쎄껀熬곥굥留됧뜝
 				byte[] byteArr = new byte[1024];
 
 				int readByte = 0;
