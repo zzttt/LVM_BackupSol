@@ -116,6 +116,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	public static int srvPort = 12345 ;
 	public static String homePath = "/dev/vg/";
 	public static PagerAdapterClass pac;
+	public static RegistrationDevice rd;
 
 	public static boolean setVal0 = false; // auto snapshot On // Off
 	public static int setVal1 = 0; // 백업 용량 세팅 값 1
@@ -157,7 +158,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 		// 0. 기기 인증처리 ( 서버에 기기정보가 존재하는지 확인 ) 
 		
-		RegistrationDevice rd = new RegistrationDevice(mng,handler);
+		 rd = new RegistrationDevice(mng,handler);
 		
 		if(!rd.chkUserOnSrv()){ // 기기 등록여부 확인
 			

@@ -5,7 +5,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
+import com.FrameWork.ConnServer;
 import com.FrameWork.SnapshotImageMaker;
+import com.example.timetraveler.MainActivity;
 import com.example.timetraveler.R;
 import com.example.timetraveler.SrvBackupActivity;
 
@@ -117,17 +119,21 @@ public class readHandler extends Handler {
 									context);
 							pd.setTitle("전송중 .. ");
 							pd.setMessage("Snapshot 을 서버로 전송 중 입니다..");
-							pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+							pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 							pd.setCancelable(true);
 							pd.show();
 							
+							// 서버에 전송이 시작된다는 것을 알려야지	
+							
+							ConnServer conn = new ConnServer(MainActivity.srvIp, 12345, 6, MainActivity.rd.getUserCode());
+							conn.start();		
+							
+							SnapshotImageMaker sim = new SnapshotImageMaker("ssName");
+							sim.start();
 							
 							
 							// Snapshot Imaging
 							// Snapshot Send to Server
-							
-							SnapshotImageMaker sim = new SnapshotImageMaker(ssName);
-							sim.start();
 							
 
 							// confirm

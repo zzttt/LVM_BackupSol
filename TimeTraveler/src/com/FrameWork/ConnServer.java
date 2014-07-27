@@ -43,7 +43,7 @@ public class ConnServer extends Thread {
 	 * 
 	 * @param srvIp
 	 * @param port
-	 * @param opCode 
+	 * @param opCode : operation Code ( 0 : read sInfo  / 2: file download  / 3: chk device / 4 : add user / 6 : img stream transfer 
 	 * @param userCode
 	 */
 	public ConnServer(String srvIp, int port, int opCode, String userCode) {
@@ -130,8 +130,8 @@ public class ConnServer extends Thread {
 							// TODO Auto-generated method stub
 							andHandler.sendEmptyMessage(100);
 						}
-						
 					});
+					
 				}
 
 				break;
@@ -203,7 +203,13 @@ public class ConnServer extends Thread {
 				pl = new Payload(5,authCode);
 				break;
 				
-			case 6:
+			case 6: // 이미지 스트림 업로드
+				Log.i("lvm2", "image stream payload transfer");
+				pl = new Payload(6,authCode);
+				oos.writeObject(pl); // payload 전송
+
+				
+				
 				break;
 			case 7:
 				break;

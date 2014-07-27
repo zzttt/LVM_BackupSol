@@ -34,18 +34,6 @@ public class FileSender {
 	}
 	
 	/**
-	 * 스트림을 전송 ( buffer 단위로 전송 )
-	 * @param is 파일의 스트림을 읽어옴
-	 */
-	public void sendStream(byte[] buffer, int size) {  // 파일 스트림 전송 
-		
-		Log.d("lvm", "size : " + Integer.toString(size) );
-		
-	}
-	
-	
-	
-	/**
 	 * 
 	 * @param fileName 
 	 */

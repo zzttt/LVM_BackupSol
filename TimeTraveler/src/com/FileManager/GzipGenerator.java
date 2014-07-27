@@ -10,7 +10,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -23,7 +26,9 @@ public class GzipGenerator {
 	private int cmpPartNumber;
 	private BufferedReader in;
 	private InputStream is;
-	private GZIPOutputStream out;
+	private OutputStream os;
+	private ObjectOutputStream oos;
+	private GZIPOutputStream gOut;
 
 	
 	public GzipGenerator() {
@@ -40,44 +45,84 @@ public class GzipGenerator {
 	 * @param srvIp
 	 * @throws IOException
 	 */
-	
-	public void SendCompImgToSrv(String srvIp,int port) throws IOException { 
-		byte buffer[] = new byte[1024*1024];
+	public void SendCompImgToSrv(String srvIp,int port){ 
+		byte buffer[] = new byte[1024];
 		int size = 0;
-		int totalSize = 0;
-		Socket sc = new Socket(srvIp, port); // 서버에 연결
-		FileSender fs ;
-		
-		if(sc.isConnected()){ // 소켓 연결시 파일전송 
-			fs = new FileSender(sc);
+		long totalSize = 0;
+		Socket sc;
+		try {
+			//   ++++++++++ sc = new Socket(srvIp, port);
+
+			FileSender fs; // 스트림 전송을 도와줄 File Sender
+
+			//   ++++++++++ os = sc.getOutputStream();
+			//   ++++++++++ oos = new ObjectOutputStream(os);
 			
-		}else{
-			return;
-		}
-		
-		
-		/*
-		 * input stream 에서 읽어 socket 으로 쏜다.
-		 */
-		while ((size = is.read(buffer)) == 0) { // size == 0 일 동안 대기
-			// do nothing
-		}
-		// buffer 1 전송
-		fs.sendStream(buffer,size); // buffer size  : 1024*1024
-		while ((size = is.read(buffer)) > 0) {
-			// buffer 2 ~ end 까지 전송
-
-			fs.sendStream(buffer,size);
+			/*if (sc.isConnected()) { // 소켓 연결시 파일전송
+				fs = new FileSender(sc);
+			} else {
+				return;
+			}*/
+			//   ++++++++++			//   ++++++++++			//   ++++++++++
 			
-			Log.d("lvm", Integer.toString(size) );
-			totalSize += size;
+			
+			
+			/*
+			 * input stream 에서 읽어 socket 으로 쏜다.
+			 */
+			while ((size = is.read(buffer)) == 0) { // size == 0 일 동안 대기
+				// do nothing
+			}
+			// while문을 지나면 한개의 버퍼를 읽어들인다.
+			
+			// 처음 읽은 buffer 전송
+		//   ++++++++++		 gOut = new GZIPOutputStream(os);
+			
+			//oos.writeInt(size); // 전송할 byteSize 전송
+			
+			//gOut.write(buffer); // 압축해서 서버로 바로 쏜다
+			
+			Log.d("lvm", Integer.toString(size));
+			totalSize+=size;
+			// while ((size = is.read(buffer)) > 0) {
+			
+			// avail  > input stream에 남아있는 바이트
+			int avail ;
+			
+			while ((avail = is.available()) > 0 && (size = is.read(buffer)) > 0) {
+				//Log.e("lvm2", "in while (avail : "+avail+")");
+				
+				if(avail < 2048){
+					// 스레드 슬립 ( input stream 이 텅 비면 진행되지 않음 )
+					try {
+						Thread.sleep(150);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				// buffer 2 ~ end 까지 서버로 전송
+				//gOut.write(buffer); // 압축해서 서버로 바로 쏜다
+				
+				totalSize += size;
+				Log.d("lvm", Long.toString(totalSize));
+				
+				// Log.d("lvm", "size : " +
+				// Long.toString(totalSize/1024/1024)
+				// );
+			}
+			Log.e("lvm2", "out of while");
+		//   ++++++++++		 gOut.close();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			Log.d("lvm", "total : " + Long.toString(totalSize / 1024 / 1024)+ "mb");
 		}
-		
-
-		Log.d("lvm", "total : " + Integer.toString(totalSize/1024/1024)+"mb");
-		
-		
-
+		// 서버에 연결
 		/*BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
 		String l;
@@ -106,8 +151,9 @@ public class GzipGenerator {
 		destFile = destDir + fFullName.replace(fileName, fileName+"1") + ".gz";
 
 		in = new BufferedReader(new FileReader(src));
-		out = new GZIPOutputStream(new FileOutputStream(destFile));
-
+		gOut = new GZIPOutputStream(new FileOutputStream(destFile));
+		
+		
 		FileInputStream fis = new FileInputStream(srcFile);
 
 		System.out.println(srcFile.length());
@@ -128,22 +174,22 @@ public class GzipGenerator {
 			
 			if(writeSize <= limitSize){
 				totalWrite += readByte;
-				out.write(byteArr, 0, readByte);
+				gOut.write(byteArr, 0, readByte);
 			}else{
-				out.write(byteArr, 0, readByte);
+				gOut.write(byteArr, 0, readByte);
 				totalWrite += readByte; 
-				out.close();
+				gOut.close();
 				System.out.println("make next File!");
 				cmpPartNumber++;
 				destFile = destFile.replace((cmpPartNumber-1)+".", cmpPartNumber+".");
-				out = new GZIPOutputStream(new FileOutputStream(destFile));
+				gOut = new GZIPOutputStream(new FileOutputStream(destFile));
 				
 				writeSize = 0;
 			}
 			
 		}
 		System.out.println(totalWrite);
-		out.close(); 
+		gOut.close(); 
 		in.close();
 	}
 
