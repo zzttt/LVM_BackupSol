@@ -45,6 +45,10 @@ public class SrvBackupActivity extends Activity {
 		pl = new pipeWithLVM(rh);
 		
 		pl.ActionWritePipe("lvs --separator , ");
+		
+		
+		
+		
 	}
 
 	@Override
@@ -83,11 +87,8 @@ public class SrvBackupActivity extends Activity {
 	 */
 	@Override
 	 public void onBackPressed(){
-		
 		finish();
-		
 	 }
-	
 	public void finishActivity(){
 
 		// Activity finish

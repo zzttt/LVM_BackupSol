@@ -21,18 +21,22 @@ import com.example.timetraveler.MainActivity;
 
 public class ConnServer extends Thread {
 
-	Socket sc;
-	String authCode;
+	private Socket sc;
+	private String authCode;
 
-	String srvIp;
+	private String srvIp;
+	private String itemName;
+	
+	
+	private int port;
+	private int opCode;
 
-	int port;
-	int opCode;
-
-	File[] snapshotList;
-	Handler andHandler;
-
+	private File[] snapshotList;
+	private Handler andHandler;
+	
 	private ObjectInputStream ois = null;
+	
+	private ProgressDialog pd;
 	
 	public ConnServer(String srvIp, int port) {
 		this.srvIp = srvIp;
@@ -52,7 +56,16 @@ public class ConnServer extends Thread {
 		this.opCode = opCode;
 		this.authCode = userCode;
 	}
-	
+
+	public ConnServer(String srvIp, int port, int opCode, String userCode,  String itemName, ProgressDialog pd) {
+		this.srvIp = srvIp;
+		this.port = port;
+		this.opCode = opCode;
+		this.authCode = userCode;
+		this.andHandler = andHandler;
+		this.itemName = itemName;
+		this.pd = pd;
+	}
 	/**
 	 * 
 	 * @param srvIp
@@ -69,6 +82,7 @@ public class ConnServer extends Thread {
 		this.authCode = userCode;
 		this.andHandler = andHandler;
 	}
+	
 	
 	@Override
 	public void run() {
@@ -207,8 +221,21 @@ public class ConnServer extends Thread {
 				Log.i("lvm2", "image stream payload transfer");
 				pl = new Payload(6,authCode);
 				oos.writeObject(pl); // payload 전송
-
+				oos.flush();
 				
+				// 스냅샷 이미지
+				SnapshotImageMaker sim = new SnapshotImageMaker("test.txt" ,oos);
+				sim.start();
+				
+				try {
+					sim.join(); // 스레드 대기
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				Log.i("lvm2", "이미지 전송 종료");
+				
+				pd.cancel();
 				
 				break;
 			case 7:

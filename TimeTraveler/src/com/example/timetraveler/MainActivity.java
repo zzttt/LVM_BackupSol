@@ -168,10 +168,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		}else{
 			
 		}
-		
-		
-		// 1. Load Snapshot List on Device
 
+		// 1. Load Snapshot List on Device
 		SnapshotDiskManager sdm = new SnapshotDiskManager(homePath);
 		File[] sList = sdm.getSnapshotList();
 		
@@ -189,7 +187,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		mPager = (ViewPager) findViewById(R.id.pager);
 
 		mPager.setAdapter(pac);
-
 	}
 
 	@Override
@@ -215,7 +212,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			snapshotListInDev = sList; // 장치내의 리스트 가져옴
 
 			// 2. Load Server List on Server
-			ConnServer conn = new ConnServer("211.189.19.45", 12345, 0, userCode,
+			ConnServer conn = new ConnServer("211.189.19.45", 12345, 0, rd.getUserCode(),
 					handler);
 			conn.start();
 			
@@ -367,37 +364,10 @@ public class MainActivity extends Activity implements OnClickListener {
 						case 0: // 현재 시점을 서버에 백업
 							if (childPosition == 0) // Server Backup
 							{
-								// check the wi-fi connection
-								if (wifi.isConnected()) {
-									// WIFI 에 만 연결 되었을때
-									Toast.makeText(getApplicationContext(),
-											"Wifi 연결 확인. 서버통신 시도.",
-											Toast.LENGTH_SHORT).show();
-									try {
-										// 소켓 서버 접속 , Snapshot 전송할 Snapshot 을 선택
-										// opcode == 1 ( Snapshot Server backup )
-										
-										/*ConnServer cs = new ConnServer(
-												"211.189.19.45", 12345, 1,
-												userCode);
-										cs.start();
-										*/
-										
-										Intent sBackIntent = new Intent(MainActivity.this,SrvBackupActivity.class);
-										startActivity(sBackIntent);
-										
-										
-									} catch (Exception e) {
-										Toast.makeText(getApplicationContext(),
-												"서버와의 연결을 실패했습니다.",
-												Toast.LENGTH_SHORT).show();
-									}
-								} else {
-									Toast.makeText(
-											getApplicationContext(),
-											"Server Backup은 Wifi 연결상태에서만 가능합니다.",
-											Toast.LENGTH_SHORT).show();
-								}
+								Intent sBackIntent = new Intent(
+										MainActivity.this,
+										SrvBackupActivity.class);
+								startActivity(sBackIntent);
 							}
 
 							break;

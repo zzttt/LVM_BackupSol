@@ -63,6 +63,7 @@ public class ResultReader extends Thread {
 							//°ª ´øÁ®ÁÜ use Handler
 							rHandler.sendMessage(msg);
 							Log.d("LVMJavaRR", "To handler success");	
+							
 				    	}
 				    	else {
 				    		Log.d("LVMJavaRR", "Result is Null :)");

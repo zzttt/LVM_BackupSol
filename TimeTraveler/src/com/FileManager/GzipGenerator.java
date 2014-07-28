@@ -35,9 +35,10 @@ public class GzipGenerator {
 		this.cmpPartNumber = 1;
 	}
 	
-	public GzipGenerator(InputStream is) {
+	public GzipGenerator(InputStream is ,  ObjectOutputStream oos) {
 		this.cmpPartNumber = 1;
 		this.is = is;
+		this.oos = oos;
 	}
 
 	/**
@@ -45,44 +46,40 @@ public class GzipGenerator {
 	 * @param srvIp
 	 * @throws IOException
 	 */
-	public void SendCompImgToSrv(String srvIp,int port){ 
+	public void SendCompImgToSrv(){ 
 		byte buffer[] = new byte[1024];
 		int size = 0;
 		long totalSize = 0;
 		Socket sc;
 		try {
-			//   ++++++++++ sc = new Socket(srvIp, port);
-
 			FileSender fs; // 스트림 전송을 도와줄 File Sender
-
-			//   ++++++++++ os = sc.getOutputStream();
-			//   ++++++++++ oos = new ObjectOutputStream(os);
-			
+		
 			/*if (sc.isConnected()) { // 소켓 연결시 파일전송
 				fs = new FileSender(sc);
 			} else {
 				return;
 			}*/
-			//   ++++++++++			//   ++++++++++			//   ++++++++++
 			
 			
 			
 			/*
 			 * input stream 에서 읽어 socket 으로 쏜다.
 			 */
-			while ((size = is.read(buffer)) == 0) { // size == 0 일 동안 대기
+			while ((size = is.read(buffer)) <= 0) { // size <= 0 일 동안 대기
 				// do nothing
 			}
+			
 			// while문을 지나면 한개의 버퍼를 읽어들인다.
 			
 			// 처음 읽은 buffer 전송
-		//   ++++++++++		 gOut = new GZIPOutputStream(os);
 			
-			//oos.writeInt(size); // 전송할 byteSize 전송
+			//gOut = new GZIPOutputStream(oos);
 			
-			//gOut.write(buffer); // 압축해서 서버로 바로 쏜다
+			oos.write(buffer, 0, size);
 			
-			Log.d("lvm", Integer.toString(size));
+			//gOut.write(buffer, 0, size); // 압축해서 서버로 바로 쏜다
+			
+			Log.d("lvm", "first size : "+Integer.toString(size));
 			totalSize+=size;
 			// while ((size = is.read(buffer)) > 0) {
 			
@@ -91,8 +88,10 @@ public class GzipGenerator {
 			
 			while ((avail = is.available()) > 0 && (size = is.read(buffer)) > 0) {
 				//Log.e("lvm2", "in while (avail : "+avail+")");
+				String str = new String ( buffer, 0 , size);
+				Log.e("lvm2", "string : " + str);
 				
-				if(avail < 2048){
+				if(avail <= 1024){
 					// 스레드 슬립 ( input stream 이 텅 비면 진행되지 않음 )
 					try {
 						Thread.sleep(150);
@@ -102,17 +101,20 @@ public class GzipGenerator {
 					}
 				}
 				// buffer 2 ~ end 까지 서버로 전송
-				//gOut.write(buffer); // 압축해서 서버로 바로 쏜다
 				
+				oos.write(buffer, 0, size);
+				
+				//gOut.write(buffer, 0, size); // 압축해서 서버로 바로 쏜다
 				totalSize += size;
-				Log.d("lvm", Long.toString(totalSize));
 				
-				// Log.d("lvm", "size : " +
-				// Long.toString(totalSize/1024/1024)
-				// );
 			}
+			Log.d("lvm", Long.toString(totalSize));
+			
 			Log.e("lvm2", "out of while");
-		//   ++++++++++		 gOut.close();
+			
+			oos.flush();
+			/*gOut.flush();
+			gOut.close();*/
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -120,7 +122,7 @@ public class GzipGenerator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			Log.d("lvm", "total : " + Long.toString(totalSize / 1024 / 1024)+ "mb");
+			Log.d("lvm", "total : " + Long.toString(totalSize / 1024)+ "kb");
 		}
 		// 서버에 연결
 		/*BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -218,6 +220,7 @@ public class GzipGenerator {
 			out.write(s.getBytes());
 			out.write("\n".getBytes());
 		}
+		
 		in.close();
 		out.close();
 

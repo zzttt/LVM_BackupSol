@@ -84,8 +84,6 @@ public class readHandler extends Handler {
 			
 			//Toast.makeText(context, readResult, Toast.LENGTH_SHORT).show();
 			
-			
-			
 			//dd if="filePath" obs="bytes"
 			
 			// ssList를 이용하여 View Listing
@@ -115,6 +113,7 @@ public class readHandler extends Handler {
 						@Override
 						public void onClick(DialogInterface arg0, int arg1) {
 							// TODO Auto-generated method stub
+							
 							ProgressDialog pd = new ProgressDialog(
 									context);
 							pd.setTitle("전송중 .. ");
@@ -124,12 +123,12 @@ public class readHandler extends Handler {
 							pd.show();
 							
 							// 서버에 전송이 시작된다는 것을 알려야지	
-							
-							ConnServer conn = new ConnServer(MainActivity.srvIp, 12345, 6, MainActivity.rd.getUserCode());
+							ConnServer conn = new ConnServer(MainActivity.srvIp, 12345, 6, MainActivity.rd.getUserCode() , ssName , pd);
 							conn.start();		
 							
-							SnapshotImageMaker sim = new SnapshotImageMaker("ssName");
-							sim.start();
+							
+							/*SnapshotImageMaker sim = new SnapshotImageMaker("ssName");
+							sim.start();*/
 							
 							
 							// Snapshot Imaging
