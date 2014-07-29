@@ -105,7 +105,6 @@ public class ConnServer extends Thread {
 				Payload pl = new Payload(0, authCode);
 				oos.writeObject(pl);
 				
-				
 				Calendar time = Calendar.getInstance();
 				String today = (new SimpleDateFormat("yyyyMMddHHmm").format(time
 						.getTime()));
@@ -221,8 +220,6 @@ public class ConnServer extends Thread {
 				Log.i("lvm2", "image stream payload transfer");
 				pl = new Payload(6,authCode);
 				oos.writeObject(pl); // payload Àü¼Û
-				oos.flush();
-				
 				// ½º³À¼¦ ÀÌ¹ÌÁö
 				SnapshotImageMaker sim = new SnapshotImageMaker("test.txt" ,oos);
 				sim.start();

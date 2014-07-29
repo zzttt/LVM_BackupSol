@@ -1,5 +1,6 @@
 package com.FileManager;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,10 +30,17 @@ public class GzipGenerator {
 	private OutputStream os;
 	private ObjectOutputStream oos;
 	private GZIPOutputStream gOut;
+	private Socket sc;
 
 	
 	public GzipGenerator() {
 		this.cmpPartNumber = 1;
+	}
+	
+	public GzipGenerator(InputStream is , Socket sc) {
+		this.cmpPartNumber = 1;
+		this.is = is;
+		this.sc = sc;
 	}
 	
 	public GzipGenerator(InputStream is ,  ObjectOutputStream oos) {
@@ -47,10 +55,9 @@ public class GzipGenerator {
 	 * @throws IOException
 	 */
 	public void SendCompImgToSrv(){ 
-		byte buffer[] = new byte[1024];
+		byte buffer[] = new byte[1024*1024]; // 1M
 		int size = 0;
 		long totalSize = 0;
-		Socket sc;
 		try {
 			FileSender fs; // 스트림 전송을 도와줄 File Sender
 		
@@ -60,12 +67,13 @@ public class GzipGenerator {
 				return;
 			}*/
 			
-			
+			BufferedInputStream br = new BufferedInputStream(is);
 			
 			/*
 			 * input stream 에서 읽어 socket 으로 쏜다.
 			 */
-			while ((size = is.read(buffer)) <= 0) { // size <= 0 일 동안 대기
+			
+			while ((size = br.read(buffer)) <= 0) { // size <= 0 일 동안 대기
 				// do nothing
 			}
 			
@@ -86,22 +94,18 @@ public class GzipGenerator {
 			// avail  > input stream에 남아있는 바이트
 			int avail ;
 			
-			while ((avail = is.available()) > 0 && (size = is.read(buffer)) > 0) {
+			// 스레드 슬립 ( input stream 이 텅 비면 진행되지 않음 )
+			try {
+				Thread.sleep(30000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			while ((avail = br.available()) > 0 && (size = br.read(buffer)) > 0) {
 				//Log.e("lvm2", "in while (avail : "+avail+")");
 				String str = new String ( buffer, 0 , size);
 				Log.e("lvm2", "string : " + str);
-				
-				if(avail <= 1024){
-					// 스레드 슬립 ( input stream 이 텅 비면 진행되지 않음 )
-					try {
-						Thread.sleep(150);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
 				// buffer 2 ~ end 까지 서버로 전송
-				
 				oos.write(buffer, 0, size);
 				
 				//gOut.write(buffer, 0, size); // 압축해서 서버로 바로 쏜다

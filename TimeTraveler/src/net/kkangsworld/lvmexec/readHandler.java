@@ -59,115 +59,14 @@ public class readHandler extends Handler {
 			this.readResult = (String) msg.obj;
 			Log.d("inAction", "[" + getClass() + "]" + readResult);
 
-			this.sendEmptyMessage(100); //set ListView as data 
+			//this.sendEmptyMessage(100); //set ListView as data
+			
+			
+			
 			//( msg 0 으로 들어오면 , readResult 를 저장하고 case 100 수행) 
 			
 			break;
-		case 100: 
-			// lvs 에 따른 snapshot list 를 읽어 listView에 보임
-
-			ssStrList = new ArrayList<String>();
-			readResult = readResult.replace("Convert", ",");
-			
-			String[] strArr = readResult.split(",");
-			
-			Log.i("handler", readResult);
-			
-			for(int i = 0 ; i < strArr.length ; i++){
-				if(strArr[i].equals("vg")){
-					ssStrList.add(strArr[i-1]); // 임시등록
-					
-					/*if(strArr[i+1].startsWith("s")) // 스냅샷만 출력해 주는 부분
-						ssStrList.add(strArr[i-1]);*/
-				}
-			}
-			
-			//Toast.makeText(context, readResult, Toast.LENGTH_SHORT).show();
-			
-			//dd if="filePath" obs="bytes"
-			
-			// ssList를 이용하여 View Listing
-			
-			ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,
-					android.R.layout.simple_list_item_1, ssStrList);
-			
-			Log.i("lvm", "set adapt");
-			lv.setAdapter(adapter); // set Adapter
-			lv.setOnItemClickListener(new OnItemClickListener() {
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View vv,
-						int itemId, long id) {
-					// TODO Auto-generated method stub
-
-					// itemId ( 0 부터 등록된 순서대로 읽어들임 )
-
-					final String ssName = ssStrList.get(itemId); // ssName read
-
-					final AlertDialog.Builder adb = new AlertDialog.Builder(vv
-							.getContext());
-					adb.setTitle("Notice");
-					adb.setMessage("서버에 스냅샷을 전송합니다.");
-					aDialog = adb.create();
-
-					adb.setPositiveButton("전송시작", new OnClickListener() {
-						@Override
-						public void onClick(DialogInterface arg0, int arg1) {
-							// TODO Auto-generated method stub
-							
-							ProgressDialog pd = new ProgressDialog(
-									context);
-							pd.setTitle("전송중 .. ");
-							pd.setMessage("Snapshot 을 서버로 전송 중 입니다..");
-							pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-							pd.setCancelable(true);
-							pd.show();
-							
-							// 서버에 전송이 시작된다는 것을 알려야지	
-							ConnServer conn = new ConnServer(MainActivity.srvIp, 12345, 6, MainActivity.rd.getUserCode() , ssName , pd);
-							conn.start();		
-							
-							
-							/*SnapshotImageMaker sim = new SnapshotImageMaker("ssName");
-							sim.start();*/
-							
-							
-							// Snapshot Imaging
-							// Snapshot Send to Server
-							
-
-							// confirm
-
-							// activity end
-
-							// finishActivity();
-						}
-					});
-					adb.setNegativeButton("취소", new OnClickListener() {
-
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
-							setDismiss(aDialog);
-						}
-
-					});
-
-					adb.show();
-
-				}
-
-				
-				private void setDismiss(Dialog dialog) {
-					if (dialog != null && dialog.isShowing())
-						dialog.dismiss();
-				}
-
-			});
-			
-
-			Log.i("lvm", "end adapt");
-			
-			break;
+		
 		}
 
 	}
